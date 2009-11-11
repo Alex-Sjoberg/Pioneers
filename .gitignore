@@ -1,3 +1,13 @@
 *.o
 *.a
 *.swp
+pioneers-0.12.2/client/help/C/omf_timestamp
+pioneers-0.12.2/client/help/C/pioneers-C.omf.out
+pioneers-0.12.2/common/authors.h
+pioneers-0.12.2/common/version.h
+pioneers-0.12.2/pioneers
+pioneers-0.12.2/pioneers-editor
+pioneers-0.12.2/pioneers-meta-server
+pioneers-0.12.2/pioneers-server-console
+pioneers-0.12.2/pioneers-server-gtk
+pioneers-0.12.2/pioneersai
