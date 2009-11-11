@@ -2132,7 +2132,7 @@ void setup_clips(void)
   close(fd0[0]);
 
   /* CLIPS initialization goes here! */
-  //write_clips("(load settlers.clp)\n");
+  //write_clips("(load settlers.clp)");
 }
 
 /*
@@ -2151,11 +2151,13 @@ int write_clips(char * message) {
   int r;
   char * buf = NULL;
 
+  /* append a newline to the command if needed */
   if (message[len-1] != '\n') {
-    buf = malloc(len+1);
+    len++;
+    buf = malloc(len);
     strncpy(buf, message, len);
     buf[len-1] = '\n';
-    message = buf; len++;
+    message = buf;
 
     /*fprintf(stderr,"Error! Message to CLIPS not terminated by a newline!\n  >> %s\n",message);
     kill(cpid,SIGKILL);
@@ -2163,7 +2165,7 @@ int write_clips(char * message) {
     */
   }
 
-  fprintf(stderr, 
+  /* send the command to CLIPS */
   r = write(fd0[1],message,len);
 
   if (buf)
@@ -2186,8 +2188,8 @@ int close_clips(void) {
   int flen = strlen(flag);
   char * pch;
 
-  write_clips("(run)\n");
-  write_clips("(exit)\n");
+  write_clips("(run)");
+  write_clips("(exit)");
 
   close(fd0[1]);
   close(fd1[1]);
