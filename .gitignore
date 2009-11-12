@@ -1,6 +1,7 @@
 *.o
 *.a
 *.swp
+*.Po
 pioneers-0.12.2/client/help/C/omf_timestamp
 pioneers-0.12.2/client/help/C/pioneers-C.omf.out
 pioneers-0.12.2/common/authors.h
@@ -11,3 +12,7 @@ pioneers-0.12.2/pioneers-meta-server
 pioneers-0.12.2/pioneers-server-console
 pioneers-0.12.2/pioneers-server-gtk
 pioneers-0.12.2/pioneersai
+pioneers-0.12.2/config.log
+pioneers-0.12.2/libtool
+*Makefile
+*Makefile.in
