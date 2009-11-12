@@ -59,7 +59,7 @@
 #define HAVE_LC_MESSAGES 1
 
 /* Defined if libgnome is present and needed */
-/* #undef HAVE_LIBGNOME */
+#define HAVE_LIBGNOME 1
 
 /* Define to 1 if you have the <limits.h> header file. */
 #define HAVE_LIMITS_H 1

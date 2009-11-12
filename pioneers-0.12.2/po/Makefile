@@ -36,7 +36,7 @@ libdir = ${exec_prefix}/lib
 DATADIRNAME = share
 itlocaledir = $(prefix)/$(DATADIRNAME)/locale
 subdir = po
-install_sh = /home/dcolgan/settlers/pioneers-0.12.2/install-sh
+install_sh = /home/jdenardo/settlers/pioneers-0.12.2/install-sh
 # Automake >= 1.8 provides mkdir -p --.
 # Until it can be supposed, use the safe fallback:
 mkdir_p = $(install_sh) -d
@@ -44,7 +44,7 @@ mkdir_p = $(install_sh) -d
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 
-GMSGFMT = /usr/bin/msgfmt
+GMSGFMT = /usr/bin/gmsgfmt
 MSGFMT = /usr/bin/msgfmt
 XGETTEXT = /usr/bin/xgettext
 INTLTOOL_UPDATE = $(top_builddir)/intltool-update
