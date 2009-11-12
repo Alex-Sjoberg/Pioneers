@@ -2,6 +2,8 @@
 *.a
 *.swp
 *.Po
+*.log
+pioneers-0.12.2/po/.intltool-merge-cache
 pioneers-0.12.2/client/help/C/omf_timestamp
 pioneers-0.12.2/client/help/C/pioneers-C.omf.out
 pioneers-0.12.2/common/authors.h

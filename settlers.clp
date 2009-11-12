@@ -251,124 +251,124 @@
 )
 
 
-Settlers of Catan
-
-Strategy
-
-If I have more than 7 cards in my hand, then I want to trade them
-If I have lots of wood and bricks then I want to make a road
- 
-
-Deftemplates
-
-(deftempate development-card
-  (slot kind (allowed-values soldier monopoly victory plenty))
-)
-
-(deftemplate player
-    (slot name (type STRING))
-    (multislot cards-in-hand)
-)
-
-(deftemplate thief
-    (slot board-hex-id (type INTEGER))
-)
-
-(deftemplate hex-connection
-    (multislot ids (cardinality 3 3))
-)
-
-
-(deftemplate resource-card
-    (slot kind (allowed-values wood brick sheep wheat metal))
-)
-
-(deftemplate board-hex
-    (slot id)
-    (slot kind (allowed-values water3to1 water2wood water2brick water2sheep water2wheat water2metal desert wood brick sheep wheat metal))
-    (slot port (allowed-values none) (default none))
-)
-
-(deffacts ihavecards
-    (resource-card (kind 
-
-(deftemplate game-state
-)
-
-
-Deffacts
-
-(deffacts deck
-  
-)
-
-
-Rules
-
-(defrule get-rid-of-cards
-    haha
-  =>
-    (aoeu)
-)
-
-
-0 hill
-1 field
-2 mountain
-3 pasture
-4 forest
-5 desert
-6 sea
-
-0 brick
-1 grain
-2 ore
-3 wool
-4 lumber
-5 none
-6 any
-
-[0,3] terrain=6, resource=5, num=0
-[1,1] terrain=6, resource=5, num=0
-[1,2] terrain=6, resource=6, num=0
-[1,3] terrain=5, resource=5, num=0
-[1,4] terrain=6, resource=6, num=0
-[1,5] terrain=6, resource=5, num=0
-[2,0] terrain=6, resource=3, num=0
-[2,1] terrain=4, resource=5, num=11
-[2,2] terrain=0, resource=5, num=4
-[2,3] terrain=4, resource=5, num=3
-[2,4] terrain=0, resource=5, num=8
-[2,5] terrain=2, resource=5, num=5
-[2,6] terrain=6, resource=2, num=0
-[3,0] terrain=6, resource=5, num=0
-[3,1] terrain=3, resource=5, num=12
-[3,2] terrain=2, resource=5, num=6
-[3,3] terrain=1, resource=5, num=11
-[3,4] terrain=3, resource=5, num=10
-[3,5] terrain=1, resource=5, num=2
-[3,6] terrain=6, resource=5, num=0
-[4,0] terrain=6, resource=6, num=0
-[4,1] terrain=1, resource=5, num=9
-[4,2] terrain=0, resource=5, num=5
-[4,3] terrain=4, resource=5, num=4
-[4,4] terrain=3, resource=5, num=9
-[4,5] terrain=4, resource=5, num=6
-[4,6] terrain=6, resource=0, num=0
-[5,0] terrain=6, resource=5, num=0
-[5,1] terrain=6, resource=1, num=0
-[5,2] terrain=3, resource=5, num=10
-[5,3] terrain=1, resource=5, num=8
-[5,4] terrain=2, resource=5, num=3
-[5,5] terrain=6, resource=6, num=0
-[5,6] terrain=6, resource=5, num=0
-[6,2] terrain=6, resource=5, num=0
-[6,3] terrain=6, resource=4, num=0
-[6,4] terrain=6, resource=5, num=0
-
-
-
-------------------------------------------------------------------
-
-
-
+;Settlers of Catan
+;
+;Strategy
+;
+;If I have more than 7 cards in my hand, then I want to trade them
+;If I have lots of wood and bricks then I want to make a road
+; 
+;
+;Deftemplates
+;
+;(deftempate development-card
+;  (slot kind (allowed-values soldier monopoly victory plenty))
+;)
+;
+;(deftemplate player
+;    (slot name (type STRING))
+;    (multislot cards-in-hand)
+;)
+;
+;(deftemplate thief
+;    (slot board-hex-id (type INTEGER))
+;)
+;
+;(deftemplate hex-connection
+;    (multislot ids (cardinality 3 3))
+;)
+;
+;
+;(deftemplate resource-card
+;    (slot kind (allowed-values wood brick sheep wheat metal))
+;)
+;
+;(deftemplate board-hex
+;    (slot id)
+;    (slot kind (allowed-values water3to1 water2wood water2brick water2sheep water2wheat water2metal desert wood brick sheep wheat metal))
+;    (slot port (allowed-values none) (default none))
+;)
+;
+;(deffacts ihavecards
+;    (resource-card (kind 
+;
+;(deftemplate game-state
+;)
+;
+;
+;Deffacts
+;
+;(deffacts deck
+;  
+;)
+;
+;
+;Rules
+;
+;(defrule get-rid-of-cards
+;    haha
+;  =>
+;    (aoeu)
+;)
+;
+;
+;0 hill
+;1 field
+;2 mountain
+;3 pasture
+;4 forest
+;5 desert
+;6 sea
+;
+;0 brick
+;1 grain
+;2 ore
+;3 wool
+;4 lumber
+;5 none
+;6 any
+;
+;[0,3] terrain=6, resource=5, num=0
+;[1,1] terrain=6, resource=5, num=0
+;[1,2] terrain=6, resource=6, num=0
+;[1,3] terrain=5, resource=5, num=0
+;[1,4] terrain=6, resource=6, num=0
+;[1,5] terrain=6, resource=5, num=0
+;[2,0] terrain=6, resource=3, num=0
+;[2,1] terrain=4, resource=5, num=11
+;[2,2] terrain=0, resource=5, num=4
+;[2,3] terrain=4, resource=5, num=3
+;[2,4] terrain=0, resource=5, num=8
+;[2,5] terrain=2, resource=5, num=5
+;[2,6] terrain=6, resource=2, num=0
+;[3,0] terrain=6, resource=5, num=0
+;[3,1] terrain=3, resource=5, num=12
+;[3,2] terrain=2, resource=5, num=6
+;[3,3] terrain=1, resource=5, num=11
+;[3,4] terrain=3, resource=5, num=10
+;[3,5] terrain=1, resource=5, num=2
+;[3,6] terrain=6, resource=5, num=0
+;[4,0] terrain=6, resource=6, num=0
+;[4,1] terrain=1, resource=5, num=9
+;[4,2] terrain=0, resource=5, num=5
+;[4,3] terrain=4, resource=5, num=4
+;[4,4] terrain=3, resource=5, num=9
+;[4,5] terrain=4, resource=5, num=6
+;[4,6] terrain=6, resource=0, num=0
+;[5,0] terrain=6, resource=5, num=0
+;[5,1] terrain=6, resource=1, num=0
+;[5,2] terrain=3, resource=5, num=10
+;[5,3] terrain=1, resource=5, num=8
+;[5,4] terrain=2, resource=5, num=3
+;[5,5] terrain=6, resource=6, num=0
+;[5,6] terrain=6, resource=5, num=0
+;[6,2] terrain=6, resource=5, num=0
+;[6,3] terrain=6, resource=4, num=0
+;[6,4] terrain=6, resource=5, num=0
+;
+;
+;
+;------------------------------------------------------------------
+;
+;
+;
