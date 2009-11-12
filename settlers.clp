@@ -31,7 +31,7 @@
     (slot edge)
 )
 
-(deftemplate card
+(deftemplate mycard
     (slot kind)
 )
 
@@ -244,7 +244,7 @@
     (card (kind wheat))
     (card (kind sheep))
     (my-id ?my-id)
-    (road (player ?id&:(= ?id ?my-id) (edge ?edge))
+    (road (player ?id&:(= ?id ?my-id) (edge ?edge)))
     (edge (id ?edge) (nodes $? ?node $?))
     =>
     (printout t "Build road p1 node " ?node crlf)
