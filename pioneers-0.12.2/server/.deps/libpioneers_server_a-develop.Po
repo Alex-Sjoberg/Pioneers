@@ -1,8 +1,9 @@
 server/libpioneers_server_a-develop.o: server/develop.c config.h \
- /usr/include/string.h /usr/include/features.h /usr/include/sys/cdefs.h \
+ /usr/include/string.h /usr/include/features.h \
+ /usr/include/bits/predefs.h /usr/include/sys/cdefs.h \
  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
- /usr/include/gnu/stubs-64.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include/stddef.h \
+ /usr/include/gnu/stubs-32.h \
+ /usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h \
  /usr/include/xlocale.h /usr/include/bits/string.h \
  /usr/include/bits/string2.h /usr/include/endian.h \
  /usr/include/bits/endian.h /usr/include/bits/byteswap.h \
@@ -10,18 +11,18 @@ server/libpioneers_server_a-develop.o: server/develop.c config.h \
  /usr/include/stdlib.h /usr/include/bits/string3.h common/buildrec.h \
  common/map.h /usr/include/glib-2.0/glib.h \
  /usr/include/glib-2.0/glib/galloca.h /usr/include/glib-2.0/glib/gtypes.h \
- /usr/lib64/glib-2.0/include/glibconfig.h \
+ /usr/lib/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include-fixed/limits.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include-fixed/syslimits.h \
+ /usr/lib/gcc/i486-linux-gnu/4.4.1/include-fixed/limits.h \
+ /usr/lib/gcc/i486-linux-gnu/4.4.1/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
  /usr/include/bits/posix2_lim.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include/float.h \
+ /usr/lib/gcc/i486-linux-gnu/4.4.1/include/float.h \
  /usr/include/glib-2.0/glib/garray.h \
  /usr/include/glib-2.0/glib/gasyncqueue.h \
  /usr/include/glib-2.0/glib/gthread.h /usr/include/glib-2.0/glib/gerror.h \
- /usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include/stdarg.h \
+ /usr/lib/gcc/i486-linux-gnu/4.4.1/include/stdarg.h \
  /usr/include/glib-2.0/glib/gquark.h /usr/include/glib-2.0/glib/gutils.h \
  /usr/include/glib-2.0/glib/gatomic.h \
  /usr/include/glib-2.0/glib/gbacktrace.h /usr/include/signal.h \
@@ -77,15 +78,17 @@ config.h:
 
 /usr/include/features.h:
 
+/usr/include/bits/predefs.h:
+
 /usr/include/sys/cdefs.h:
 
 /usr/include/bits/wordsize.h:
 
 /usr/include/gnu/stubs.h:
 
-/usr/include/gnu/stubs-64.h:
+/usr/include/gnu/stubs-32.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include/stddef.h:
+/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stddef.h:
 
 /usr/include/xlocale.h:
 
@@ -117,13 +120,13 @@ common/map.h:
 
 /usr/include/glib-2.0/glib/gtypes.h:
 
-/usr/lib64/glib-2.0/include/glibconfig.h:
+/usr/lib/glib-2.0/include/glibconfig.h:
 
 /usr/include/glib-2.0/glib/gmacros.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include-fixed/limits.h:
+/usr/lib/gcc/i486-linux-gnu/4.4.1/include-fixed/limits.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include-fixed/syslimits.h:
+/usr/lib/gcc/i486-linux-gnu/4.4.1/include-fixed/syslimits.h:
 
 /usr/include/limits.h:
 
@@ -135,7 +138,7 @@ common/map.h:
 
 /usr/include/bits/posix2_lim.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include/float.h:
+/usr/lib/gcc/i486-linux-gnu/4.4.1/include/float.h:
 
 /usr/include/glib-2.0/glib/garray.h:
 
@@ -145,7 +148,7 @@ common/map.h:
 
 /usr/include/glib-2.0/glib/gerror.h:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include/stdarg.h:
+/usr/lib/gcc/i486-linux-gnu/4.4.1/include/stdarg.h:
 
 /usr/include/glib-2.0/glib/gquark.h:
 
