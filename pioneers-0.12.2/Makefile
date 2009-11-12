@@ -450,8 +450,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = x86_64-unknown-linux-gnu
-host_triplet = x86_64-unknown-linux-gnu
+build_triplet = i686-pc-linux-gnu
+host_triplet = i686-pc-linux-gnu
 bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3) \
 	$(am__EXEEXT_4) $(am__EXEEXT_5) $(am__EXEEXT_6)
 noinst_PROGRAMS =
@@ -485,67 +485,67 @@ am__append_3 = \
 # I don't know enough about the po build system, so I'll use a recursive
 # make for it.
 am__append_4 = client/help/C
-am__append_5 = pioneers
-am__append_6 = client/gtk/pioneers.desktop.in
-am__append_7 =  \
-	$(freecivtheme_DATA) \
-	$(icelandtheme_DATA) \
-	$(tinytheme_DATA) \
-	$(wesnoththeme_DATA) \
-	$(defaulttheme_DATA) \
-	client/gtk/data/splash.svg
-am__append_8 = client/gtk/data/pioneers.png
-am__append_9 = \
-	client/gtk/data/bridge.png \
-	client/gtk/data/city.png \
-	client/gtk/data/city_wall.png \
-	client/gtk/data/develop.png \
-	client/gtk/data/dice.png \
-	client/gtk/data/finish.png \
-	client/gtk/data/road.png \
-	client/gtk/data/settlement.png \
-	client/gtk/data/ship.png \
-	client/gtk/data/ship_move.png \
-	client/gtk/data/splash.png \
-	client/gtk/data/trade.png \
-	client/gtk/data/brick.png \
-	client/gtk/data/grain.png \
-	client/gtk/data/lumber.png \
-	client/gtk/data/ore.png \
-	client/gtk/data/wool.png \
-	client/gtk/data/style-human.png \
-	client/gtk/data/style-human-1.png \
-	client/gtk/data/style-human-2.png \
-	client/gtk/data/style-human-3.png \
-	client/gtk/data/style-human-4.png \
-	client/gtk/data/style-human-5.png \
-	client/gtk/data/style-human-6.png \
-	client/gtk/data/style-human-7.png \
-	client/gtk/data/style-ai.png
+#am__append_5 = pioneers
+#am__append_6 = client/gtk/pioneers.desktop.in
+#am__append_7 =  \
+#	$(freecivtheme_DATA) \
+#	$(icelandtheme_DATA) \
+#	$(tinytheme_DATA) \
+#	$(wesnoththeme_DATA) \
+#	$(defaulttheme_DATA) \
+#	client/gtk/data/splash.svg
+#am__append_8 = client/gtk/data/pioneers.png
+#am__append_9 = \
+#	client/gtk/data/bridge.png \
+#	client/gtk/data/city.png \
+#	client/gtk/data/city_wall.png \
+#	client/gtk/data/develop.png \
+#	client/gtk/data/dice.png \
+#	client/gtk/data/finish.png \
+#	client/gtk/data/road.png \
+#	client/gtk/data/settlement.png \
+#	client/gtk/data/ship.png \
+#	client/gtk/data/ship_move.png \
+#	client/gtk/data/splash.png \
+#	client/gtk/data/trade.png \
+#	client/gtk/data/brick.png \
+#	client/gtk/data/grain.png \
+#	client/gtk/data/lumber.png \
+#	client/gtk/data/ore.png \
+#	client/gtk/data/wool.png \
+#	client/gtk/data/style-human.png \
+#	client/gtk/data/style-human-1.png \
+#	client/gtk/data/style-human-2.png \
+#	client/gtk/data/style-human-3.png \
+#	client/gtk/data/style-human-4.png \
+#	client/gtk/data/style-human-5.png \
+#	client/gtk/data/style-human-6.png \
+#	client/gtk/data/style-human-7.png \
+#	client/gtk/data/style-ai.png
 
-am__append_10 = client/gtk/data/splash.png
-#am__append_11 = client/gtk/data/pioneers.res
-#am__append_12 = client/gtk/data/pioneers.res
-am__append_13 = client/gtk/data/pioneers.ico
-am__append_14 = client/gtk/data/pioneers.rc
-am__append_15 = server/gtk/pioneers-server.png
-am__append_16 = server/gtk/pioneers-server.desktop.in
-am__append_17 = pioneers-server-gtk
-#am__append_18 = server/gtk/pioneers-server.res
-#am__append_19 = server/gtk/pioneers-server.res
-am__append_20 = server/gtk/pioneers-server.ico
-am__append_21 = server/gtk/pioneers-server.rc
+#am__append_10 = client/gtk/data/splash.png
+##am__append_11 = client/gtk/data/pioneers.res
+##am__append_12 = client/gtk/data/pioneers.res
+#am__append_13 = client/gtk/data/pioneers.ico
+#am__append_14 = client/gtk/data/pioneers.rc
+#am__append_15 = server/gtk/pioneers-server.png
+#am__append_16 = server/gtk/pioneers-server.desktop.in
+#am__append_17 = pioneers-server-gtk
+##am__append_18 = server/gtk/pioneers-server.res
+##am__append_19 = server/gtk/pioneers-server.res
+#am__append_20 = server/gtk/pioneers-server.ico
+#am__append_21 = server/gtk/pioneers-server.rc
 am__append_22 = pioneers-server-console
 am__append_23 = libpioneers_server.a
 am__append_24 = pioneers-meta-server
-am__append_25 = editor/gtk/pioneers-editor.png
-am__append_26 = editor/gtk/pioneers-editor.desktop.in
-am__append_27 = pioneers-editor
-#am__append_28 = editor/gtk/pioneers-editor.res
-#am__append_29 = editor/gtk/pioneers-editor.res
-am__append_30 = editor/gtk/pioneers-editor.ico
-am__append_31 = editor/gtk/pioneers-editor.rc
-am__append_32 = libpioneers_gtk.a
+##am__append_25 = editor/gtk/pioneers-editor.png
+##am__append_26 = editor/gtk/pioneers-editor.desktop.in
+##am__append_27 = pioneers-editor
+###am__append_28 = editor/gtk/pioneers-editor.res
+###am__append_29 = editor/gtk/pioneers-editor.res
+##am__append_30 = editor/gtk/pioneers-editor.ico
+##am__append_31 = editor/gtk/pioneers-editor.rc
+#am__append_32 = libpioneers_gtk.a
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -589,19 +589,19 @@ am__libpioneers_gtk_a_SOURCES_DIST = common/gtk/aboutbox.c \
 	common/gtk/player-icon.h common/gtk/polygon.c \
 	common/gtk/polygon.h common/gtk/select-game.c \
 	common/gtk/select-game.h common/gtk/theme.c common/gtk/theme.h
-am_libpioneers_gtk_a_OBJECTS = common/gtk/libpioneers_gtk_a-aboutbox.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-colors.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-common_gtk.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-config-gnome.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-game-rules.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-game-settings.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-gtkbugs.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-guimap.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-metaserver.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-player-icon.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-polygon.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-select-game.$(OBJEXT) \
-	common/gtk/libpioneers_gtk_a-theme.$(OBJEXT)
+#am_libpioneers_gtk_a_OBJECTS = common/gtk/libpioneers_gtk_a-aboutbox.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-colors.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-common_gtk.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-config-gnome.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-game-rules.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-game-settings.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-gtkbugs.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-guimap.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-metaserver.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-player-icon.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-polygon.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-select-game.$(OBJEXT) \
+#	common/gtk/libpioneers_gtk_a-theme.$(OBJEXT)
 libpioneers_gtk_a_OBJECTS = $(am_libpioneers_gtk_a_OBJECTS)
 libpioneers_server_a_AR = $(AR) $(ARFLAGS)
 libpioneers_server_a_LIBADD =
@@ -646,12 +646,12 @@ am_libpioneersclient_a_OBJECTS = client/common/libpioneersclient_a-build.$(OBJEX
 	client/common/libpioneersclient_a-turn.$(OBJEXT)
 libpioneersclient_a_OBJECTS = $(am_libpioneersclient_a_OBJECTS)
 am__EXEEXT_1 = pioneersai$(EXEEXT)
-am__EXEEXT_2 = pioneers$(EXEEXT)
-am__EXEEXT_3 = pioneers-server-gtk$(EXEEXT)
+#am__EXEEXT_2 = pioneers$(EXEEXT)
+#am__EXEEXT_3 = pioneers-server-gtk$(EXEEXT)
 am__EXEEXT_4 = pioneers-server-console$(EXEEXT)
 am__EXEEXT_5 = pioneers-meta-server$(EXEEXT)
-am__EXEEXT_6 =  \
-	pioneers-editor$(EXEEXT)
+##am__EXEEXT_6 =  \
+##	pioneers-editor$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man6dir)" \
 	"$(DESTDIR)$(configdir)" "$(DESTDIR)$(defaultthemedir)" \
 	"$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(freecivthemedir)" \
@@ -674,35 +674,35 @@ am__pioneers_SOURCES_DIST = client/gtk/admin-gtk.c client/callback.h \
 	client/gtk/resource.c client/gtk/resource-table.c \
 	client/gtk/resource-table.h client/gtk/settingscreen.c \
 	client/gtk/state.c client/gtk/trade.c
-#am__objects_1 = client/gtk/pioneers-admin-gtk.$(OBJEXT)
-am_pioneers_OBJECTS =  \
-	$(am__objects_1) \
-	client/gtk/pioneers-audio.$(OBJEXT) \
-	client/gtk/pioneers-callbacks.$(OBJEXT) \
-	client/gtk/pioneers-chat.$(OBJEXT) \
-	client/gtk/pioneers-connect.$(OBJEXT) \
-	client/gtk/pioneers-develop.$(OBJEXT) \
-	client/gtk/pioneers-discard.$(OBJEXT) \
-	client/gtk/pioneers-frontend.$(OBJEXT) \
-	client/gtk/pioneers-gameover.$(OBJEXT) \
-	client/gtk/pioneers-gold.$(OBJEXT) \
-	client/gtk/pioneers-gui.$(OBJEXT) \
-	client/gtk/pioneers-histogram.$(OBJEXT) \
-	client/gtk/pioneers-identity.$(OBJEXT) \
-	client/gtk/pioneers-interface.$(OBJEXT) \
-	client/gtk/pioneers-legend.$(OBJEXT) \
-	client/gtk/pioneers-monopoly.$(OBJEXT) \
-	client/gtk/pioneers-name.$(OBJEXT) \
-	client/gtk/pioneers-offline.$(OBJEXT) \
-	client/gtk/pioneers-plenty.$(OBJEXT) \
-	client/gtk/pioneers-player.$(OBJEXT) \
-	client/gtk/pioneers-quote.$(OBJEXT) \
-	client/gtk/pioneers-quote-view.$(OBJEXT) \
-	client/gtk/pioneers-resource.$(OBJEXT) \
-	client/gtk/pioneers-resource-table.$(OBJEXT) \
-	client/gtk/pioneers-settingscreen.$(OBJEXT) \
-	client/gtk/pioneers-state.$(OBJEXT) \
-	client/gtk/pioneers-trade.$(OBJEXT)
+##am__objects_1 = client/gtk/pioneers-admin-gtk.$(OBJEXT)
+#am_pioneers_OBJECTS =  \
+#	$(am__objects_1) \
+#	client/gtk/pioneers-audio.$(OBJEXT) \
+#	client/gtk/pioneers-callbacks.$(OBJEXT) \
+#	client/gtk/pioneers-chat.$(OBJEXT) \
+#	client/gtk/pioneers-connect.$(OBJEXT) \
+#	client/gtk/pioneers-develop.$(OBJEXT) \
+#	client/gtk/pioneers-discard.$(OBJEXT) \
+#	client/gtk/pioneers-frontend.$(OBJEXT) \
+#	client/gtk/pioneers-gameover.$(OBJEXT) \
+#	client/gtk/pioneers-gold.$(OBJEXT) \
+#	client/gtk/pioneers-gui.$(OBJEXT) \
+#	client/gtk/pioneers-histogram.$(OBJEXT) \
+#	client/gtk/pioneers-identity.$(OBJEXT) \
+#	client/gtk/pioneers-interface.$(OBJEXT) \
+#	client/gtk/pioneers-legend.$(OBJEXT) \
+#	client/gtk/pioneers-monopoly.$(OBJEXT) \
+#	client/gtk/pioneers-name.$(OBJEXT) \
+#	client/gtk/pioneers-offline.$(OBJEXT) \
+#	client/gtk/pioneers-plenty.$(OBJEXT) \
+#	client/gtk/pioneers-player.$(OBJEXT) \
+#	client/gtk/pioneers-quote.$(OBJEXT) \
+#	client/gtk/pioneers-quote-view.$(OBJEXT) \
+#	client/gtk/pioneers-resource.$(OBJEXT) \
+#	client/gtk/pioneers-resource-table.$(OBJEXT) \
+#	client/gtk/pioneers-settingscreen.$(OBJEXT) \
+#	client/gtk/pioneers-state.$(OBJEXT) \
+#	client/gtk/pioneers-trade.$(OBJEXT)
 am__EXTRA_pioneers_SOURCES_DIST = client/gtk/admin-gtk.c
 pioneers_OBJECTS = $(am_pioneers_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -711,24 +711,24 @@ am__DEPENDENCIES_2 = libpioneers.a \
 	$(am__DEPENDENCIES_1)
 am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2) libpioneers_gtk.a \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-#am__DEPENDENCIES_4 = client/gtk/data/pioneers.res
-pioneers_DEPENDENCIES =  \
-	libpioneersclient.a \
-	$(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_4)
+##am__DEPENDENCIES_4 = client/gtk/data/pioneers.res
+#pioneers_DEPENDENCIES =  \
+#	libpioneersclient.a \
+#	$(am__DEPENDENCIES_3) \
+#	$(am__DEPENDENCIES_4)
 am__pioneers_editor_SOURCES_DIST = editor/gtk/editor.c \
 	editor/gtk/game-devcards.c editor/gtk/game-devcards.h \
 	editor/gtk/game-buildings.c editor/gtk/game-buildings.h \
 	editor/gtk/game-resources.c editor/gtk/game-resources.h
-am_pioneers_editor_OBJECTS = editor/gtk/pioneers_editor-editor.$(OBJEXT) \
-	editor/gtk/pioneers_editor-game-devcards.$(OBJEXT) \
-	editor/gtk/pioneers_editor-game-buildings.$(OBJEXT) \
-	editor/gtk/pioneers_editor-game-resources.$(OBJEXT)
+##am_pioneers_editor_OBJECTS = editor/gtk/pioneers_editor-editor.$(OBJEXT) \
+##	editor/gtk/pioneers_editor-game-devcards.$(OBJEXT) \
+##	editor/gtk/pioneers_editor-game-buildings.$(OBJEXT) \
+##	editor/gtk/pioneers_editor-game-resources.$(OBJEXT)
 pioneers_editor_OBJECTS = $(am_pioneers_editor_OBJECTS)
-#am__DEPENDENCIES_5 = editor/gtk/pioneers-editor.res
-pioneers_editor_DEPENDENCIES =  \
-	$(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_5)
+###am__DEPENDENCIES_5 = editor/gtk/pioneers-editor.res
+##pioneers_editor_DEPENDENCIES =  \
+##	$(am__DEPENDENCIES_3) \
+##	$(am__DEPENDENCIES_5)
 am__pioneers_meta_server_SOURCES_DIST = meta-server/main.c
 am_pioneers_meta_server_OBJECTS = meta-server/pioneers_meta_server-main.$(OBJEXT)
 pioneers_meta_server_OBJECTS = $(am_pioneers_meta_server_OBJECTS)
@@ -743,19 +743,18 @@ pioneers_server_console_OBJECTS =  \
 pioneers_server_console_DEPENDENCIES =  \
 	libpioneers_server.a $(am__DEPENDENCIES_2)
 am__pioneers_server_gtk_SOURCES_DIST = server/gtk/main.c
-am_pioneers_server_gtk_OBJECTS = server/gtk/pioneers_server_gtk-main.$(OBJEXT)
+#am_pioneers_server_gtk_OBJECTS = server/gtk/pioneers_server_gtk-main.$(OBJEXT)
 pioneers_server_gtk_OBJECTS = $(am_pioneers_server_gtk_OBJECTS)
-#am__DEPENDENCIES_6 = server/gtk/pioneers-server.res
-pioneers_server_gtk_DEPENDENCIES =  \
-	libpioneers_server.a \
-	$(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_6)
+##am__DEPENDENCIES_6 = server/gtk/pioneers-server.res
+#pioneers_server_gtk_DEPENDENCIES =  \
+#	libpioneers_server.a \
+#	$(am__DEPENDENCIES_3) \
+#	$(am__DEPENDENCIES_6)
 am__pioneersai_SOURCES_DIST = client/callback.h client/ai/ai.h \
-	client/ai/ai.c client/ai/greedy.c client/ai/expert.c client/ai/lobbybot.c
+	client/ai/ai.c client/ai/greedy.c client/ai/lobbybot.c
 am_pioneersai_OBJECTS =  \
 	client/ai/pioneersai-ai.$(OBJEXT) \
 	client/ai/pioneersai-greedy.$(OBJEXT) \
-	client/ai/pioneersai-expert.$(OBJEXT) \
 	client/ai/pioneersai-lobbybot.$(OBJEXT)
 pioneersai_OBJECTS = $(am_pioneersai_OBJECTS)
 pioneersai_DEPENDENCIES = libpioneersclient.a \
@@ -828,23 +827,23 @@ am__remove_distdir = \
 DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run aclocal-1.9
 ADMIN_GTK_SUPPORT_FALSE = 
 ADMIN_GTK_SUPPORT_TRUE = #
 ALL_LINGUAS = 
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run tar
+AMTAR = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run tar
 AM_CFLAGS = 
 AR = ar
-AUTOCONF = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run automake-1.9
-AWK = gawk
+AUTOCONF = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run automake-1.9
+AWK = mawk
 BUILD_CLIENT_FALSE = #
 BUILD_CLIENT_TRUE = 
-BUILD_EDITOR_FALSE = #
-BUILD_EDITOR_TRUE = 
+BUILD_EDITOR_FALSE = 
+BUILD_EDITOR_TRUE = #
 BUILD_META_SERVER_FALSE = #
 BUILD_META_SERVER_TRUE = 
 BUILD_SERVER_FALSE = #
@@ -859,41 +858,41 @@ CPPFLAGS =
 CREATE_WINDOWS_ICON_FALSE = 
 CREATE_WINDOWS_ICON_TRUE = #
 CXX = g++
-CXXCPP = g++ -E
-CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXCPP = 
+CXXDEPMODE = depmode=none
+CXXFLAGS = 
 CYGPATH_W = echo
 DATADIRNAME = share
 DEBUGGING = 
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
 DSYMUTIL = 
-ECHO = echo
+ECHO = /bin/echo
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
 EGREP = /bin/grep -E
 EXEEXT = 
-F77 = gfortran
-FFLAGS = -g -O2
+F77 = 
+FFLAGS = 
 GETTEXT_PACKAGE = pioneers
-GLIB2_CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include  
+GLIB2_CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
 GLIB2_LIBS = -lglib-2.0  
 GLIB_DEPRECATION = 
 GLIB_REQUIRED_VERSION = 2.6
 GMOFILES = 
-GMSGFMT = /usr/bin/gmsgfmt
-GNOME2_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/libgnome-2.0 -I/usr/include/orbit-2.0 -I/usr/include/gconf/2 -I/usr/include/gnome-vfs-2.0 -I/usr/lib64/gnome-vfs-2.0/include -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/libbonobo-2.0 -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include -I/usr/include/bonobo-activation-2.0  
-GNOME2_LIBS = -pthread -lgnome-2 -lpopt -lbonobo-2 -lbonobo-activation -lgmodule-2.0 -lORBit-2 -lgthread-2.0 -lrt -lgobject-2.0 -lglib-2.0  
+GMSGFMT = /usr/bin/msgfmt
+GNOME2_CFLAGS = 
+GNOME2_LIBS = 
 GREP = /bin/grep
-GTK2_CFLAGS = -I/usr/include/gtk-2.0 -I/usr/lib64/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12  
-GTK2_LIBS = -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lglib-2.0  
+GTK2_CFLAGS = 
+GTK2_LIBS = 
 GTK_DEPRECATION = 
 GTK_REQUIRED_VERSION = 2.6
-HAVE_GNOME_FALSE = #
-HAVE_GNOME_TRUE = 
-HAVE_GTK2_FALSE = #
-HAVE_GTK2_TRUE = 
+HAVE_GNOME_FALSE = 
+HAVE_GNOME_TRUE = #
+HAVE_GTK2_FALSE = 
+HAVE_GTK2_TRUE = #
 HAVE_SCROLLKEEPER_FALSE = #
 HAVE_SCROLLKEEPER_TRUE = 
 INSTALL_DATA = ${INSTALL} -m 644
@@ -934,7 +933,7 @@ LTLIBOBJS =
 MAINT = #
 MAINTAINER_MODE_FALSE = 
 MAINTAINER_MODE_TRUE = #
-MAKEINFO = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
 MSGFMT = /usr/bin/msgfmt
 MSGFMT_OPTS = -c
@@ -967,37 +966,37 @@ VERSION = 0.12.2
 WARNINGS = 
 XGETTEXT = /usr/bin/xgettext
 ac_ct_CC = gcc
-ac_ct_CXX = g++
-ac_ct_F77 = gfortran
+ac_ct_CXX = 
+ac_ct_F77 = 
 am__fastdepCC_FALSE = #
 am__fastdepCC_TRUE = 
-am__fastdepCXX_FALSE = #
-am__fastdepCXX_TRUE = 
+am__fastdepCXX_FALSE = 
+am__fastdepCXX_TRUE = #
 am__include = include
 am__leading_dot = .
 am__quote = 
 am__tar = ${AMTAR} chof - "$$tardir"
 am__untar = ${AMTAR} xf -
 bindir = ${exec_prefix}/bin
-build = x86_64-unknown-linux-gnu
+build = i686-pc-linux-gnu
 build_alias = 
-build_cpu = x86_64
+build_cpu = i686
 build_os = linux-gnu
-build_vendor = unknown
+build_vendor = pc
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = x86_64-unknown-linux-gnu
+host = i686-pc-linux-gnu
 host_alias = 
-host_cpu = x86_64
+host_cpu = i686
 host_os = linux-gnu
-host_vendor = unknown
+host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = /home/jdenardo/settlers/pioneers-0.12.2/install-sh
+install_sh = /home/dcolgan/settlers/pioneers-0.12.2/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -1016,9 +1015,9 @@ program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
-svg_renderer_height = $(whitespace_trick) --height $(whitespace_trick)
-svg_renderer_path = /usr/bin/rsvg
-svg_renderer_width = --width $(whitespace_trick)
+svg_renderer_height = 
+svg_renderer_path = false
+svg_renderer_width = 
 sysconfdir = ${prefix}/etc
 target_alias = 
 whitespace_trick =  
@@ -1137,135 +1136,134 @@ pioneersai_SOURCES = \
 	client/ai/ai.h \
 	client/ai/ai.c \
 	client/ai/greedy.c \
-	client/ai/expert.c \
 	client/ai/lobbybot.c
 
 pioneersai_LDADD = libpioneersclient.a $(console_libs)
-ADMIN_GTK = 
+#ADMIN_GTK = 
 
 # if anyone knows a cleaner way to do this, be my guest.  Automake screamed
 #   at me when I tried to do it more directly.
-#ADMIN_GTK = -DADMIN_GTK
-ADMIN_GTK_FILES_ACTIVE = 
-#ADMIN_GTK_FILES_ACTIVE = client/gtk/admin-gtk.c
-ADMIN_GTK_FILES_INACTIVE = client/gtk/admin-gtk.c
-#ADMIN_GTK_FILES_INACTIVE = 
-pioneers_CPPFLAGS = -I$(top_srcdir)/client $(gtk_cflags) $(ADMIN_GTK)
-EXTRA_pioneers_SOURCES = $(ADMIN_GTK_FILES_INACTIVE)
-pioneers_SOURCES = \
-	$(ADMIN_GTK_FILES_ACTIVE) \
-	client/callback.h \
-	client/gtk/audio.h \
-	client/gtk/frontend.h \
-	client/gtk/gui.h \
-	client/gtk/histogram.h \
-	client/gtk/audio.c \
-	client/gtk/callbacks.c \
-	client/gtk/chat.c \
-	client/gtk/connect.c \
-	client/gtk/develop.c \
-	client/gtk/discard.c \
-	client/gtk/frontend.c \
-	client/gtk/gameover.c \
-	client/gtk/gold.c \
-	client/gtk/gui.c \
-	client/gtk/histogram.c \
-	client/gtk/identity.c \
-	client/gtk/interface.c \
-	client/gtk/legend.c \
-	client/gtk/monopoly.c \
-	client/gtk/name.c \
-	client/gtk/offline.c \
-	client/gtk/plenty.c \
-	client/gtk/player.c \
-	client/gtk/quote.c \
-	client/gtk/quote-view.c \
-	client/gtk/quote-view.h \
-	client/gtk/resource.c \
-	client/gtk/resource-table.c \
-	client/gtk/resource-table.h \
-	client/gtk/settingscreen.c \
-	client/gtk/state.c \
-	client/gtk/trade.c
+##ADMIN_GTK = -DADMIN_GTK
+#ADMIN_GTK_FILES_ACTIVE = 
+##ADMIN_GTK_FILES_ACTIVE = client/gtk/admin-gtk.c
+#ADMIN_GTK_FILES_INACTIVE = client/gtk/admin-gtk.c
+##ADMIN_GTK_FILES_INACTIVE = 
+#pioneers_CPPFLAGS = -I$(top_srcdir)/client $(gtk_cflags) $(ADMIN_GTK)
+#EXTRA_pioneers_SOURCES = $(ADMIN_GTK_FILES_INACTIVE)
+#pioneers_SOURCES = \
+#	$(ADMIN_GTK_FILES_ACTIVE) \
+#	client/callback.h \
+#	client/gtk/audio.h \
+#	client/gtk/frontend.h \
+#	client/gtk/gui.h \
+#	client/gtk/histogram.h \
+#	client/gtk/audio.c \
+#	client/gtk/callbacks.c \
+#	client/gtk/chat.c \
+#	client/gtk/connect.c \
+#	client/gtk/develop.c \
+#	client/gtk/discard.c \
+#	client/gtk/frontend.c \
+#	client/gtk/gameover.c \
+#	client/gtk/gold.c \
+#	client/gtk/gui.c \
+#	client/gtk/histogram.c \
+#	client/gtk/identity.c \
+#	client/gtk/interface.c \
+#	client/gtk/legend.c \
+#	client/gtk/monopoly.c \
+#	client/gtk/name.c \
+#	client/gtk/offline.c \
+#	client/gtk/plenty.c \
+#	client/gtk/player.c \
+#	client/gtk/quote.c \
+#	client/gtk/quote-view.c \
+#	client/gtk/quote-view.h \
+#	client/gtk/resource.c \
+#	client/gtk/resource-table.c \
+#	client/gtk/resource-table.h \
+#	client/gtk/settingscreen.c \
+#	client/gtk/state.c \
+#	client/gtk/trade.c
 
-pioneers_LDADD =  \
-	libpioneersclient.a \
-	$(gtk_libs) \
-	$(am__append_11)
-freecivthemedir = $(pioneers_themedir)/FreeCIV-like
-freecivtheme_DATA = \
-	client/gtk/data/themes/FreeCIV-like/desert.png \
-	client/gtk/data/themes/FreeCIV-like/forest.png \
-	client/gtk/data/themes/FreeCIV-like/mountain.png \
-	client/gtk/data/themes/FreeCIV-like/sea.png \
-	client/gtk/data/themes/FreeCIV-like/board.png \
-	client/gtk/data/themes/FreeCIV-like/field.png \
-	client/gtk/data/themes/FreeCIV-like/hill.png \
-	client/gtk/data/themes/FreeCIV-like/pasture.png \
-	client/gtk/data/themes/FreeCIV-like/theme.cfg
+#pioneers_LDADD =  \
+#	libpioneersclient.a \
+#	$(gtk_libs) \
+#	$(am__append_11)
+#freecivthemedir = $(pioneers_themedir)/FreeCIV-like
+#freecivtheme_DATA = \
+#	client/gtk/data/themes/FreeCIV-like/desert.png \
+#	client/gtk/data/themes/FreeCIV-like/forest.png \
+#	client/gtk/data/themes/FreeCIV-like/mountain.png \
+#	client/gtk/data/themes/FreeCIV-like/sea.png \
+#	client/gtk/data/themes/FreeCIV-like/board.png \
+#	client/gtk/data/themes/FreeCIV-like/field.png \
+#	client/gtk/data/themes/FreeCIV-like/hill.png \
+#	client/gtk/data/themes/FreeCIV-like/pasture.png \
+#	client/gtk/data/themes/FreeCIV-like/theme.cfg
 
-icelandthemedir = $(pioneers_themedir)/Iceland
-icelandtheme_DATA = \
-	client/gtk/data/themes/Iceland/desert.png \
-	client/gtk/data/themes/Iceland/field_grain.png \
-	client/gtk/data/themes/Iceland/forest_lumber.png \
-	client/gtk/data/themes/Iceland/gold.png \
-	client/gtk/data/themes/Iceland/hill_brick.png \
-	client/gtk/data/themes/Iceland/mountain_ore.png \
-	client/gtk/data/themes/Iceland/pasture_wool.png \
-	client/gtk/data/themes/Iceland/theme.cfg
+#icelandthemedir = $(pioneers_themedir)/Iceland
+#icelandtheme_DATA = \
+#	client/gtk/data/themes/Iceland/desert.png \
+#	client/gtk/data/themes/Iceland/field_grain.png \
+#	client/gtk/data/themes/Iceland/forest_lumber.png \
+#	client/gtk/data/themes/Iceland/gold.png \
+#	client/gtk/data/themes/Iceland/hill_brick.png \
+#	client/gtk/data/themes/Iceland/mountain_ore.png \
+#	client/gtk/data/themes/Iceland/pasture_wool.png \
+#	client/gtk/data/themes/Iceland/theme.cfg
 
-tinythemedir = $(pioneers_themedir)/Tiny
-tinytheme_DATA = \
-	client/gtk/data/themes/Tiny/board.png \
-	client/gtk/data/themes/Tiny/brick-lorindol.png \
-	client/gtk/data/themes/Tiny/brick-port.png \
-	client/gtk/data/themes/Tiny/desert-lorindol.png \
-	client/gtk/data/themes/Tiny/gold-lorindol.png \
-	client/gtk/data/themes/Tiny/grain-lorindol.png \
-	client/gtk/data/themes/Tiny/grain-port.png \
-	client/gtk/data/themes/Tiny/lumber-lorindol.png \
-	client/gtk/data/themes/Tiny/lumber-port.png \
-	client/gtk/data/themes/Tiny/ore-lorindol.png \
-	client/gtk/data/themes/Tiny/ore-port.png \
-	client/gtk/data/themes/Tiny/sea-lorindol.png \
-	client/gtk/data/themes/Tiny/theme.cfg \
-	client/gtk/data/themes/Tiny/wool-lorindol.png \
-	client/gtk/data/themes/Tiny/wool-port.png
+#tinythemedir = $(pioneers_themedir)/Tiny
+#tinytheme_DATA = \
+#	client/gtk/data/themes/Tiny/board.png \
+#	client/gtk/data/themes/Tiny/brick-lorindol.png \
+#	client/gtk/data/themes/Tiny/brick-port.png \
+#	client/gtk/data/themes/Tiny/desert-lorindol.png \
+#	client/gtk/data/themes/Tiny/gold-lorindol.png \
+#	client/gtk/data/themes/Tiny/grain-lorindol.png \
+#	client/gtk/data/themes/Tiny/grain-port.png \
+#	client/gtk/data/themes/Tiny/lumber-lorindol.png \
+#	client/gtk/data/themes/Tiny/lumber-port.png \
+#	client/gtk/data/themes/Tiny/ore-lorindol.png \
+#	client/gtk/data/themes/Tiny/ore-port.png \
+#	client/gtk/data/themes/Tiny/sea-lorindol.png \
+#	client/gtk/data/themes/Tiny/theme.cfg \
+#	client/gtk/data/themes/Tiny/wool-lorindol.png \
+#	client/gtk/data/themes/Tiny/wool-port.png
 
-wesnoththemedir = $(pioneers_themedir)/Wesnoth-like
-wesnoththeme_DATA = \
-	client/gtk/data/themes/Wesnoth-like/board.png \
-	client/gtk/data/themes/Wesnoth-like/desert.png \
-	client/gtk/data/themes/Wesnoth-like/field.png \
-	client/gtk/data/themes/Wesnoth-like/forest.png \
-	client/gtk/data/themes/Wesnoth-like/gold.png \
-	client/gtk/data/themes/Wesnoth-like/hill.png \
-	client/gtk/data/themes/Wesnoth-like/mountain.png \
-	client/gtk/data/themes/Wesnoth-like/pasture.png \
-	client/gtk/data/themes/Wesnoth-like/sea.png \
-	client/gtk/data/themes/Wesnoth-like/theme.cfg
+#wesnoththemedir = $(pioneers_themedir)/Wesnoth-like
+#wesnoththeme_DATA = \
+#	client/gtk/data/themes/Wesnoth-like/board.png \
+#	client/gtk/data/themes/Wesnoth-like/desert.png \
+#	client/gtk/data/themes/Wesnoth-like/field.png \
+#	client/gtk/data/themes/Wesnoth-like/forest.png \
+#	client/gtk/data/themes/Wesnoth-like/gold.png \
+#	client/gtk/data/themes/Wesnoth-like/hill.png \
+#	client/gtk/data/themes/Wesnoth-like/mountain.png \
+#	client/gtk/data/themes/Wesnoth-like/pasture.png \
+#	client/gtk/data/themes/Wesnoth-like/sea.png \
+#	client/gtk/data/themes/Wesnoth-like/theme.cfg
 
-defaultthemedir = $(pioneers_themedir)
-defaulttheme_DATA = \
-	client/gtk/data/themes/board.png \
-	client/gtk/data/themes/desert.png \
-	client/gtk/data/themes/field.png \
-	client/gtk/data/themes/forest.png \
-	client/gtk/data/themes/hill.png \
-	client/gtk/data/themes/mountain.png \
-	client/gtk/data/themes/pasture.png \
-	client/gtk/data/themes/plain.png \
-	client/gtk/data/themes/sea.png \
-	client/gtk/data/themes/gold.png
+#defaultthemedir = $(pioneers_themedir)
+#defaulttheme_DATA = \
+#	client/gtk/data/themes/board.png \
+#	client/gtk/data/themes/desert.png \
+#	client/gtk/data/themes/field.png \
+#	client/gtk/data/themes/forest.png \
+#	client/gtk/data/themes/hill.png \
+#	client/gtk/data/themes/mountain.png \
+#	client/gtk/data/themes/pasture.png \
+#	client/gtk/data/themes/plain.png \
+#	client/gtk/data/themes/sea.png \
+#	client/gtk/data/themes/gold.png
 
-pioneers_server_gtk_CPPFLAGS = $(gtk_cflags) -I $(srcdir)/server
-pioneers_server_gtk_LDADD =  \
-	libpioneers_server.a \
-	$(gtk_libs) \
-	$(am__append_18)
-pioneers_server_gtk_SOURCES = \
-	server/gtk/main.c
+#pioneers_server_gtk_CPPFLAGS = $(gtk_cflags) -I $(srcdir)/server
+#pioneers_server_gtk_LDADD =  \
+#	libpioneers_server.a \
+#	$(gtk_libs) \
+#	$(am__append_18)
+#pioneers_server_gtk_SOURCES = \
+#	server/gtk/main.c
 
 pioneers_server_console_CPPFLAGS = $(console_cflags)
 libpioneers_server_a_CPPFLAGS = $(console_cflags)
@@ -1297,47 +1295,47 @@ pioneers_meta_server_LDADD = $(console_libs)
 pioneers_meta_server_SOURCES = \
 	meta-server/main.c
 
-pioneers_editor_CPPFLAGS = $(gtk_cflags)
-pioneers_editor_SOURCES = \
-	editor/gtk/editor.c \
-	editor/gtk/game-devcards.c \
-	editor/gtk/game-devcards.h \
-	editor/gtk/game-buildings.c \
-	editor/gtk/game-buildings.h \
-	editor/gtk/game-resources.c \
-	editor/gtk/game-resources.h
+##pioneers_editor_CPPFLAGS = $(gtk_cflags)
+##pioneers_editor_SOURCES = \
+##	editor/gtk/editor.c \
+##	editor/gtk/game-devcards.c \
+##	editor/gtk/game-devcards.h \
+##	editor/gtk/game-buildings.c \
+##	editor/gtk/game-buildings.h \
+##	editor/gtk/game-resources.c \
+##	editor/gtk/game-resources.h
 
-pioneers_editor_LDADD =  \
-	$(gtk_libs) \
-	$(am__append_28)
-libpioneers_gtk_a_CPPFLAGS = $(gtk_cflags)
-libpioneers_gtk_a_SOURCES = \
-	common/gtk/aboutbox.c \
-	common/gtk/aboutbox.h \
-	common/gtk/colors.c \
-	common/gtk/colors.h \
-	common/gtk/common_gtk.c \
-	common/gtk/common_gtk.h \
-	common/gtk/config-gnome.c \
-	common/gtk/config-gnome.h \
-	common/gtk/game-rules.c \
-	common/gtk/game-rules.h \
-	common/gtk/game-settings.c \
-	common/gtk/game-settings.h \
-	common/gtk/gtkbugs.c \
-	common/gtk/gtkbugs.h \
-	common/gtk/guimap.c \
-	common/gtk/guimap.h \
-	common/gtk/metaserver.c \
-	common/gtk/metaserver.h \
-	common/gtk/player-icon.c \
-	common/gtk/player-icon.h \
-	common/gtk/polygon.c \
-	common/gtk/polygon.h \
-	common/gtk/select-game.c \
-	common/gtk/select-game.h \
-	common/gtk/theme.c \
-	common/gtk/theme.h
+##pioneers_editor_LDADD =  \
+##	$(gtk_libs) \
+##	$(am__append_28)
+#libpioneers_gtk_a_CPPFLAGS = $(gtk_cflags)
+#libpioneers_gtk_a_SOURCES = \
+#	common/gtk/aboutbox.c \
+#	common/gtk/aboutbox.h \
+#	common/gtk/colors.c \
+#	common/gtk/colors.h \
+#	common/gtk/common_gtk.c \
+#	common/gtk/common_gtk.h \
+#	common/gtk/config-gnome.c \
+#	common/gtk/config-gnome.h \
+#	common/gtk/game-rules.c \
+#	common/gtk/game-rules.h \
+#	common/gtk/game-settings.c \
+#	common/gtk/game-settings.h \
+#	common/gtk/gtkbugs.c \
+#	common/gtk/gtkbugs.h \
+#	common/gtk/guimap.c \
+#	common/gtk/guimap.h \
+#	common/gtk/metaserver.c \
+#	common/gtk/metaserver.h \
+#	common/gtk/player-icon.c \
+#	common/gtk/player-icon.h \
+#	common/gtk/polygon.c \
+#	common/gtk/polygon.h \
+#	common/gtk/select-game.c \
+#	common/gtk/select-game.h \
+#	common/gtk/theme.c \
+#	common/gtk/theme.h
 
 libpioneers_a_CPPFLAGS = $(console_cflags)
 libpioneers_a_SOURCES = \
@@ -1760,8 +1758,6 @@ client/ai/pioneersai-ai.$(OBJEXT): client/ai/$(am__dirstamp) \
 	client/ai/$(DEPDIR)/$(am__dirstamp)
 client/ai/pioneersai-greedy.$(OBJEXT): client/ai/$(am__dirstamp) \
 	client/ai/$(DEPDIR)/$(am__dirstamp)
-client/ai/pioneersai-expert.$(OBJEXT): client/ai/$(am__dirstamp) \
-	client/ai/$(DEPDIR)/$(am__dirstamp)
 client/ai/pioneersai-lobbybot.$(OBJEXT): client/ai/$(am__dirstamp) \
 	client/ai/$(DEPDIR)/$(am__dirstamp)
 pioneersai$(EXEEXT): $(pioneersai_OBJECTS) $(pioneersai_DEPENDENCIES) 
@@ -1772,7 +1768,6 @@ mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f client/ai/pioneersai-ai.$(OBJEXT)
 	-rm -f client/ai/pioneersai-greedy.$(OBJEXT)
-	-rm -f client/ai/pioneersai-expert.$(OBJEXT)
 	-rm -f client/ai/pioneersai-lobbybot.$(OBJEXT)
 	-rm -f client/common/libpioneersclient_a-build.$(OBJEXT)
 	-rm -f client/common/libpioneersclient_a-callback.$(OBJEXT)
@@ -1864,7 +1859,6 @@ distclean-compile:
 
 include client/ai/$(DEPDIR)/pioneersai-ai.Po
 include client/ai/$(DEPDIR)/pioneersai-greedy.Po
-include client/ai/$(DEPDIR)/pioneersai-expert.Po
 include client/ai/$(DEPDIR)/pioneersai-lobbybot.Po
 include client/common/$(DEPDIR)/libpioneersclient_a-build.Po
 include client/common/$(DEPDIR)/libpioneersclient_a-callback.Po
@@ -3179,20 +3173,6 @@ client/ai/pioneersai-greedy.obj: client/ai/greedy.c
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o client/ai/pioneersai-greedy.obj `if test -f 'client/ai/greedy.c'; then $(CYGPATH_W) 'client/ai/greedy.c'; else $(CYGPATH_W) '$(srcdir)/client/ai/greedy.c'; fi`
 
-client/ai/pioneersai-expert.o: client/ai/expert.c
-	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT client/ai/pioneersai-expert.o -MD -MP -MF "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" -c -o client/ai/pioneersai-expert.o `test -f 'client/ai/expert.c' || echo '$(srcdir)/'`client/ai/expert.c; \
-	then mv -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" "client/ai/$(DEPDIR)/pioneersai-expert.Po"; else rm -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo"; exit 1; fi
-#	source='client/ai/expert.c' object='client/ai/pioneersai-expert.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o client/ai/pioneersai-expert.o `test -f 'client/ai/expert.c' || echo '$(srcdir)/'`client/ai/expert.c
-
-client/ai/pioneersai-expert.obj: client/ai/expert.c
-	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT client/ai/pioneersai-expert.obj -MD -MP -MF "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" -c -o client/ai/pioneersai-expert.obj `if test -f 'client/ai/expert.c'; then $(CYGPATH_W) 'client/ai/expert.c'; else $(CYGPATH_W) '$(srcdir)/client/ai/expert.c'; fi`; \
-	then mv -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" "client/ai/$(DEPDIR)/pioneersai-expert.Po"; else rm -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo"; exit 1; fi
-#	source='client/ai/expert.c' object='client/ai/pioneersai-expert.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o client/ai/pioneersai-expert.obj `if test -f 'client/ai/expert.c'; then $(CYGPATH_W) 'client/ai/expert.c'; else $(CYGPATH_W) '$(srcdir)/client/ai/expert.c'; fi`
-
 client/ai/pioneersai-lobbybot.o: client/ai/lobbybot.c
 	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT client/ai/pioneersai-lobbybot.o -MD -MP -MF "client/ai/$(DEPDIR)/pioneersai-lobbybot.Tpo" -c -o client/ai/pioneersai-lobbybot.o `test -f 'client/ai/lobbybot.c' || echo '$(srcdir)/'`client/ai/lobbybot.c; \
 	then mv -f "client/ai/$(DEPDIR)/pioneersai-lobbybot.Tpo" "client/ai/$(DEPDIR)/pioneersai-lobbybot.Po"; else rm -f "client/ai/$(DEPDIR)/pioneersai-lobbybot.Tpo"; exit 1; fi
@@ -3889,9 +3869,9 @@ uninstall-man: uninstall-man6
 #	mkdir -p -- $(dir $@)
 #	windres -I$(top_srcdir) -O coff -o $@ $<
 
-client/gtk/data/splash.png: client/gtk/data/splash.svg
-	mkdir -p -- $(dir $@)
-	$(svg_renderer_path) $(svg_renderer_width)400$(svg_renderer_height)400 $< $@
+#client/gtk/data/splash.png: client/gtk/data/splash.svg
+#	mkdir -p -- $(dir $@)
+#	$(svg_renderer_path) $(svg_renderer_width)400$(svg_renderer_height)400 $< $@
 
 # Include the data here, not at the top,
 # it can add extra resources to the executable
