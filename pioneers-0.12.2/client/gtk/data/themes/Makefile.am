@@ -21,6 +21,7 @@ include client/gtk/data/themes/FreeCIV-like/Makefile.am
 include client/gtk/data/themes/Iceland/Makefile.am
 include client/gtk/data/themes/Tiny/Makefile.am
 include client/gtk/data/themes/Wesnoth-like/Makefile.am
+include client/gtk/data/themes/Better/Makefile.am
 
 defaultthemedir = $(pioneers_themedir)
 
