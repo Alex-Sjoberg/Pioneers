@@ -39,7 +39,8 @@ int close_clips(void);
 
 static void place_robber(char*);
 static void discard(char*);
-void dummy(char*);
+static void place_initial(char*);
+static void dummy(char*);
 
 struct action {
   char* action;

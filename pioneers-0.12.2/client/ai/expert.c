@@ -2135,8 +2135,10 @@ void setup_clips(void)
   Map * map = callbacks.get_map();
   write_clips("(deffacts board");
 
-  Hex * id;
-  int i,j,xpos,ypos,number,robber;
+  Hex * hid;
+  Node * nid;
+  Edge * eid;
+  int i,j,k,xpos,ypos,number,robber;
   const char * resource;
   const char * port;
   char buf[512];
@@ -2144,18 +2146,54 @@ void setup_clips(void)
     for (j=0; j<map->y_size; j++) {
       if (map->grid[i][j] != NULL) {
         /* Information about each hex */
-        id = map->grid[i][j];
+        hid = map->grid[i][j];
         xpos = i;
         ypos = j;
-        resource = resource_mapping[id->terrain];
-        port = port_mapping[id->resource];
-        number = id->roll;
-        robber = id->robber;
+        resource = resource_mapping[hid->terrain];
+        port = port_mapping[hid->resource];
+        number = hid->roll;
+        robber = hid->robber;
 
-        sprintf(buf,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (number %d) (robber %d))",(unsigned long) id,xpos,ypos,resource,port,number,robber);
+        sprintf(buf,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (number %d) (prob %d))",(unsigned long) hid,xpos,ypos,resource,port,number,(int) dice_prob(number));
         write_clips(buf);
 
+        if (hid->robber) {
+          sprintf(buf, "(robber (hex %lu))", (unsigned long) hid);
+          write_clips(buf);
+        }
+
         /* Information about each node */
+        for (k = 0; k < 6; k++) {
+          nid = hid->nodes[k];
+          sprintf(buf, "(node (id %lu) (hexes %lu %lu %lu))", (unsigned long) nid, (unsigned long) nid->hexes[0], (unsigned long) nid->hexes[1], (unsigned long) nid->hexes[2]);
+          write_clips(buf);
+
+          /* Building information */
+          if (nid->owner != -1)
+            switch (nid->type) {
+              case BUILD_SETTLEMENT:
+                sprintf(buf, "(settlement (node %lu) (player-id %d))", (unsigned long) nid, nid->owner);
+                write_clips(buf);
+                break;
+              case BUILD_CITY:
+                sprintf(buf, "(city (node %lu) (player-id %d))", (unsigned long) nid, nid->owner);
+                write_clips(buf);
+                break;
+              default:;
+            }
+        }
+
+        /* Information about each edge */
+        for (k = 0; k < 6; k++) {
+          eid = hid->edges[k];
+          sprintf(buf, "(edge (id %lu) (nodes %lu %lu))", (unsigned long) eid, (unsigned long) eid->nodes[0], (unsigned long) eid->nodes[1]);
+          write_clips(buf);
+
+          if (eid->owner != -1) {
+            sprintf(buf, "(road (edge %lu) (player-id %d))", (unsigned long) eid, eid->owner);
+            write_clips(buf);
+          }
+        }
       }
     }
   }
@@ -2284,8 +2322,6 @@ size_t get_line(char * buf, int size, int fd) {
   return n;
 }
 
-void dummy(char * params) { }
-
 
 
 /**************************************************
@@ -2353,5 +2389,7 @@ static void discard(char * args) {
   cb_discard(todiscard);
 }
 
-static void place_inital(char * args) {
+static void place_initial(char * args) {
 }
+
+void dummy(char * params) { }
