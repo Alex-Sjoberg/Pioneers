@@ -106,7 +106,7 @@
 
 (defrule move-robber
     (phase place-robber)
-    (hex (id ?id) (prob 8))
+    (hex (id ?id) (prob 8) (robber 0))
     =>
     (printout t crlf "ACTION: Place Robber " ?id crlf)
     (exit)
