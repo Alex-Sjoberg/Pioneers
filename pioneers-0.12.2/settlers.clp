@@ -33,7 +33,7 @@
     (slot edge)
 )
 
-(deftemplate mycard
+(deftemplate resource-cards
     (slot kind)
     (slot amnt)
 )
@@ -88,10 +88,10 @@
     (discarding)
     ?n <- (num-to-discard ?num)
     (test (> ?num 0))
-    ?c <- (mycard (kind ?kind) (amnt ?amnt&:(>= ?amnt 1)))
+    ?c <- (resource-cards (kind ?kind) (amnt ?amnt&:(>= ?amnt 1)))
     =>
     (retract ?n ?c)
-    (assert (mycard (kind ?kind) (amnt (- ?amnt 1))))
+    (assert (resource-cards (kind ?kind) (amnt (- ?amnt 1))))
     (assert (num-to-discard (- ?num 1)))
     (printout t " " ?kind)
 )
@@ -115,8 +115,8 @@
 (defrule build-road
     (phase do-turn)
     (my-id ?my-id)
-    (mycard (kind wood) (amnt ?amnt&:(>= ?amnt 1)))
-    (mycard (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind wood) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
     (edge (id ?edge1) (nodes $? ?node $?))
     (edge (id ?edge2&~?edge1) (nodes $? ?node $?))
     =>
@@ -127,10 +127,10 @@
 (defrule build-settlement
     (phase do-turn)
     (my-id ?my-id)
-    (mycard (kind wood) (amnt ?amnt&:(>= ?amnt 1)))
-    (mycard (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
-    (mycard (kind wheat) (amnt ?amnt&:(>= ?amnt 1)))
-    (mycard (kind sheep) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind wood) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind wheat) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind sheep) (amnt ?amnt&:(>= ?amnt 1)))
     (road (player ?id&:(= ?id ?my-id)) (edge ?edge))
     (edge (id ?edge) (nodes $? ?node $?))
     =>
@@ -142,8 +142,8 @@
     (phase do-turn)
     (my-id ?my-id)
     (settlement (player ?my-id) (node ?node))
-    (mycard (kind wheat) (amnt ?amnt&:(>= ?amnt 2)))
-    (mycard (kind metal) (amnt ?amnt&:(>= ?amnt 3)))
+    (resource-cards (kind wheat) (amnt ?amnt&:(>= ?amnt 2)))
+    (resource-cards (kind metal) (amnt ?amnt&:(>= ?amnt 3)))
     =>
     (printout t crlf "ACTION: Build City " ?node crlf)
     (exit)
@@ -151,9 +151,9 @@
 
 (defrule buy-devel-card
     (phase do-turn)
-    (mycard (kind sheep) (amnt ?amnt&:(>= ?amnt 1)))
-    (mycard (kind wheat) (amnt ?amnt&:(>= ?amnt 1)))
-    (mycard (kind metal) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind sheep) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind wheat) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind metal) (amnt ?amnt&:(>= ?amnt 1)))
     =>
     (printout t crlf "ACTION: Buy Development Card" crlf)
     (exit)
@@ -168,11 +168,11 @@
 
 
 (deffacts cards
-    (mycard (kind wheat) (amnt 4))
-    (mycard (kind metal) (amnt 3))
-    (mycard (kind sheep) (amnt 3))
-    (mycard (kind wood) (amnt 2))
-    (mycard (kind brick) (amnt 3))
+    (resource-cards (kind wheat) (amnt 4))
+    (resource-cards (kind metal) (amnt 3))
+    (resource-cards (kind sheep) (amnt 3))
+    (resource-cards (kind wood) (amnt 2))
+    (resource-cards (kind brick) (amnt 3))
     (development-card (kind soldier) (amnt 2))
     (development-card (kind plenty) (amnt 0))
     (development-card (kind monopoly) (amnt 0))
@@ -379,7 +379,7 @@
 ;)
 ;
 ;
-;(deftemplate resource-card
+;(deftemplate resource-cards
 ;    (slot kind (allowed-values wood brick sheep wheat metal))
 ;)
 ;
@@ -390,7 +390,7 @@
 ;)
 ;
 ;(deffacts ihavecards
-;    (resource-card (kind 
+;    (resource-cards (kind 
 ;
 ;(deftemplate game-state
 ;)
