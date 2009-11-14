@@ -1,21 +1,21 @@
 (deftemplate hex
-    (slot id)
+    (slot id (type INTEGER))
     (slot xpos)
     (slot ypos)
-    (slot resource)
+    (slot resource (allowed-values lumber brick wool grain ore)
     (slot port)
     (slot number (default 0))
-    (slot robber)
+    (slot prob (type INTEGER) (range 1 5))
 )
 
 (deftemplate node
-    (slot id)
-    (multislot hexes)
+    (slot id (type INTEGER))
+    (multislot hexes (type INTEGER) (cardinality 3 3))
 )
 
 (deftemplate edge
     (slot id)
-    (multislot nodes)
+    (multislot nodes (type INTEGER) (cardinality 2 2))
 )
 
 (deftemplate settlement
