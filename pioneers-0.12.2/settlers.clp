@@ -4,7 +4,7 @@
     (slot ypos)
     (slot resource)
     (slot port)
-    (slot prob (default 0))
+    (slot number (default 0))
     (slot robber)
 )
 
@@ -78,8 +78,8 @@
 
 (defrule place-starting-pieces
     (phase place-initial-settlement)
-    (hex (id ?id) (prob ?prob))
-    (not (hex (prob ?other&:(> ?other ?prob))))
+    (hex (id ?id) (number ?number))
+    (not (hex (number ?other&:(> ?other ?number))))
     =>
     (printout t crlf "ACTION: Place Initial Settlement " ?id crlf)
     (exit)
@@ -114,7 +114,7 @@
 
 (defrule move-robber
     (phase place-robber)
-    (hex (id ?id) (prob 8) (robber 0))
+    (hex (id ?id) (number 8) (robber 0))
     =>
     (printout t crlf "ACTION: Place Robber " ?id crlf)
     (exit)
@@ -123,7 +123,7 @@
 (defrule build-road
     (phase do-turn)
     (my-id ?my-id)
-    (resource-cards (kind wood) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind lumber) (amnt ?amnt&:(>= ?amnt 1)))
     (resource-cards (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
     (edge (id ?edge1) (nodes $? ?node $?))
     (edge (id ?edge2&~?edge1) (nodes $? ?node $?))
@@ -135,10 +135,10 @@
 (defrule build-settlement
     (phase do-turn)
     (my-id ?my-id)
-    (resource-cards (kind wood) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind lumber) (amnt ?amnt&:(>= ?amnt 1)))
     (resource-cards (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
-    (resource-cards (kind wheat) (amnt ?amnt&:(>= ?amnt 1)))
-    (resource-cards (kind sheep) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind grain) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind wool) (amnt ?amnt&:(>= ?amnt 1)))
     (road (player ?id&:(= ?id ?my-id)) (edge ?edge))
     (edge (id ?edge) (nodes $? ?node $?))
     =>
@@ -150,8 +150,8 @@
     (phase do-turn)
     (my-id ?my-id)
     (settlement (player ?my-id) (node ?node))
-    (resource-cards (kind wheat) (amnt ?amnt&:(>= ?amnt 2)))
-    (resource-cards (kind metal) (amnt ?amnt&:(>= ?amnt 3)))
+    (resource-cards (kind grain) (amnt ?amnt&:(>= ?amnt 2)))
+    (resource-cards (kind ore) (amnt ?amnt&:(>= ?amnt 3)))
     =>
     (printout t crlf "ACTION: Build City " ?node crlf)
     (exit)
@@ -159,9 +159,9 @@
 
 (defrule buy-devel-card
     (phase do-turn)
-    (resource-cards (kind sheep) (amnt ?amnt&:(>= ?amnt 1)))
-    (resource-cards (kind wheat) (amnt ?amnt&:(>= ?amnt 1)))
-    (resource-cards (kind metal) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind wool) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind grain) (amnt ?amnt&:(>= ?amnt 1)))
+    (resource-cards (kind ore) (amnt ?amnt&:(>= ?amnt 1)))
     =>
     (printout t crlf "ACTION: Buy Development Card" crlf)
     (exit)
@@ -189,10 +189,10 @@
 
 
 (deffacts cards
-    (resource-cards (kind wheat) (amnt 4))
-    (resource-cards (kind metal) (amnt 3))
-    (resource-cards (kind sheep) (amnt 3))
-    (resource-cards (kind wood) (amnt 2))
+    (resource-cards (kind grain) (amnt 4))
+    (resource-cards (kind ore) (amnt 3))
+    (resource-cards (kind wool) (amnt 3))
+    (resource-cards (kind lumber) (amnt 2))
     (resource-cards (kind brick) (amnt 3))
     (development-cards (kind soldier) (amnt 2))
     (development-cards (kind plenty) (amnt 0))
@@ -208,39 +208,39 @@
 ;    (hex (id 0) (xpos 0) (ypos 3) (resource water) (port none))
 ;    (hex (id 1) (xpos 1) (ypos 1) (resource water) (port any))
 ;    (hex (id 2) (xpos 1) (ypos 2) (resource water) (port any))
-;    (hex (id 3) (xpos 1) (ypos 3) (resource sheep) (prob 5))
-;    (hex (id 4) (xpos 1) (ypos 4) (resource water) (port wheat))
+;    (hex (id 3) (xpos 1) (ypos 3) (resource wool) (number 5))
+;    (hex (id 4) (xpos 1) (ypos 4) (resource water) (port grain))
 ;    (hex (id 5) (xpos 1) (ypos 5) (resource water) (port none))
-;    (hex (id 6) (xpos 2) (ypos 0) (resource water) (port wood))
-;    (hex (id 7) (xpos 2) (ypos 1) (resource sheep) (prob 8))
-;    (hex (id 8) (xpos 2) (ypos 2) (resource metal) (prob 10))
-;    (hex (id 9) (xpos 2) (ypos 3) (resource brick) (prob 9))
-;    (hex (id 10) (xpos 2) (ypos 4) (resource metal) (prob 2))
-;    (hex (id 11) (xpos 2) (ypos 5) (resource sheep) (prob 6))
+;    (hex (id 6) (xpos 2) (ypos 0) (resource water) (port lumber))
+;    (hex (id 7) (xpos 2) (ypos 1) (resource wool) (number 8))
+;    (hex (id 8) (xpos 2) (ypos 2) (resource ore) (number 10))
+;    (hex (id 9) (xpos 2) (ypos 3) (resource brick) (number 9))
+;    (hex (id 10) (xpos 2) (ypos 4) (resource ore) (number 2))
+;    (hex (id 11) (xpos 2) (ypos 5) (resource wool) (number 6))
 ;    (hex (id 12) (xpos 2) (ypos 6) (resource water) (port any))
 ;    (hex (id 13) (xpos 3) (ypos 0) (resource water) (port none))
-;    (hex (id 14) (xpos 3) (ypos 1) (resource wood) (prob 4))
-;    (hex (id 15) (xpos 3) (ypos 2) (resource metal) (prob 12))
-;    (hex (id 16) (xpos 3) (ypos 3) (resource wheat) (prob 11))
-;    (hex (id 17) (xpos 3) (ypos 4) (resource wood) (prob 4))
-;    (hex (id 18) (xpos 3) (ypos 5) (resource wheat) (prob 3))
+;    (hex (id 14) (xpos 3) (ypos 1) (resource lumber) (number 4))
+;    (hex (id 15) (xpos 3) (ypos 2) (resource ore) (number 12))
+;    (hex (id 16) (xpos 3) (ypos 3) (resource grain) (number 11))
+;    (hex (id 17) (xpos 3) (ypos 4) (resource lumber) (number 4))
+;    (hex (id 18) (xpos 3) (ypos 5) (resource grain) (number 3))
 ;    (hex (id 19) (xpos 3) (ypos 6) (resource water) (port none))
-;    (hex (id 20) (xpos 4) (ypos 0) (resource water) (port metal))
-;    (hex (id 21) (xpos 4) (ypos 1) (resource sheep) (prob 11))
-;    (hex (id 22) (xpos 4) (ypos 2) (resource wheat) (prob 3))
-;    (hex (id 23) (xpos 4) (ypos 3) (resource metal) (prob 6))
-;    (hex (id 24) (xpos 4) (ypos 4) (resource wheat) (prob 5))
-;    (hex (id 25) (xpos 4) (ypos 5) (resource brick) (prob 8))
+;    (hex (id 20) (xpos 4) (ypos 0) (resource water) (port ore))
+;    (hex (id 21) (xpos 4) (ypos 1) (resource wool) (number 11))
+;    (hex (id 22) (xpos 4) (ypos 2) (resource grain) (number 3))
+;    (hex (id 23) (xpos 4) (ypos 3) (resource ore) (number 6))
+;    (hex (id 24) (xpos 4) (ypos 4) (resource grain) (number 5))
+;    (hex (id 25) (xpos 4) (ypos 5) (resource brick) (number 8))
 ;    (hex (id 26) (xpos 4) (ypos 6) (resource water) (port any))
 ;    (hex (id 27) (xpos 5) (ypos 0) (resource water) (port none))
 ;    (hex (id 28) (xpos 5) (ypos 1) (resource water) (port any))
-;    (hex (id 29) (xpos 5) (ypos 2) (resource wood) (prob 12))
-;    (hex (id 30) (xpos 5) (ypos 3) (resource wood) (prob 9))
-;    (hex (id 31) (xpos 5) (ypos 4) (resource brick) (prob 10))
+;    (hex (id 29) (xpos 5) (ypos 2) (resource lumber) (number 12))
+;    (hex (id 30) (xpos 5) (ypos 3) (resource lumber) (number 9))
+;    (hex (id 31) (xpos 5) (ypos 4) (resource brick) (number 10))
 ;    (hex (id 32) (xpos 5) (ypos 5) (resource water) (port brick))
 ;    (hex (id 33) (xpos 5) (ypos 6) (resource water) (port none))
 ;    (hex (id 34) (xpos 6) (ypos 2) (resource water) (port none))
-;    (hex (id 35) (xpos 6) (ypos 3) (resource water) (port sheep))
+;    (hex (id 35) (xpos 6) (ypos 3) (resource water) (port wool))
 ;    (hex (id 36) (xpos 6) (ypos 4) (resource water) (port none))
 ;
 ;    (node (id 0) (hexes 0 2 3))
@@ -377,7 +377,7 @@
 ;Strategy
 ;
 ;If I have more than 7 cards in my hand, then I want to trade them
-;If I have lots of wood and bricks then I want to make a road
+;If I have lots of lumber and bricks then I want to make a road
 ; 
 ;
 ;Deftemplates
@@ -401,12 +401,12 @@
 ;
 ;
 ;(deftemplate resource-cards
-;    (slot kind (allowed-values wood brick sheep wheat metal))
+;    (slot kind (allowed-values lumber brick wool grain ore))
 ;)
 ;
 ;(deftemplate board-hex
 ;    (slot id)
-;    (slot kind (allowed-values water3to1 water2wood water2brick water2sheep water2wheat water2metal desert wood brick sheep wheat metal))
+;    (slot kind (allowed-values water3to1 water2lumber water2brick water2wool water2grain water2ore desert lumber brick wool grain ore))
 ;    (slot port (allowed-values none) (default none))
 ;)
 ;

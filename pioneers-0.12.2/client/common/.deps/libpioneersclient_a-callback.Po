@@ -10,7 +10,7 @@ client/common/libpioneersclient_a-callback.o: client/common/callback.c \
  /usr/include/bits/stdio.h /usr/include/bits/stdio2.h client/callback.h \
  /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
  /usr/include/glib-2.0/glib/gtypes.h \
- /usr/lib64/glib-2.0/include/glibconfig.h \
+ /usr/lib/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include-fixed/limits.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/4.4.2/include-fixed/syslimits.h \
@@ -116,7 +116,7 @@ client/callback.h:
 
 /usr/include/glib-2.0/glib/gtypes.h:
 
-/usr/lib64/glib-2.0/include/glibconfig.h:
+/usr/lib/glib-2.0/include/glibconfig.h:
 
 /usr/include/glib-2.0/glib/gmacros.h:
 
