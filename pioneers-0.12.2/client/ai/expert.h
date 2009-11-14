@@ -30,12 +30,16 @@
 typedef void handler_t(int);
 handler_t* Signal(int, handler_t*);
 void sigchld_handler(int);
+
+size_t get_line(char*, int, int);
+
 void setup_clips(void);
 int write_clips(char*);
 int close_clips(void);
 
-void Func1(char*);
-void Func2(char*);
+static void place_robber(char*);
+static void discard(char*);
+void dummy(char*);
 
 struct action {
   char* action;
@@ -44,11 +48,33 @@ struct action {
 
 const char* flag = "ACTION: ";
 const struct action actions[] = {
-                 /* 0 */   {"Place Robber", &Func1},
-                 /* 1 */   {"Build Settlement", &Func2}
+                 /* 0 */   {"Place Robber", &place_robber},
+                 /* 1 */   {"Build Settlement", &dummy},
+                 /* 2 */   {"Discard", &discard},
+                 /* x */   {"", &dummy},
                           };
-const int nactions = 2;
+const int nactions = 3;
 int fd0[2],fd1[2],cpid;
 char buf[4096];
+
+const char * resource_mapping[] = {
+  "brick",
+  "grain",
+  "ore",
+  "wool",
+  "lumber",
+  "desert",
+  "sea"
+};
+
+const char * port_mapping[] = {
+  "brick",
+  "grain",
+  "ore",
+  "wool",
+  "lumber",
+  "none",
+  "3to1"
+};
 
 #endif
