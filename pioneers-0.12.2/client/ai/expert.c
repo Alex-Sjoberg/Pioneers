@@ -1838,12 +1838,25 @@ static void expert_consider_quote(G_GNUC_UNUSED gint partner,
 static void expert_setup(unsigned num_settlements, unsigned num_roads)
 {
 	ai_wait();
+
+  setup_clips();
+  write_clips("(assert (phase place-initial-settlement))");
+
+  sprintf(buf, "(assert (settlements-to-place %d))", num_settlements);
+  write_clips(buf);
+
+  sprintf(buf, "(assert (roads-to-place %d))", num_roads);
+  write_clips(buf);
+
+  close_clips();
+  /*
    if (num_settlements > 0)
 		expert_setup_house();
 	else if (num_roads > 0)
 		expert_setup_road();
 	else
 		cb_end_turn();
+    */
 }
 
 static void expert_roadbuilding(gint num_roads)
@@ -2123,7 +2136,7 @@ void setup_clips(void)
   write_clips("(deffacts board");
 
   Hex * id;
-  int i,j,xpos,ypos,prob,robber;
+  int i,j,xpos,ypos,number,robber;
   const char * resource;
   const char * port;
   char buf[512];
@@ -2136,17 +2149,36 @@ void setup_clips(void)
         ypos = j;
         resource = resource_mapping[id->terrain];
         port = port_mapping[id->resource];
-        prob = id->roll;
+        number = id->roll;
         robber = id->robber;
 
-        sprintf(buf,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (prob %d) (robber %d))",(unsigned long) id,xpos,ypos,resource,port,prob,robber);
-
+        sprintf(buf,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (number %d) (robber %d))",(unsigned long) id,xpos,ypos,resource,port,number,robber);
         write_clips(buf);
 
         /* Information about each node */
       }
     }
   }
+  write_clips(")");
+
+  /* Output the cards held */
+  write_clips("(deffacts cards");
+	for (i = 0; i < NO_RESOURCE; i++) {
+
+    sprintf(buf, "(resource-cards (kind %s) (amnt %d))", resource_mapping[i], resource_asset(i));
+		write_clips(buf);
+
+  }
+  write_clips(")");
+
+
+  /* Miscellaneous information deffacts */
+  write_clips("(deffacts misc-info");
+
+  /* Have the dice been rolled? */
+  sprintf(buf, "(dice-already-rolled %d)", have_rolled_dice());
+	write_clips(buf);
+
   write_clips(")");
   /* END CLIPS INITIALIZATION */
 
@@ -2263,7 +2295,6 @@ static void place_robber(char * args) {
   unsigned long besthex;
 
   sscanf(args, "%lu", &besthex);
-  fprintf(stderr,"!!!!!!!!!!! besthex = %lu\n", besthex);
   cb_place_robber((Hex*) besthex);
 
 /*
@@ -2293,16 +2324,34 @@ static void place_robber(char * args) {
 
 static void discard(char * args) {
   int i, len;
-	gint todiscard[NO_RESOURCE];
+  char * pch;
+  gint todiscard[NO_RESOURCE];
 
-  while (sscanf(args, "%s ", buf)) {
-    len = strlen(buf);
+  // Initialize the resource count
+  for (i = 0; i < NO_RESOURCE; i++)
+    todiscard[i] = 0;
 
-    for (i = 0; strncmp(buf, resource_mapping[i], len) != 0; i++);
+  // Parse each resource
+  pch = strtok(args, " ");
+  while (pch != NULL) {
+    len = strlen(pch);
+
+    // Reverse-lookup the index
+    for (i = 0; i < NO_RESOURCE && strncmp(pch, resource_mapping[i], len) != 0; i++);
+
+    if (i == NO_RESOURCE) {
+      fprintf(stderr, "ERROR! \"%.*s\" is not a valid resource!\n", len, pch);
+      exit(-1);
+    }
+
+    // Add one to the ones to discard
     todiscard[i]++;
 
-    args += len; // advance to next string
+    pch = strtok(NULL, " ");
   }
 
   cb_discard(todiscard);
+}
+
+static void place_inital(char * args) {
 }
