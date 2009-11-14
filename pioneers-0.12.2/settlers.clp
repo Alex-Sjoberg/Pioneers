@@ -4,6 +4,8 @@
     (slot ypos)
     (slot resource)
     (slot port)
+    (slot prob)
+    (slot robber)
 )
 
 (deftemplate node
