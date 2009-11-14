@@ -4,7 +4,7 @@
     (slot ypos)
     (slot resource)
     (slot port)
-    (slot prob)
+    (slot prob (default 0))
     (slot robber)
 )
 
@@ -35,6 +35,7 @@
 
 (deftemplate mycard
     (slot kind)
+    (slot amnt)
 )
 
 (deftemplate num-cards
@@ -45,6 +46,102 @@
 (deftemplate card
     (slot kind)
 )
+
+(deffacts pieces
+    (settlement (player 1) (node 5))
+    (road (player 1) (edge 14))
+    (road (player 1) (edge 15))
+    (city (player 1) (node 12))
+    (my-id 1)
+
+    (settlement (player 2) (node 5))
+    (settlement (player 2) (node 5))
+    (road (player 2) (edge 15))
+    (road (player 2) (edge 15))
+    (road (player 2) (edge 15))
+    (road (player 2) (edge 15))
+    (road (player 2) (edge 15))
+)
+
+(defrule place-starting-settlement
+    (hex (id ?id) (prob ?prob))
+    (not (hex (prob ?other&:(> ?other ?prob))))
+    =>
+    (printout t "ACTION: Place Initial Settlement " ?id crlf)
+    (exit)
+)
+
+(defrule move-robber
+    (hex (id ?id) (prob 8))
+    =>
+    (printout t "ACTION: Move Robber " ?id crlf)
+    (exit)
+)
+
+(defrule build-road
+    (my-id ?my-id)
+    (mycard (kind wood) (amnt ?amnt&:(>= ?amnt 1)))
+    (mycard (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
+    (edge (id ?edge1) (nodes $? ?node $?))
+    (edge (id ?edge2&~?edge1) (nodes $? ?node $?))
+    =>
+    (printout t "ACTION: Build Road " ?edge2 crlf)
+    (exit)
+)
+
+(defrule build-settlement
+    (my-id ?my-id)
+    (mycard (kind wood) (amnt ?amnt&:(>= ?amnt 1)))
+    (mycard (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
+    (mycard (kind wheat) (amnt ?amnt&:(>= ?amnt 1)))
+    (mycard (kind sheep) (amnt ?amnt&:(>= ?amnt 1)))
+    (road (player ?id&:(= ?id ?my-id)) (edge ?edge))
+    (edge (id ?edge) (nodes $? ?node $?))
+    =>
+    (printout t "ACTION: Build Settlement " ?edge crlf)
+    (exit)
+)
+
+(defrule build-city
+    (my-id ?my-id)
+    (settlement (player ?my-id) (node ?node))
+    (mycard (kind wheat) (amnt ?amnt&:(>= ?amnt 2)))
+    (mycard (kind metal) (amnt ?amnt&:(>= ?amnt 3)))
+    =>
+    (printout t "ACTION: Build City " ?node crlf)
+    (exit)
+)
+
+(defrule buy-devel-card
+    (mycard (kind sheep) (amnt ?amnt&:(>= ?amnt 1)))
+    (mycard (kind wheat) (amnt ?amnt&:(>= ?amnt 1)))
+    (mycard (kind metal) (amnt ?amnt&:(>= ?amnt 1)))
+    =>
+    (printout t "ACTION: Buy Development Card" crlf)
+    (exit)
+)
+
+(defrule end-turn
+    (declare (salience -1000))
+    =>
+    (printout t "ACTION: End Turn" crlf)
+    (exit)
+)
+
+
+(deffacts cards
+    (mycard (kind wheat) (amnt 4))
+    (mycard (kind metal) (amnt 3))
+    (mycard (kind sheep) (amnt 3))
+    (mycard (kind wood) (amnt 2))
+    (mycard (kind brick) (amnt 3))
+    (mycard (kind soldier) (amnt 2))
+    (mycard (kind plenty) (amnt 0))
+    (mycard (kind monopoly) (amnt 0))
+    (mycard (kind monuments) (amnt 1))
+)
+
+
 
 ;(deffacts board
 ;    (hex (id 0) (xpos 0) (ypos 3) (resource water) (port none))
@@ -213,45 +310,6 @@
 ;    (edge (id 70) (nodes 53 50))
 ;    (edge (id 71) (nodes 52 53))
 ;)
-
-(deffacts pieces
-    (settlement (player 1) (node 5))
-    (road (player 1) (edge 14))
-    (road (player 1) (edge 15))
-    (city (player 1) (node 12))
-    (my-id 1)
-
-    (settlement (player 2) (node 5))
-    (settlement (player 2) (node 5))
-    (road (player 2) (edge 15))
-    (road (player 2) (edge 15))
-    (road (player 2) (edge 15))
-    (road (player 2) (edge 15))
-    (road (player 2) (edge 15))
-
-    (mycard (kind wheat))
-    (mycard (kind sheep))
-    (mycard (kind sheep))
-    (mycard (kind soldier))
-    (mycard (kind plenty))
-    (num-cards (player 2) (num 4))
-    (num-cards (player 3) (num 1))
-)
-
-
-
-(defrule build-settlement
-    (card (kind wood))
-    (card (kind brick))
-    (card (kind wheat))
-    (card (kind sheep))
-    (my-id ?my-id)
-    (road (player ?id&:(= ?id ?my-id)) (edge ?edge))
-    (edge (id ?edge) (nodes $? ?node $?))
-    =>
-    (printout t "Build road p1 node " ?node crlf)
-)
-
 
 ;Settlers of Catan
 ;
