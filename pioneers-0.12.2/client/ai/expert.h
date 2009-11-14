@@ -51,6 +51,7 @@ const struct action actions[] = {
                  /* 0 */   {"Place Robber", &place_robber},
                  /* 1 */   {"Build Settlement", &dummy},
                  /* 2 */   {"Discard", &discard},
+                 /* 3 */   {"Place Initial Settlement", &place_initial},
                  /* x */   {"", &dummy},
                           };
 const int nactions = 3;
