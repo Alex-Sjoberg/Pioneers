@@ -5,3 +5,4 @@ git update-index --assume-unchanged config.h
 git update-index --assume-unchanged po/Makefile
 git update-index --assume-unchanged po/Makefile.in
 git update-index --assume-unchanged Makefile
+git update-index --assume-unchanged intltool-merge

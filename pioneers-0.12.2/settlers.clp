@@ -72,9 +72,10 @@
 )
 
 (defrule move-robber
+    (phase place-robber)
     (hex (id ?id) (prob 8))
     =>
-    (printout t "ACTION: Move Robber " ?id crlf)
+    (printout t crlf "ACTION: Place Robber " ?id crlf)
     (exit)
 )
 

@@ -1419,38 +1419,9 @@ static void expert_place_robber(void)
 	float bestscore = -1000;
 
   setup_clips();
-
-  Map *map = callbacks.get_map();
-	for (i = 0; i < map->x_size; i++) {
-		for (j = 0; j < map->y_size; j++) {
-			Hex *hex = map_hex(map, i, j);
-      if (hex) {
-        //fprintf(stderr,"[%d,%d] terrain=%d, resource=%d, num=%d\n",i,j,hex->terrain,hex->resource,hex->roll);
-        fprintf(stderr,"Jessica is amazing!\n");
-      }
-    }
-  }
-  write_clips("(printout t \"ACTION: Build Settlement 42 96\" crlf)");
+  write_clips("(assert (phase place-robber))");
+  //write_clips("(printout t \"ACTION: Build Settlement 42 96\" crlf)");
   close_clips();
-
-
-	Hex *besthex = NULL;
-	//Map *map = callbacks.get_map();
-
-	ai_wait();
-	for (i = 0; i < map->x_size; i++) {
-		for (j = 0; j < map->y_size; j++) {
-			Hex *hex = map_hex(map, i, j);
-			float score = score_hex_hurt_opponents(hex);
-
-			if (score > bestscore) {
-				bestscore = score;
-				besthex = hex;
-			}
-
-		}
-	}
-	cb_place_robber(besthex);
 }
 
 static void expert_steal_building(void)
@@ -1696,13 +1667,21 @@ static int resource_desire_least(gint my_assets[NO_RESOURCE],
  */
 static void expert_discard(int num)
 {
+  setup_clips();
+
+  write_clips("(assert (phase discard))");
+  sprintf(buf,"(assert (num-to-discard %d))",num);
+  write_clips(buf);
+
+  close_clips();
+  /*
 	int res;
 	gint todiscard[NO_RESOURCE];
 	int i;
 	resource_values_t resval;
 	gint assets[NO_RESOURCE];
 
-	/* zero out */
+	/* zero out *
 	for (res = 0; res != NO_RESOURCE; res++) {
 		todiscard[res] = 0;
 		assets[res] = resource_asset(res);
@@ -1719,6 +1698,7 @@ static void expert_discard(int num)
 	}
 
 	cb_discard(todiscard);
+  */
 }
 
 /*
@@ -2131,8 +2111,48 @@ void setup_clips(void)
 
   close(fd0[0]);
 
-  /* CLIPS initialization goes here! */
-  //write_clips("(load settlers.clp)");
+  /**********************************
+  * CLIPS initialization goes here! *
+  **********************************/
+
+  /* Load any external files needed */
+  write_clips("(load \"settlers.clp\")");
+
+  /* Output the board state */
+  Map * map = callbacks.get_map();
+  write_clips("(deffacts board");
+
+  Hex * id;
+  int i,j,xpos,ypos,prob,robber;
+  const char * resource;
+  const char * port;
+  char buf[512];
+  for (i=0; i<map->x_size; i++) {
+    for (j=0; j<map->y_size; j++) {
+      if (map->grid[i][j] != NULL) {
+        /* Information about each hex */
+        id = map->grid[i][j];
+        xpos = i;
+        ypos = j;
+        resource = resource_mapping[id->terrain];
+        port = port_mapping[id->resource];
+        prob = id->roll;
+        robber = id->robber;
+
+        sprintf(buf,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (prob %d) (robber %d))",(unsigned long) id,xpos,ypos,resource,port,prob,robber);
+
+        write_clips(buf);
+
+        /* Information about each node */
+      }
+    }
+  }
+  write_clips(")");
+  /* END CLIPS INITIALIZATION */
+
+
+  write_clips("(reset)");
+  write_clips("(facts)");
 }
 
 /*
@@ -2153,19 +2173,17 @@ int write_clips(char * message) {
 
   /* append a newline to the command if needed */
   if (message[len-1] != '\n') {
-    len++;
-    buf = malloc(len);
+    buf = malloc(++len+1);
+
     strncpy(buf, message, len);
     buf[len-1] = '\n';
-    message = buf;
+    buf[len] = 0;
 
-    /*fprintf(stderr,"Error! Message to CLIPS not terminated by a newline!\n  >> %s\n",message);
-    kill(cpid,SIGKILL);
-    exit(1);
-    */
+    message = buf;
   }
 
   /* send the command to CLIPS */
+  fprintf(stderr," > %s",message);
   r = write(fd0[1],message,len);
 
   if (buf)
@@ -2195,36 +2213,96 @@ int close_clips(void) {
   close(fd1[1]);
 
   /* read all the output from clips */
-  while (nread = read(fd1[0], buf, sizeof(buf))) {
+  while (nread = get_line(buf, sizeof(buf), fd1[0])) {
 
-    /* split on newlines */
-    pch = strtok(buf, "\n");
-    while (pch != NULL) {
+    buf[nread] = 0;
 
-      /* if the line starts with the special code */
-      if (!strncmp(pch, flag, flen)) {
+    fprintf(stderr," < %s\n",buf);
 
-        /* go through the functions looking for its match */
-        for (i = 0; i < nactions; i++) {
+    /* if the line starts with the special code */
+    if (!strncmp(buf, flag, flen)) {
 
-          /* call the appropriate function, passing in the rest of the sting */
-          actlen = strlen(actions[i].action);
-          if (!strncmp(pch+flen, actions[i].action, actlen)) {
-            (*actions[i].func)(pch+flen+actlen+1);
-          }
+      /* go through the functions looking for its match */
+      for (i = 0; i < nactions; i++) {
+
+        /* call the appropriate function, passing in the rest of the sting */
+        actlen = strlen(actions[i].action);
+        if (!strncmp(buf+flen, actions[i].action, actlen)) {
+          (*actions[i].func)(buf+flen+actlen+1);
         }
       }
-      pch = strtok(NULL, "\n");
     }
   }
 
   close(fd1[0]);
 }
 
-void Func1(char * params) {
-  fprintf(stderr,"Func1 called with parameters \"%s\"!\n",params);
+/*
+ * get_line(char * buf, int size, int fd)
+ *
+ * Retrieve a single line of text from file descriptor fd, including
+ * the newline but not including the NUL character, up to a maximum
+ * of size bytes, and storing the result in buf.
+ *
+ * Return value: Number of bytes actually read from fd.
+ */
+size_t get_line(char * buf, int size, int fd) {
+  size_t n = 0;
+  while (read(fd, buf, 1) && --size > 0 && *(buf++) != '\n') n++;
+  return n;
 }
 
-void Func2(char * params) {
-  fprintf(stderr,"Func2 called with parameters \"%s\"!\n",params);
+void dummy(char * params) { }
+
+
+
+/**************************************************
+ ************** CLIPS Input Handlers  *************
+ *************************************************/
+static void place_robber(char * args) {
+  unsigned long besthex;
+
+  sscanf(args, "%lu", &besthex);
+  fprintf(stderr,"!!!!!!!!!!! besthex = %lu\n", besthex);
+  cb_place_robber((Hex*) besthex);
+
+/*
+	Hex *besthex = NULL;
+	Map *map = callbacks.get_map();
+
+	ai_wait();
+	for (i = 0; i < map->x_size; i++) {
+		for (j = 0; j < map->y_size; j++) {
+			Hex *hex = map_hex(map, i, j);
+			float score = score_hex_hurt_opponents(hex);
+
+			if (score > bestscore) {
+				bestscore = score;
+				besthex = hex;
+			}
+
+		}
+	}
+	cb_place_robber(besthex);
+  */
+}
+
+// place-robber
+// discard
+// place-inital-settlement
+
+static void discard(char * args) {
+  int i, len;
+	gint todiscard[NO_RESOURCE];
+
+  while (sscanf(args, "%s ", buf)) {
+    len = strlen(buf);
+
+    for (i = 0; strncmp(buf, resource_mapping[i], len) != 0; i++);
+    todiscard[i]++;
+
+    args += len; // advance to next string
+  }
+
+  cb_discard(todiscard);
 }

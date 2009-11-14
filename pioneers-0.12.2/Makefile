@@ -751,10 +751,11 @@ pioneers_server_gtk_DEPENDENCIES =  \
 	$(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_6)
 am__pioneersai_SOURCES_DIST = client/callback.h client/ai/ai.h \
-	client/ai/ai.c client/ai/greedy.c client/ai/lobbybot.c
+	client/ai/ai.c client/ai/greedy.c client/ai/expert.c client/ai/lobbybot.c
 am_pioneersai_OBJECTS =  \
 	client/ai/pioneersai-ai.$(OBJEXT) \
 	client/ai/pioneersai-greedy.$(OBJEXT) \
+	client/ai/pioneersai-expert.$(OBJEXT) \
 	client/ai/pioneersai-lobbybot.$(OBJEXT)
 pioneersai_OBJECTS = $(am_pioneersai_OBJECTS)
 pioneersai_DEPENDENCIES = libpioneersclient.a \
@@ -1136,6 +1137,7 @@ pioneersai_SOURCES = \
 	client/ai/ai.h \
 	client/ai/ai.c \
 	client/ai/greedy.c \
+	client/ai/expert.c \
 	client/ai/lobbybot.c
 
 pioneersai_LDADD = libpioneersclient.a $(console_libs)
@@ -1758,6 +1760,8 @@ client/ai/pioneersai-ai.$(OBJEXT): client/ai/$(am__dirstamp) \
 	client/ai/$(DEPDIR)/$(am__dirstamp)
 client/ai/pioneersai-greedy.$(OBJEXT): client/ai/$(am__dirstamp) \
 	client/ai/$(DEPDIR)/$(am__dirstamp)
+client/ai/pioneersai-expert.$(OBJEXT): client/ai/$(am__dirstamp) \
+	client/ai/$(DEPDIR)/$(am__dirstamp)
 client/ai/pioneersai-lobbybot.$(OBJEXT): client/ai/$(am__dirstamp) \
 	client/ai/$(DEPDIR)/$(am__dirstamp)
 pioneersai$(EXEEXT): $(pioneersai_OBJECTS) $(pioneersai_DEPENDENCIES) 
@@ -1768,6 +1772,7 @@ mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f client/ai/pioneersai-ai.$(OBJEXT)
 	-rm -f client/ai/pioneersai-greedy.$(OBJEXT)
+	-rm -f client/ai/pioneersai-expert.$(OBJEXT)
 	-rm -f client/ai/pioneersai-lobbybot.$(OBJEXT)
 	-rm -f client/common/libpioneersclient_a-build.$(OBJEXT)
 	-rm -f client/common/libpioneersclient_a-callback.$(OBJEXT)
@@ -1859,6 +1864,7 @@ distclean-compile:
 
 include client/ai/$(DEPDIR)/pioneersai-ai.Po
 include client/ai/$(DEPDIR)/pioneersai-greedy.Po
+include client/ai/$(DEPDIR)/pioneersai-expert.Po
 include client/ai/$(DEPDIR)/pioneersai-lobbybot.Po
 include client/common/$(DEPDIR)/libpioneersclient_a-build.Po
 include client/common/$(DEPDIR)/libpioneersclient_a-callback.Po
@@ -3172,6 +3178,20 @@ client/ai/pioneersai-greedy.obj: client/ai/greedy.c
 #	source='client/ai/greedy.c' object='client/ai/pioneersai-greedy.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o client/ai/pioneersai-greedy.obj `if test -f 'client/ai/greedy.c'; then $(CYGPATH_W) 'client/ai/greedy.c'; else $(CYGPATH_W) '$(srcdir)/client/ai/greedy.c'; fi`
+
+client/ai/pioneersai-expert.o: client/ai/expert.c
+	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT client/ai/pioneersai-expert.o -MD -MP -MF "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" -c -o client/ai/pioneersai-expert.o `test -f 'client/ai/expert.c' || echo '$(srcdir)/'`client/ai/expert.c; \
+	then mv -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" "client/ai/$(DEPDIR)/pioneersai-expert.Po"; else rm -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo"; exit 1; fi
+#	source='client/ai/expert.c' object='client/ai/pioneersai-expert.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o client/ai/pioneersai-expert.o `test -f 'client/ai/expert.c' || echo '$(srcdir)/'`client/ai/expert.c
+
+client/ai/pioneersai-expert.obj: client/ai/expert.c
+	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT client/ai/pioneersai-expert.obj -MD -MP -MF "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" -c -o client/ai/pioneersai-expert.obj `if test -f 'client/ai/expert.c'; then $(CYGPATH_W) 'client/ai/expert.c'; else $(CYGPATH_W) '$(srcdir)/client/ai/expert.c'; fi`; \
+	then mv -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" "client/ai/$(DEPDIR)/pioneersai-expert.Po"; else rm -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo"; exit 1; fi
+#	source='client/ai/expert.c' object='client/ai/pioneersai-expert.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o client/ai/pioneersai-expert.obj `if test -f 'client/ai/expert.c'; then $(CYGPATH_W) 'client/ai/expert.c'; else $(CYGPATH_W) '$(srcdir)/client/ai/expert.c'; fi`
 
 client/ai/pioneersai-lobbybot.o: client/ai/lobbybot.c
 	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT client/ai/pioneersai-lobbybot.o -MD -MP -MF "client/ai/$(DEPDIR)/pioneersai-lobbybot.Tpo" -c -o client/ai/pioneersai-lobbybot.o `test -f 'client/ai/lobbybot.c' || echo '$(srcdir)/'`client/ai/lobbybot.c; \
