@@ -450,8 +450,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = x86_64-unknown-linux-gnu
-host_triplet = x86_64-unknown-linux-gnu
+build_triplet = i686-pc-linux-gnu
+host_triplet = i686-pc-linux-gnu
 bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3) \
 	$(am__EXEEXT_4) $(am__EXEEXT_5) $(am__EXEEXT_6)
 noinst_PROGRAMS =
@@ -751,10 +751,11 @@ pioneers_server_gtk_DEPENDENCIES =  \
 	$(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_6)
 am__pioneersai_SOURCES_DIST = client/callback.h client/ai/ai.h \
-	client/ai/ai.c client/ai/greedy.c client/ai/lobbybot.c
+	client/ai/ai.c client/ai/greedy.c client/ai/expert.c client/ai/lobbybot.c
 am_pioneersai_OBJECTS =  \
 	client/ai/pioneersai-ai.$(OBJEXT) \
 	client/ai/pioneersai-greedy.$(OBJEXT) \
+	client/ai/pioneersai-expert.$(OBJEXT) \
 	client/ai/pioneersai-lobbybot.$(OBJEXT)
 pioneersai_OBJECTS = $(am_pioneersai_OBJECTS)
 pioneersai_DEPENDENCIES = libpioneersclient.a \
@@ -827,19 +828,19 @@ am__remove_distdir = \
 DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run aclocal-1.9
 ADMIN_GTK_SUPPORT_FALSE = 
 ADMIN_GTK_SUPPORT_TRUE = #
 ALL_LINGUAS = 
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run tar
+AMTAR = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run tar
 AM_CFLAGS = 
 AR = ar
-AUTOCONF = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run automake-1.9
-AWK = gawk
+AUTOCONF = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run automake-1.9
+AWK = mawk
 BUILD_CLIENT_FALSE = #
 BUILD_CLIENT_TRUE = 
 BUILD_EDITOR_FALSE = #
@@ -873,20 +874,20 @@ ECHO_N = -n
 ECHO_T = 
 EGREP = /bin/grep -E
 EXEEXT = 
-F77 = gfortran
-FFLAGS = -g -O2
+F77 = 
+FFLAGS = 
 GETTEXT_PACKAGE = pioneers
-GLIB2_CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include  
+GLIB2_CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
 GLIB2_LIBS = -lglib-2.0  
 GLIB_DEPRECATION = 
 GLIB_REQUIRED_VERSION = 2.6
 GMOFILES = 
-GMSGFMT = /usr/bin/gmsgfmt
-GNOME2_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/libgnome-2.0 -I/usr/include/orbit-2.0 -I/usr/include/gconf/2 -I/usr/include/gnome-vfs-2.0 -I/usr/lib64/gnome-vfs-2.0/include -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/libbonobo-2.0 -I/usr/include/dbus-1.0 -I/usr/lib64/dbus-1.0/include -I/usr/include/bonobo-activation-2.0  
+GMSGFMT = /usr/bin/msgfmt
+GNOME2_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/libgnome-2.0 -I/usr/include/orbit-2.0 -I/usr/include/gconf/2 -I/usr/include/gnome-vfs-2.0 -I/usr/lib/gnome-vfs-2.0/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libbonobo-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/bonobo-activation-2.0  
 GNOME2_LIBS = -pthread -lgnome-2 -lpopt -lbonobo-2 -lbonobo-activation -lgmodule-2.0 -lORBit-2 -lgthread-2.0 -lrt -lgobject-2.0 -lglib-2.0  
 GREP = /bin/grep
-GTK2_CFLAGS = -I/usr/include/gtk-2.0 -I/usr/lib64/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12  
-GTK2_LIBS = -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lglib-2.0  
+GTK2_CFLAGS = -D_REENTRANT -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
+GTK2_LIBS = -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lgio-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lglib-2.0  
 GTK_DEPRECATION = 
 GTK_REQUIRED_VERSION = 2.6
 HAVE_GNOME_FALSE = #
@@ -933,7 +934,7 @@ LTLIBOBJS =
 MAINT = #
 MAINTAINER_MODE_FALSE = 
 MAINTAINER_MODE_TRUE = #
-MAKEINFO = ${SHELL} /home/jdenardo/settlers/pioneers-0.12.2/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/dcolgan/settlers/pioneers-0.12.2/missing --run makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
 MSGFMT = /usr/bin/msgfmt
 MSGFMT_OPTS = -c
@@ -957,7 +958,7 @@ SCROLLKEEPER_CONFIG = /usr/bin/scrollkeeper-config
 SCROLLKEEPER_REQUIRED = 0.3.8
 SED = /bin/sed
 SET_MAKE = 
-SHELL = /bin/sh
+SHELL = /bin/bash
 STRIP = strip
 USE_NLS = yes
 USE_WINDOWS_ICON_FALSE = 
@@ -967,7 +968,7 @@ WARNINGS =
 XGETTEXT = /usr/bin/xgettext
 ac_ct_CC = gcc
 ac_ct_CXX = g++
-ac_ct_F77 = gfortran
+ac_ct_F77 = 
 am__fastdepCC_FALSE = #
 am__fastdepCC_TRUE = 
 am__fastdepCXX_FALSE = #
@@ -978,25 +979,25 @@ am__quote =
 am__tar = ${AMTAR} chof - "$$tardir"
 am__untar = ${AMTAR} xf -
 bindir = ${exec_prefix}/bin
-build = x86_64-unknown-linux-gnu
+build = i686-pc-linux-gnu
 build_alias = 
-build_cpu = x86_64
+build_cpu = i686
 build_os = linux-gnu
-build_vendor = unknown
+build_vendor = pc
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = x86_64-unknown-linux-gnu
+host = i686-pc-linux-gnu
 host_alias = 
-host_cpu = x86_64
+host_cpu = i686
 host_os = linux-gnu
-host_vendor = unknown
+host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = /home/jdenardo/settlers/pioneers-0.12.2/install-sh
+install_sh = /home/dcolgan/settlers/pioneers-0.12.2/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -1009,7 +1010,7 @@ pioneers_datadir = ${datarootdir}
 pioneers_localedir = ${datarootdir}/locale
 pioneers_themedir = ${datarootdir}/games/pioneers/themes
 pioneers_themedir_embed = ${datarootdir}/games/pioneers/themes
-pngtopnm = false
+pngtopnm = /usr/bin/pngtopnm
 prefix = /usr/local
 program_transform_name = s,x,x,
 psdir = ${docdir}
@@ -1136,6 +1137,7 @@ pioneersai_SOURCES = \
 	client/ai/ai.h \
 	client/ai/ai.c \
 	client/ai/greedy.c \
+	client/ai/expert.c \
 	client/ai/lobbybot.c
 
 pioneersai_LDADD = libpioneersclient.a $(console_libs)
@@ -1758,6 +1760,8 @@ client/ai/pioneersai-ai.$(OBJEXT): client/ai/$(am__dirstamp) \
 	client/ai/$(DEPDIR)/$(am__dirstamp)
 client/ai/pioneersai-greedy.$(OBJEXT): client/ai/$(am__dirstamp) \
 	client/ai/$(DEPDIR)/$(am__dirstamp)
+client/ai/pioneersai-expert.$(OBJEXT): client/ai/$(am__dirstamp) \
+	client/ai/$(DEPDIR)/$(am__dirstamp)
 client/ai/pioneersai-lobbybot.$(OBJEXT): client/ai/$(am__dirstamp) \
 	client/ai/$(DEPDIR)/$(am__dirstamp)
 pioneersai$(EXEEXT): $(pioneersai_OBJECTS) $(pioneersai_DEPENDENCIES) 
@@ -1768,6 +1772,7 @@ mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f client/ai/pioneersai-ai.$(OBJEXT)
 	-rm -f client/ai/pioneersai-greedy.$(OBJEXT)
+	-rm -f client/ai/pioneersai-expert.$(OBJEXT)
 	-rm -f client/ai/pioneersai-lobbybot.$(OBJEXT)
 	-rm -f client/common/libpioneersclient_a-build.$(OBJEXT)
 	-rm -f client/common/libpioneersclient_a-callback.$(OBJEXT)
@@ -1859,6 +1864,7 @@ distclean-compile:
 
 include client/ai/$(DEPDIR)/pioneersai-ai.Po
 include client/ai/$(DEPDIR)/pioneersai-greedy.Po
+include client/ai/$(DEPDIR)/pioneersai-expert.Po
 include client/ai/$(DEPDIR)/pioneersai-lobbybot.Po
 include client/common/$(DEPDIR)/libpioneersclient_a-build.Po
 include client/common/$(DEPDIR)/libpioneersclient_a-callback.Po
@@ -3172,6 +3178,20 @@ client/ai/pioneersai-greedy.obj: client/ai/greedy.c
 #	source='client/ai/greedy.c' object='client/ai/pioneersai-greedy.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o client/ai/pioneersai-greedy.obj `if test -f 'client/ai/greedy.c'; then $(CYGPATH_W) 'client/ai/greedy.c'; else $(CYGPATH_W) '$(srcdir)/client/ai/greedy.c'; fi`
+
+client/ai/pioneersai-expert.o: client/ai/expert.c
+	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT client/ai/pioneersai-expert.o -MD -MP -MF "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" -c -o client/ai/pioneersai-expert.o `test -f 'client/ai/expert.c' || echo '$(srcdir)/'`client/ai/expert.c; \
+	then mv -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" "client/ai/$(DEPDIR)/pioneersai-expert.Po"; else rm -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo"; exit 1; fi
+#	source='client/ai/expert.c' object='client/ai/pioneersai-expert.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o client/ai/pioneersai-expert.o `test -f 'client/ai/expert.c' || echo '$(srcdir)/'`client/ai/expert.c
+
+client/ai/pioneersai-expert.obj: client/ai/expert.c
+	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT client/ai/pioneersai-expert.obj -MD -MP -MF "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" -c -o client/ai/pioneersai-expert.obj `if test -f 'client/ai/expert.c'; then $(CYGPATH_W) 'client/ai/expert.c'; else $(CYGPATH_W) '$(srcdir)/client/ai/expert.c'; fi`; \
+	then mv -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo" "client/ai/$(DEPDIR)/pioneersai-expert.Po"; else rm -f "client/ai/$(DEPDIR)/pioneersai-expert.Tpo"; exit 1; fi
+#	source='client/ai/expert.c' object='client/ai/pioneersai-expert.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o client/ai/pioneersai-expert.obj `if test -f 'client/ai/expert.c'; then $(CYGPATH_W) 'client/ai/expert.c'; else $(CYGPATH_W) '$(srcdir)/client/ai/expert.c'; fi`
 
 client/ai/pioneersai-lobbybot.o: client/ai/lobbybot.c
 	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(pioneersai_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT client/ai/pioneersai-lobbybot.o -MD -MP -MF "client/ai/$(DEPDIR)/pioneersai-lobbybot.Tpo" -c -o client/ai/pioneersai-lobbybot.o `test -f 'client/ai/lobbybot.c' || echo '$(srcdir)/'`client/ai/lobbybot.c; \
