@@ -42,6 +42,11 @@
     (slot num)
 )
 
+(deftemplate development-card
+    (slot kind)
+    (slot amnt)
+)
+
 (deftemplate card
     (slot kind)
 )
@@ -62,33 +67,64 @@
     (road (player 2) (edge 15))
 )
 
-(defrule place-starting-settlement
+(defrule place-starting-pieces
+    (phase place-initial-settlement)
     (hex (id ?id) (prob ?prob))
     (not (hex (prob ?other&:(> ?other ?prob))))
     =>
-    (printout t "ACTION: Place Initial Settlement " ?id crlf)
+    (printout t crlf "ACTION: Place Initial Settlement " ?id crlf)
+    (exit)
+)
+
+(defrule discard-cards
+    (phase discard)
+    =>
+    (assert (discarding))
+    (printout t crlf "ACTION: Discard")
+)
+
+(defrule find-least-valuable-card
+    (discarding)
+    ?n <- (num-to-discard ?num)
+    (test (> ?num 0))
+    ?c <- (mycard (kind ?kind) (amnt ?amnt&:(>= ?amnt 1)))
+    =>
+    (retract ?n ?c)
+    (assert (mycard (kind ?kind) (amnt (- ?amnt 1))))
+    (assert (num-to-discard (- ?num 1)))
+    (printout t " " ?kind)
+)
+
+(defrule done-discarding
+    (declare (salience -10))
+    (discarding)
+    =>
+    (printout t crlf)
     (exit)
 )
 
 (defrule move-robber
+    (phase place-robber)
     (hex (id ?id) (prob 8))
     =>
-    (printout t "ACTION: Move Robber " ?id crlf)
+    (printout t crlf "ACTION: Move Robber " ?id crlf)
     (exit)
 )
 
 (defrule build-road
+    (phase do-turn)
     (my-id ?my-id)
     (mycard (kind wood) (amnt ?amnt&:(>= ?amnt 1)))
     (mycard (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
     (edge (id ?edge1) (nodes $? ?node $?))
     (edge (id ?edge2&~?edge1) (nodes $? ?node $?))
     =>
-    (printout t "ACTION: Build Road " ?edge2 crlf)
+    (printout t crlf "ACTION: Build Road " ?edge2 crlf)
     (exit)
 )
 
 (defrule build-settlement
+    (phase do-turn)
     (my-id ?my-id)
     (mycard (kind wood) (amnt ?amnt&:(>= ?amnt 1)))
     (mycard (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
@@ -97,33 +133,35 @@
     (road (player ?id&:(= ?id ?my-id)) (edge ?edge))
     (edge (id ?edge) (nodes $? ?node $?))
     =>
-    (printout t "ACTION: Build Settlement " ?edge crlf)
+    (printout t crlf "ACTION: Build Settlement " ?edge crlf)
     (exit)
 )
 
 (defrule build-city
+    (phase do-turn)
     (my-id ?my-id)
     (settlement (player ?my-id) (node ?node))
     (mycard (kind wheat) (amnt ?amnt&:(>= ?amnt 2)))
     (mycard (kind metal) (amnt ?amnt&:(>= ?amnt 3)))
     =>
-    (printout t "ACTION: Build City " ?node crlf)
+    (printout t crlf "ACTION: Build City " ?node crlf)
     (exit)
 )
 
 (defrule buy-devel-card
+    (phase do-turn)
     (mycard (kind sheep) (amnt ?amnt&:(>= ?amnt 1)))
     (mycard (kind wheat) (amnt ?amnt&:(>= ?amnt 1)))
     (mycard (kind metal) (amnt ?amnt&:(>= ?amnt 1)))
     =>
-    (printout t "ACTION: Buy Development Card" crlf)
+    (printout t crlf "ACTION: Buy Development Card" crlf)
     (exit)
 )
 
 (defrule end-turn
     (declare (salience -1000))
     =>
-    (printout t "ACTION: End Turn" crlf)
+    (printout t crlf "ACTION: End Turn" crlf)
     (exit)
 )
 
@@ -134,10 +172,12 @@
     (mycard (kind sheep) (amnt 3))
     (mycard (kind wood) (amnt 2))
     (mycard (kind brick) (amnt 3))
-    (mycard (kind soldier) (amnt 2))
-    (mycard (kind plenty) (amnt 0))
-    (mycard (kind monopoly) (amnt 0))
-    (mycard (kind monuments) (amnt 1))
+    (development-card (kind soldier) (amnt 2))
+    (development-card (kind plenty) (amnt 0))
+    (development-card (kind monopoly) (amnt 0))
+    (development-card (kind monuments) (amnt 1))
+    (num-to-discard 3)
+    (phase discard)
 )
 
 
