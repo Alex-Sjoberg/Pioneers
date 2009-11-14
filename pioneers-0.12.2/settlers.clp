@@ -43,7 +43,7 @@
     (slot num)
 )
 
-(deftemplate development-card
+(deftemplate development-cards
     (slot kind)
     (slot amnt)
 )
@@ -67,6 +67,14 @@
     (road (player 2) (edge 15))
     (road (player 2) (edge 15))
 )
+
+(defrule roll-dice
+    (declare (salience 1000))
+    (phase do-turn)
+    =>
+    (printout t crlf "ACTION: Roll Dice")
+)
+
 
 (defrule place-starting-pieces
     (phase place-initial-settlement)
@@ -159,6 +167,19 @@
     (exit)
 )
 
+(defrule play-soldier
+    (phase do-turn)
+    (my-id ?my-id)
+    (development-cards (kind soldier) (amnt ?amnt&:(>= ?amnt 1)))
+    (hex (id ?hex-id) (robber 1))
+    (node (id ?node-id) (hexes $? ?hex-id $?))
+    (or (settlement (player ?my-id) (node ?node-id))
+        (city (player ?my-id) (node ?node-id)))
+    =>
+    (printout t crlf "ACTION: Play Soldier" crlf)
+    (exit)
+)
+
 (defrule end-turn
     (declare (salience -1000))
     =>
@@ -173,10 +194,10 @@
     (resource-cards (kind sheep) (amnt 3))
     (resource-cards (kind wood) (amnt 2))
     (resource-cards (kind brick) (amnt 3))
-    (development-card (kind soldier) (amnt 2))
-    (development-card (kind plenty) (amnt 0))
-    (development-card (kind monopoly) (amnt 0))
-    (development-card (kind monuments) (amnt 1))
+    (development-cards (kind soldier) (amnt 2))
+    (development-cards (kind plenty) (amnt 0))
+    (development-cards (kind monopoly) (amnt 0))
+    (development-cards (kind monuments) (amnt 1))
     (num-to-discard 3)
     (phase discard)
 )
@@ -361,7 +382,7 @@
 ;
 ;Deftemplates
 ;
-;(deftempate development-card
+;(deftempate development-cards
 ;  (slot kind (allowed-values soldier monopoly victory plenty))
 ;)
 ;
