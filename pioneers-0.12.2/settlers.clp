@@ -2,10 +2,14 @@
     (slot id (type INTEGER))
     (slot xpos)
     (slot ypos)
-    (slot resource (allowed-values lumber brick wool grain ore)
+    (slot resource (allowed-values lumber brick wool grain ore sea desert))
     (slot port)
     (slot number (default 0))
-    (slot prob (type INTEGER) (range 1 5))
+    (slot prob (type INTEGER) (range 0 5))
+)
+
+(deftemplate robber
+    (slot hex)
 )
 
 (deftemplate node
@@ -73,16 +77,101 @@
     (phase do-turn)
     =>
     (printout t crlf "ACTION: Roll Dice")
+    (exit)
 )
 
 
-(defrule place-starting-pieces
-    (phase place-initial-settlement)
-    (hex (id ?id) (number ?number))
-    (not (hex (number ?other&:(> ?other ?number))))
+; (settlements-to-place 0)
+; (roads-to-place 0)
+; ACTION: Place Settlement [node-id]
+; ACTION: Place Road [edge-id]
+; ACTION: End Turn
+(defrule place-starting-settlement
+    ; At least one settlement to place
+    (phase initial-setup)
+    (my-num ?pnum)
+    ?s <- (settlements-to-place ?num&:(> ?num 0))
+
+    ; Find a highest probability hex
+    (hex (id ?hid) (prob ?prob))
+    (not (hex (prob ?other&:(> ?other ?prob))))
+
+    ; Find a node on this hex that doesn't have a settlement
+    (node (id ?nid) (hexes $? ?hid $?))
+    (not (settlement (node ?nid)))
+
+    ; ...and that isn't next to a node that has a settlement
+    (not
+      (and
+        (or
+          (edge (nodes ?cnode ?nid))
+          (edge (nodes ?nid ?cnode))
+        )
+        (node (id ?cnode) (hexes $? ?chex $?))
+        (hex (id ?chex) (resource ?res&~sea&~desert))
+        (settlement (node ?cnode))
+      )
+    )
+
     =>
-    (printout t crlf "ACTION: Place Initial Settlement " ?id crlf)
-    (exit)
+
+    (printout t crlf "ACTION: Place Settlement " ?nid crlf)
+    (assert (settlement (player ?pnum) (node ?nid)))
+
+    (retract ?s)
+    (assert (settlements-to-place (- ?num 1)))
+)
+
+(defrule place-starting-road
+    (phase initial-setup)
+    (my-num ?pnum)
+
+    ?s <- (roads-to-place ?num&:(> ?num 0))
+
+    (settlement (player ?pnum) (node ?nid))
+    (not
+      (and
+        (edge (id ?eid) (nodes $? ?nid $?))
+        (road (edge ?eid))
+      )
+    )
+
+    ; DEBUG
+    ;(node (id ?nid) (hexes ?h1 ?h2 ?h3))
+    ;(hex (id ?h1) (resource ?res1))
+    ;(hex (id ?h2) (resource ?res2))
+    ;(hex (id ?h3) (resource ?res3))
+
+    (or
+      (edge (id ?eid) (nodes ?cnode ?nid))
+      (edge (id ?eid) (nodes ?nid ?cnode))
+    )
+    (not (road (edge ?eid)))
+    (node (id ?cnode) (hexes $? ?chex $?))
+    (hex (id ?chex) (resource ?res&~sea&~desert))
+
+    ; DEBUG
+    ;(node (id ?cnode) (hexes ?h4 ?h5 ?h6))
+    ;(hex (id ?h4) (resource ?res4))
+    ;(hex (id ?h5) (resource ?res5))
+    ;(hex (id ?h6) (resource ?res6))
+
+    =>
+    ;(printout t "DEBUG: node1=" ?res1 " " ?res2 " " ?res3 " ; node2=" ?res4 " " ?res5 " " ?res6 crlf);
+
+    (printout t crlf "ACTION: Place Road " ?eid crlf)
+    (assert (road (player ?pnum) (edge ?eid)))
+
+    (retract ?s)
+    (assert (roads-to-place (- ?num 1)))
+)
+
+(defrule end-initial-setup
+    (phase initial-setup)
+    (settlements-to-place 0)
+    (roads-to-place 0)
+    =>
+    (printout t crlf "ACTION: End Turn" crlf)
 )
 
 (defrule discard-cards
@@ -114,7 +203,8 @@
 
 (defrule move-robber
     (phase place-robber)
-    (hex (id ?id) (number 8) (robber 0))
+    (hex (id ?id) (number 8))
+    (not (robber (hex ?id)))
     =>
     (printout t crlf "ACTION: Place Robber " ?id crlf)
     (exit)
@@ -171,7 +261,8 @@
     (phase do-turn)
     (my-id ?my-id)
     (development-cards (kind soldier) (amnt ?amnt&:(>= ?amnt 1)))
-    (hex (id ?hex-id) (robber 1))
+    (hex (id ?hex-id))
+    (robber (hex ?hex-id))
     (node (id ?node-id) (hexes $? ?hex-id $?))
     (or (settlement (player ?my-id) (node ?node-id))
         (city (player ?my-id) (node ?node-id)))

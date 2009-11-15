@@ -232,19 +232,19 @@ static float dice_prob(int roll)
 	switch (roll) {
 	case 2:
 	case 12:
-		return 3;
+		return 1;
 	case 3:
 	case 11:
-		return 6;
+		return 2;
 	case 4:
 	case 10:
-		return 8;
+		return 3;
 	case 5:
 	case 9:
-		return 11;
+		return 4;
 	case 6:
 	case 8:
-		return 14;
+		return 5;
 	default:
 		return 0;
 	}
@@ -1420,7 +1420,6 @@ static void expert_place_robber(void)
 
   setup_clips();
   write_clips("(assert (phase place-robber))");
-  //write_clips("(printout t \"ACTION: Build Settlement 42 96\" crlf)");
   close_clips();
 }
 
@@ -1840,7 +1839,7 @@ static void expert_setup(unsigned num_settlements, unsigned num_roads)
 	ai_wait();
 
   setup_clips();
-  write_clips("(assert (phase place-initial-settlement))");
+  write_clips("(assert (phase initial-setup))");
 
   sprintf(buf, "(assert (settlements-to-place %d))", num_settlements);
   write_clips(buf);
@@ -2172,11 +2171,11 @@ void setup_clips(void)
           if (nid->owner != -1)
             switch (nid->type) {
               case BUILD_SETTLEMENT:
-                sprintf(buf, "(settlement (node %lu) (player-id %d))", (unsigned long) nid, nid->owner);
+                sprintf(buf, "(settlement (node %lu) (player %d))", (unsigned long) nid, nid->owner);
                 write_clips(buf);
                 break;
               case BUILD_CITY:
-                sprintf(buf, "(city (node %lu) (player-id %d))", (unsigned long) nid, nid->owner);
+                sprintf(buf, "(city (node %lu) (player %d))", (unsigned long) nid, nid->owner);
                 write_clips(buf);
                 break;
               default:;
@@ -2190,7 +2189,7 @@ void setup_clips(void)
           write_clips(buf);
 
           if (eid->owner != -1) {
-            sprintf(buf, "(road (edge %lu) (player-id %d))", (unsigned long) eid, eid->owner);
+            sprintf(buf, "(road (edge %lu) (player %d))", (unsigned long) eid, eid->owner);
             write_clips(buf);
           }
         }
@@ -2217,12 +2216,15 @@ void setup_clips(void)
   sprintf(buf, "(dice-already-rolled %d)", have_rolled_dice());
 	write_clips(buf);
 
+  /* My player number */
+  sprintf(buf, "(my-num %d)", my_player_num());
+  write_clips(buf);
+
   write_clips(")");
   /* END CLIPS INITIALIZATION */
 
 
   write_clips("(reset)");
-  write_clips("(facts)");
 }
 
 /*
@@ -2274,8 +2276,10 @@ int write_clips(char * message) {
 int close_clips(void) {
   int i, nread, actlen;
   int flen = strlen(flag);
+  int nactions = sizeof(actions)/sizeof(struct action);
   char * pch;
 
+//  write_clips("(watch all)");
   write_clips("(run)");
   write_clips("(exit)");
 
@@ -2285,7 +2289,7 @@ int close_clips(void) {
   /* read all the output from clips */
   while (nread = get_line(buf, sizeof(buf), fd1[0])) {
 
-    buf[nread] = 0;
+    buf[nread-1] = 0; // chomp the newline
 
     fprintf(stderr," < %s\n",buf);
 
@@ -2319,6 +2323,7 @@ int close_clips(void) {
 size_t get_line(char * buf, int size, int fd) {
   size_t n = 0;
   while (read(fd, buf, 1) && --size > 0 && *(buf++) != '\n') n++;
+  if (*(--buf) == '\n') n++;
   return n;
 }
 
@@ -2332,31 +2337,7 @@ static void place_robber(char * args) {
 
   sscanf(args, "%lu", &besthex);
   cb_place_robber((Hex*) besthex);
-
-/*
-	Hex *besthex = NULL;
-	Map *map = callbacks.get_map();
-
-	ai_wait();
-	for (i = 0; i < map->x_size; i++) {
-		for (j = 0; j < map->y_size; j++) {
-			Hex *hex = map_hex(map, i, j);
-			float score = score_hex_hurt_opponents(hex);
-
-			if (score > bestscore) {
-				bestscore = score;
-				besthex = hex;
-			}
-
-		}
-	}
-	cb_place_robber(besthex);
-  */
 }
-
-// place-robber
-// discard
-// place-inital-settlement
 
 static void discard(char * args) {
   int i, len;
@@ -2389,7 +2370,24 @@ static void discard(char * args) {
   cb_discard(todiscard);
 }
 
-static void place_initial(char * args) {
+static void place_settlement(char * args) {
+  unsigned long node;
+
+  sscanf(args, "%lu", &node);
+
+  cb_build_settlement((Node*) node);
+}
+
+static void place_road(char * args) {
+  unsigned long edge;
+
+  sscanf(args, "%lu", &edge);
+
+  cb_build_road((Edge*) edge);
+}
+
+static void end_turn(char * args) {
+  cb_end_turn();
 }
 
 void dummy(char * params) { }

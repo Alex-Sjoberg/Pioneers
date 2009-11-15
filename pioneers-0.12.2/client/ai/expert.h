@@ -39,7 +39,9 @@ int close_clips(void);
 
 static void place_robber(char*);
 static void discard(char*);
-static void place_initial(char*);
+static void place_settlement(char*);
+static void place_road(char*);
+static void end_turn(char*);
 static void dummy(char*);
 
 struct action {
@@ -52,10 +54,11 @@ const struct action actions[] = {
                  /* 0 */   {"Place Robber", &place_robber},
                  /* 1 */   {"Build Settlement", &dummy},
                  /* 2 */   {"Discard", &discard},
-                 /* 3 */   {"Place Initial Settlement", &place_initial},
-                 /* x */   {"", &dummy},
+                 /* 3 */   {"Place Settlement", &place_settlement},
+                 /* 4 */   {"Place Road", &place_road},
+                 /* 5 */   {"End Turn", &end_turn},
                           };
-const int nactions = 3;
+
 int fd0[2],fd1[2],cpid;
 char buf[4096];
 

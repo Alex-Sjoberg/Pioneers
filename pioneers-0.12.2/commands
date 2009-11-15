@@ -1,4 +1,5 @@
 find . | grep "\.Po$" | xargs git update-index --assume-unchanged
+git update-index --assume-unchanged server/.deps/*
 git update-index --assume-unchanged client/help/C/Makefile
 git update-index --assume-unchanged config.status
 git update-index --assume-unchanged config.h
