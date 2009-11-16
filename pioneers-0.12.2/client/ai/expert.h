@@ -42,7 +42,7 @@ static void discard(char*);
 static void place_settlement(char*);
 static void place_road(char*);
 static void end_turn(char*);
-static void dummy(char*);
+static void roll_dice(char*);
 
 struct action {
   char* action;
@@ -52,11 +52,11 @@ struct action {
 const char* flag = "ACTION: ";
 const struct action actions[] = {
                  /* 0 */   {"Place Robber", &place_robber},
-                 /* 1 */   {"Build Settlement", &dummy},
-                 /* 2 */   {"Discard", &discard},
-                 /* 3 */   {"Place Settlement", &place_settlement},
-                 /* 4 */   {"Place Road", &place_road},
-                 /* 5 */   {"End Turn", &end_turn},
+                 /* 1 */   {"Discard", &discard},
+                 /* 2 */   {"Place Settlement", &place_settlement},
+                 /* 3 */   {"Place Road", &place_road},
+                 /* 4 */   {"End Turn", &end_turn},
+                 /* 5 */   {"Roll Dice", &roll_dice},
                           };
 
 int fd0[2],fd1[2],cpid;
@@ -81,5 +81,18 @@ const char * port_mapping[] = {
   "none",
   "3to1"
 };
+
+const char * devel_mapping[] = {
+  "road building",
+  "monopoly",
+  "year of plenty",
+  "chapel",
+  "university",
+  "governors house",
+  "library",
+  "market",
+  "soldier"
+};
+
 
 #endif

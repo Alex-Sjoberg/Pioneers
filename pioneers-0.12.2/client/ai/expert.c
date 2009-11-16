@@ -1173,6 +1173,10 @@ static gboolean will_play_development_card(DevelType cardtype)
 
 static void expert_turn(void)
 {
+  setup_clips();
+  write_clips("(assert (phase do-turn))");
+  close_clips();
+#if 0
 	resource_values_t resval;
 	int i;
 	gint need[NO_RESOURCE], assets[NO_RESOURCE];
@@ -1285,6 +1289,7 @@ static void expert_turn(void)
 		}
 	}
 	cb_end_turn();
+#endif
 }
 
 #define randchat(array,nochat_percent)				\
@@ -1673,31 +1678,6 @@ static void expert_discard(int num)
   write_clips(buf);
 
   close_clips();
-  /*
-	int res;
-	gint todiscard[NO_RESOURCE];
-	int i;
-	resource_values_t resval;
-	gint assets[NO_RESOURCE];
-
-	/* zero out *
-	for (res = 0; res != NO_RESOURCE; res++) {
-		todiscard[res] = 0;
-		assets[res] = resource_asset(res);
-	}
-
-	for (i = 0; i < num; i++) {
-
-		reevaluate_resources(&resval);
-
-		res = resource_desire_least(assets, &resval);
-
-		todiscard[res]++;
-		assets[res]--;
-	}
-
-	cb_discard(todiscard);
-  */
 }
 
 /*
@@ -2200,11 +2180,40 @@ void setup_clips(void)
 
   /* Output the cards held */
   write_clips("(deffacts cards");
-	for (i = 0; i < NO_RESOURCE; i++) {
 
+  /* Resource cards */
+	for (i = 0; i < NO_RESOURCE; i++) {
     sprintf(buf, "(resource-cards (kind %s) (amnt %d))", resource_mapping[i], resource_asset(i));
 		write_clips(buf);
+  }
 
+  /* Development cards */
+  const DevelDeck * deck = get_devel_deck();
+  for (i = 0; i < deck->num_cards; i++) {
+    sprintf(buf, "(devel-card (kind %s) (can-play %d))", devel_mapping[deck->cards[i].type], can_play_develop(i));
+    write_clips(buf);
+  }
+  write_clips(")");
+
+
+  /* Output the player information */
+  write_clips("(deffacts players");
+  for (i = 0; i < num_players(); i++) {
+    gint * stats = player_get(i)->statistics;
+
+    sprintf(buf, "(player (id %d) (name %s) (score %d) (num-resource-cards %d) (num-devel-cards %d) (has-largest-army %d) (has-longest-road %d) (num-soldiers %d) (num-settlements %d) (num-cities %d))",
+        i,
+        player_name(i,0),
+        player_get_score(i),
+        stats[STAT_RESOURCES],
+        stats[STAT_DEVELOPMENT],
+        stats[STAT_LARGEST_ARMY],
+        stats[STAT_LONGEST_ROAD],
+        stats[STAT_SOLDIERS],
+        stats[STAT_SETTLEMENTS],
+        stats[STAT_CITIES]
+        );
+    write_clips(buf);
   }
   write_clips(")");
 
@@ -2213,12 +2222,24 @@ void setup_clips(void)
   write_clips("(deffacts misc-info");
 
   /* Have the dice been rolled? */
-  sprintf(buf, "(dice-already-rolled %d)", have_rolled_dice());
-	write_clips(buf);
+  if (have_rolled_dice())
+    write_clips("(dice-already-rolled)");
+
+  /* Number of players */
+  sprintf(buf, "(num-players %d)", num_players());
+  write_clips(buf);
 
   /* My player number */
   sprintf(buf, "(my-num %d)", my_player_num());
   write_clips(buf);
+
+  /* ID of current player */
+  sprintf(buf, "(current-player %d)", current_player());
+  write_clips(buf);
+
+  /* Can we buy a development card? */
+  if (can_buy_develop())
+    write_clips("(can-buy-develop)");
 
   write_clips(")");
   /* END CLIPS INITIALIZATION */
@@ -2390,4 +2411,6 @@ static void end_turn(char * args) {
   cb_end_turn();
 }
 
-void dummy(char * params) { }
+static void roll_dice(char * args) {
+  cb_roll();
+}
