@@ -145,7 +145,7 @@
 
     =>
 
-    (printout t crlf "ACTION: Place Settlement " ?nid crlf)
+    (printout t crlf "ACTION: Build Settlement " ?nid crlf)
     (exit)
 )
 
@@ -170,7 +170,7 @@
 
     =>
 
-    (printout t crlf "ACTION: Place Road " ?eid crlf)
+    (printout t crlf "ACTION: Build Road " ?eid crlf)
     (exit)
 )
 
@@ -270,7 +270,7 @@
 (defrule build-road
     (phase do-turn)
     (my-num ?pid)
-    (player (id ?pid) (num-roads ?num&:(< ?num 15)))
+    ;(player (id ?pid) (num-roads ?num&:(< ?num 15)))
     (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
     (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
     (settlement (player ?pid) (node ?nid))

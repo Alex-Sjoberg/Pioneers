@@ -45,6 +45,7 @@ static void build_road(char*);
 static void end_turn(char*);
 static void roll_dice(char*);
 static void buy_develop(char*);
+static void play_soldier(char*);
 
 struct action {
   char* action;
@@ -61,6 +62,7 @@ const struct action actions[] = {
                  /* 5 */   {"End Turn", &end_turn},
                  /* 6 */   {"Roll Dice", &roll_dice},
                  /* 7 */   {"Buy Development Card", &buy_develop},
+                 /* 8 */   {"Play Soldier", &play_soldier},
                           };
 
 int fd0[2],fd1[2],cpid;
