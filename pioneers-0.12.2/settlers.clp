@@ -66,7 +66,10 @@
     (slot can-play)
 )
 
-
+(deftemplate road-count
+    (slot player)
+    (slot count)
+)
 
 
 
@@ -104,6 +107,33 @@
     =>
     (modify ?n (can-build 1))
 )
+
+; calculate the number of roads each player has
+(defrule init-find-roads
+    (declare (salience 2000))
+    (my-num ?id)
+    =>
+    (assert (road-count (player ?id) (count 0)))
+)
+
+(defrule find-my-roads
+    (declare (salience 1000))
+    (my-num ?id)
+    (road (player ?id))
+    =>
+    (assert (one-road ?id))
+)
+
+(defrule count-my-roads
+    (declare (salience 1000))
+    (my-num ?id)
+    ?o <- (one-road ?id)
+    ?c <- (road-count (player ?id (count ?count)))
+    =>
+    (retract ?o ?c)
+    (assert (road-count (player ?id) (count (+ ?count 1))))
+)
+    
 
 
 
@@ -218,6 +248,63 @@
 )
 
 
+;FINDING THE GOAL
+(defrule determine-goal
+    =>
+    (assert (goal build-road))
+)
+
+
+;TRADING WITH THE BANK
+
+(defrule get-trading-price-1
+    (hex (id ?id) (port 3to1))
+    =>
+    (assert (my-maritime-trade 3))
+)
+(defrule get-trading-price-1
+    (not (hex (id ?id) (port 3to1)))
+    =>
+    (assert (my-maritime-trade 4))
+)
+
+(defrule trade-4-for-road
+    (goal build-road)
+    (my-maritime-trade ?price)
+    (resource-cards (kind ?want-kind&lumber|brick) (amnt 0))
+    (or
+        (resource-cards (kind ?trade&~lumber&~brick) (amnt ?amnt&:(>= ?amnt ?price)))
+        (resource-cards (kind ?trade&~?want&lumber|brick) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    )
+    =>
+    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (exit)
+)
+(defrule trade-4-for-development-card
+    (goal buy-development-card)
+    (my-maritime-trade ?price)
+    (resource-cards (kind ?want&wool|grain|ore) (amnt 0))
+    (or
+        (resource-cards (kind ?trade&~wool&~grain&~ore) (amnt ?amnt&:(>= ?amnt ?price)))
+        (resource-cards (kind ?trade&~?want&wool|grain|ore) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    )
+    =>
+    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (exit)
+)
+(defrule trade-4-for-settlement
+    (goal build-settlement)
+    (my-maritime-trade ?price)
+    (resource-cards (kind ?want&lumber|brick|wool|grain) (amnt 0))
+    (or
+        (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
+        (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    )
+    =>
+    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (exit)
+)
+
 
 
 
@@ -225,7 +312,8 @@
 (defrule move-robber
     (phase place-robber)
     (my-num ?pid)
-    (hex (id ?hid) (number 8))
+    (hex (id ?hid) (prob ?prob))
+    (not (hex (id ~?hid) (prob ?prob2&:(> ?prob2 ?prob))))
     (not (robber (hex ?hid)))
     (not
       (and
