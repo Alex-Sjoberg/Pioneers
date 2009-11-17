@@ -2098,7 +2098,7 @@ void setup_clips(void)
     dup2(fd1[1],1);
     close(fd1[1]);
 
-    execl("/usr/bin/clips","clips",NULL);
+    execlp("clips",  NULL);
   }
 
   close(fd0[0]);

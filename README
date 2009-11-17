@@ -1,1 +1,42 @@
-I want an oompa loompa now!
+David Colgan
+Jesse Denardo
+Expert System for playing Settlers of Catan (a.k.a. Pioneers)
+
+Platform
+---------------------------------------
+Due to the use of the unistd C library, plus bash scripts for configuring,
+compiling, and installing the program, only Unix-like environments are
+supported at this time. Please use Linux. The lab machines are great for this.
+
+
+Dependencies
+---------------------------------------
+Various dependecies must be properly installed for Pioneers to work, but they
+are all installed on matthew and the lab machines. The CLIPS command-line
+environment is also required, but this is bundled with the source code, so fear
+not.
+
+
+Compiling and Installing the Game
+---------------------------------------
+To make a fresh installation of the game and AI, run ./compile.sh from the
+settlers directory (the directory this README file is located in).
+
+
+Running the Game with the Expert System AI
+---------------------------------------
+To start the pioneers game, make sure that [current working directory]/bin is
+in your $PATH. You may execute
+
+$ export PATH=./bin:$PATH
+
+to do this, or better yet, put it in your ~/.bashrc. Then, simply run
+
+$ pioneers &
+
+to start the game. To play against the AI, create a game, set the proper
+settings (leave Server Port as 5556 and the board style as Default). Then start
+the server and launch the client to play. To let the expert system AI connect to
+the game, go back to your terminal and run
+
+$ ./run.sh
