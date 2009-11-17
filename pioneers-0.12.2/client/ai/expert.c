@@ -2300,7 +2300,6 @@ int close_clips(void) {
   int nactions = sizeof(actions)/sizeof(struct action);
   char * pch;
 
-//  write_clips("(watch all)");
   write_clips("(run)");
   write_clips("(exit)");
 
@@ -2324,6 +2323,8 @@ int close_clips(void) {
         actlen = strlen(actions[i].action);
         if (!strncmp(buf+flen, actions[i].action, actlen)) {
           (*actions[i].func)(buf+flen+actlen+1);
+          close(fd1[0]);
+          return;
         }
       }
     }
@@ -2391,7 +2392,7 @@ static void discard(char * args) {
   cb_discard(todiscard);
 }
 
-static void place_settlement(char * args) {
+static void build_settlement(char * args) {
   unsigned long node;
 
   sscanf(args, "%lu", &node);
@@ -2399,7 +2400,15 @@ static void place_settlement(char * args) {
   cb_build_settlement((Node*) node);
 }
 
-static void place_road(char * args) {
+static void build_city(char * args) {
+  unsigned long node;
+
+  sscanf(args, "%lu", &node);
+
+  cb_build_city((Node*) node);
+}
+
+static void build_road(char * args) {
   unsigned long edge;
 
   sscanf(args, "%lu", &edge);
@@ -2413,4 +2422,8 @@ static void end_turn(char * args) {
 
 static void roll_dice(char * args) {
   cb_roll();
+}
+
+static void buy_develop(char * args) {
+  cb_buy_develop();
 }

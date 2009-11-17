@@ -28,6 +28,7 @@
 (deftemplate node
     (slot id (type INTEGER))
     (multislot hexes (type INTEGER) (cardinality 3 3))
+    (slot can-build (default 0))
 )
 
 (deftemplate edge
@@ -38,6 +39,11 @@
 (deftemplate settlement
     (slot player)
     (slot node)
+)
+
+(deftemplate possible-settlement
+    (slot node)
+    (slot prob-sum)
 )
 
 (deftemplate city
@@ -66,86 +72,106 @@
 
 
 
+; swap all the edges so we don't have to match on both orders
+(defrule swap-edges
+    (declare (salience 2000))
+    (edge (id ?eid) (nodes ?n1 ?n2))
+    (not (edge (nodes ?n2 ?n1)))
+    =>
+    (assert (edge (id ?eid) (nodes ?n2 ?n1)))
+)
+
+; calculate which nodes can be built upon and which cannot
+(defrule can-build-on-nodes
+    (declare (salience 1000))
+    ?n <- (node (id ?nid) (hexes $? ?hid $?) (can-build 0))
+    (not
+      (or
+        (settlement (node ?nid))
+        (city (node ?nid))
+      )
+    )
+    (hex (id ?hid) (resource ~desert&~sea))
+    (not
+      (and
+        (or
+          (settlement (node ?cnode))
+          (city (node ?cnode))
+        )
+        (edge (nodes ?nid ?cnode))
+      )
+    )
+    =>
+    (modify ?n (can-build 1))
+)
+
+
+
 
 ; INITIAL-SETUP
-(defrule place-starting-settlement
+(defrule find-settlement-possibilities
     ; At least one settlement to place
     (phase initial-setup)
-    (my-num ?pnum)
-    ?s <- (settlements-to-place ?num&:(> ?num 0))
+    (settlements-to-place ?num&:(> ?num 0))
 
-    ; Find a highest probability hex
-    (hex (id ?hid) (prob ?prob))
-    (not (hex (prob ?other&:(> ?other ?prob))))
-
-    ; Find a node on this hex that doesn't have a settlement
-    (node (id ?nid) (hexes $? ?hid $?))
+    ; Find a node that doesn't have a settlement...
+    (node (id ?nid) (hexes ?h1 ?h2 ?h3))
     (not (settlement (node ?nid)))
+    (hex (id ?h1) (prob ?p1))
+    (hex (id ?h2) (prob ?p2))
+    (hex (id ?h3) (prob ?p3))
 
     ; ...and that isn't next to a node that has a settlement
     (not
       (and
-        (or
-          (edge (nodes ?cnode ?nid))
-          (edge (nodes ?nid ?cnode))
-        )
-        (node (id ?cnode) (hexes $? ?chex $?))
-        (hex (id ?chex) (resource ?res&~sea&~desert))
         (settlement (node ?cnode))
+        (edge (nodes ?nid ?cnode))
       )
     )
+    =>
+    (assert (possible-settlement (node ?nid) (prob-sum (+ ?p1 ?p2 ?p3))))
+)
+
+(defrule place-starting-settlement
+    (declare (salience -10))
+
+    (phase initial-setup)
+    (settlements-to-place ?num&:(> ?num 0))
+    (possible-settlement (node ?nid) (prob-sum ?psum))
+
+    ; ...and for which there is no other possible settlement spot
+    ; which has a higher probability
+    (not (possible-settlement (prob-sum ?psum2&:(> ?psum2 ?psum))))
 
     =>
 
     (printout t crlf "ACTION: Place Settlement " ?nid crlf)
-    (assert (settlement (player ?pnum) (node ?nid)))
-
-    (retract ?s)
-    (assert (settlements-to-place (- ?num 1)))
+    (exit)
 )
 
 (defrule place-starting-road
     (phase initial-setup)
     (my-num ?pnum)
 
-    ?s <- (roads-to-place ?num&:(> ?num 0))
+    (roads-to-place ?num&:(> ?num 0))
 
     (settlement (player ?pnum) (node ?nid))
     (not
       (and
-        (edge (id ?eid) (nodes $? ?nid $?))
         (road (edge ?eid))
+        (edge (id ?eid) (nodes $? ?nid $?))
       )
     )
 
-    ; DEBUG
-    ;(node (id ?nid) (hexes ?h1 ?h2 ?h3))
-    ;(hex (id ?h1) (resource ?res1))
-    ;(hex (id ?h2) (resource ?res2))
-    ;(hex (id ?h3) (resource ?res3))
-
-    (or
-      (edge (id ?eid) (nodes ?cnode ?nid))
-      (edge (id ?eid) (nodes ?nid ?cnode))
-    )
+    (edge (id ?eid) (nodes ?nid ?cnode))
     (not (road (edge ?eid)))
     (node (id ?cnode) (hexes $? ?chex $?))
     (hex (id ?chex) (resource ?res&~sea&~desert))
 
-    ; DEBUG
-    ;(node (id ?cnode) (hexes ?h4 ?h5 ?h6))
-    ;(hex (id ?h4) (resource ?res4))
-    ;(hex (id ?h5) (resource ?res5))
-    ;(hex (id ?h6) (resource ?res6))
-
     =>
-    ;(printout t "DEBUG: node1=" ?res1 " " ?res2 " " ?res3 " ; node2=" ?res4 " " ?res5 " " ?res6 crlf);
 
     (printout t crlf "ACTION: Place Road " ?eid crlf)
-    (assert (road (player ?pnum) (edge ?eid)))
-
-    (retract ?s)
-    (assert (roads-to-place (- ?num 1)))
+    (exit)
 )
 
 (defrule end-initial-setup
@@ -174,6 +200,7 @@
     (discarding)
     ?n <- (num-to-discard ?num&:(> ?num 0))
     ?c <- (resource-cards (kind ?kind) (amnt ?amnt&:(> ?amnt 0)))
+    (not (resource-cards (amnt ?namnt&:(> ?namnt ?amnt))))
     =>
     (retract ?n)
     (assert (num-to-discard (- ?num 1)))
@@ -197,8 +224,18 @@
 ; MOVE-ROBBER
 (defrule move-robber
     (phase place-robber)
+    (my-num ?pid)
     (hex (id ?hid) (number 8))
     (not (robber (hex ?hid)))
+    (not
+      (and
+        (node (id ?nid) (hexes $? ?hid $?))
+        (or
+          (settlement (node ?nid) (player ?pid))
+          (city (node ?nid) (player ?pid))
+        )
+      )
+    )
     =>
     (printout t crlf "ACTION: Place Robber " ?hid crlf)
     (exit)
@@ -211,7 +248,7 @@
     (declare (salience 1000))
     (phase do-turn)
     (devel-card (kind soldier) (can-play 1))
-    (my-id ?pid)
+    (my-num ?pid)
     (robber (hex ?hid))
     (node (id ?nid) (hexes $? ?hid $?))
     (or (settlement (player ?pid) (node ?nid))
@@ -232,36 +269,63 @@
 
 (defrule build-road
     (phase do-turn)
-    (my-id ?pid)
-    (resource-cards (kind lumber) (amnt ?amnt&:(>= ?amnt 1)))
-    (resource-cards (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
-    (edge (id ?edge1) (nodes $? ?node $?))
-    (edge (id ?edge2&~?edge1) (nodes $? ?node $?))
+    (my-num ?pid)
+    (player (id ?pid) (num-roads ?num&:(< ?num 15)))
+    (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
+    (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
+    (settlement (player ?pid) (node ?nid))
+    (or
+      (and
+        (edge (id ?eid1) (nodes ?nid ?cnode))
+        (road (player ?pid) (edge ?eid1))
+        (edge (id ?eidtobuild) (nodes ?cnode ?cnode2&~?nid))
+        (node (id ?cnode2) (can-build 1))
+      )
+      (edge (id ?eidtobuild) (nodes ?nid ?cnode2))
+    )
+
+    (not (road (edge ?eidtobuild)))
+
+    (node (id ?cnode2) (hexes ?h1 ?h2 ?h3))
+    (hex (id ?h1) (resource ?res1) (number ?p1))
+    (hex (id ?h2) (resource ?res2) (number ?p2))
+    (hex (id ?h3) (resource ?res3) (number ?p3))
     =>
-    (printout t crlf "ACTION: Build Road " ?edge2 crlf)
+    (printout t crlf "DEBUG: " ?res1 " " ?p1 " | " ?res2 " " ?p2 " | "  " " ?res3 " " ?p3 crlf)
+    (printout t crlf "ACTION: Build Road " ?eidtobuild crlf)
     (exit)
 )
 
 (defrule build-settlement
+    (declare (salience 10))
     (phase do-turn)
-    (my-id ?pid)
-    (resource-cards (kind lumber) (amnt ?amnt&:(>= ?amnt 1)))
-    (resource-cards (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
-    (resource-cards (kind grain) (amnt ?amnt&:(>= ?amnt 1)))
-    (resource-cards (kind wool) (amnt ?amnt&:(>= ?amnt 1)))
-    (road (player ?id&:(= ?id ?pid)) (edge ?edge))
+    (my-num ?pid)
+    (player (id ?pid) (num-settlements ?num&:(< ?num 5)))
+    (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
+    (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
+    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 1)))
+    (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 1)))
+    (road (player ?pid) (edge ?edge))
     (edge (id ?edge) (nodes $? ?node $?))
+    (node (id ?node) (can-build 1))
+
+    (node (id ?node) (hexes ?h1 ?h2 ?h3))
+    (hex (id ?h1) (resource ?res1) (number ?p1))
+    (hex (id ?h2) (resource ?res2) (number ?p2))
+    (hex (id ?h3) (resource ?res3) (number ?p3))
     =>
-    (printout t crlf "ACTION: Build Settlement " ?edge crlf)
+    (printout t crlf "DEBUG: " ?res1 " " ?p1 " | " ?res2 " " ?p2 " | "  " " ?res3 " " ?p3 crlf)
+    (printout t crlf "ACTION: Build Settlement " ?node crlf)
     (exit)
 )
 
 (defrule build-city
+    (declare (salience 20))
     (phase do-turn)
-    (my-id ?pid)
+    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
+    (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
+    (my-num ?pid)
     (settlement (player ?pid) (node ?node))
-    (resource-cards (kind grain) (amnt ?amnt&:(>= ?amnt 2)))
-    (resource-cards (kind ore) (amnt ?amnt&:(>= ?amnt 3)))
     =>
     (printout t crlf "ACTION: Build City " ?node crlf)
     (exit)
@@ -280,7 +344,7 @@
 (defrule end-turn
     (declare (salience -1000))
     =>
-    (printout t crlf "ACTION: End Turn" crlf)
+    (printout t crlf "ACTION: End Turn (default)" crlf)
     (exit)
 )
 

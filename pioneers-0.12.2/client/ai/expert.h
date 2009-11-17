@@ -39,10 +39,12 @@ int close_clips(void);
 
 static void place_robber(char*);
 static void discard(char*);
-static void place_settlement(char*);
-static void place_road(char*);
+static void build_settlement(char*);
+static void build_city(char*);
+static void build_road(char*);
 static void end_turn(char*);
 static void roll_dice(char*);
+static void buy_develop(char*);
 
 struct action {
   char* action;
@@ -53,10 +55,12 @@ const char* flag = "ACTION: ";
 const struct action actions[] = {
                  /* 0 */   {"Place Robber", &place_robber},
                  /* 1 */   {"Discard", &discard},
-                 /* 2 */   {"Place Settlement", &place_settlement},
-                 /* 3 */   {"Place Road", &place_road},
-                 /* 4 */   {"End Turn", &end_turn},
-                 /* 5 */   {"Roll Dice", &roll_dice},
+                 /* 2 */   {"Build Settlement", &build_settlement},
+                 /* 3 */   {"Build City", &build_city},
+                 /* 4 */   {"Build Road", &build_road},
+                 /* 5 */   {"End Turn", &end_turn},
+                 /* 6 */   {"Roll Dice", &roll_dice},
+                 /* 7 */   {"Buy Development Card", &buy_develop},
                           };
 
 int fd0[2],fd1[2],cpid;
