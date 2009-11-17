@@ -2098,7 +2098,7 @@ void setup_clips(void)
     dup2(fd1[1],1);
     close(fd1[1]);
 
-    execl("/usr/bin/clips","clips",NULL);
+    execlp("clips",  NULL);
   }
 
   close(fd0[0]);
@@ -2426,4 +2426,18 @@ static void roll_dice(char * args) {
 
 static void buy_develop(char * args) {
   cb_buy_develop();
+}
+
+static void play_soldier(char * args) {
+  const DevelDeck * deck = get_devel_deck();
+  int i;
+
+  for (i = 0; i < deck->num_cards; i++) {
+    DevelType cardtype = deck_card_type(deck, i);
+
+    if (cardtype == DEVEL_SOLDIER) {
+      cb_play_develop(i);
+      return;
+    }
+  }
 }
