@@ -304,6 +304,17 @@
     (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
     (exit)
 )
+(defrule trade-4-for-settlement
+    (goal build-city)
+    (my-maritime-trade ?price)
+    (resource-cards (kind grain) (amnt ?amnt&:(< ?amnt 2))
+    (resource-cards (kind ore) (amnt ?amnt&:(< ?amnt 3))
+    (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
+    (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    =>
+    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (exit)
+)
 
 
 
