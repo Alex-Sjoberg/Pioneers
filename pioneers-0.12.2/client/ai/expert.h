@@ -84,7 +84,7 @@ const char * port_mapping[] = {
   "ore",
   "wool",
   "lumber",
-  "none",
+  "nil",
   "3to1"
 };
 

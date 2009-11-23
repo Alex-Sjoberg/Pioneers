@@ -73,6 +73,23 @@
     (slot count)
 )
 
+(deftemplate port
+  (multislot port-hex)
+  (multislot conn-hex)
+)
+
+(deffacts port-locations
+  (port (port-hex 6 2) (conn-hex 5 2))
+  (port (port-hex 6 4) (conn-hex 5 3))
+  (port (port-hex 5 5) (conn-hex 4 5))
+  (port (port-hex 3 6) (conn-hex 3 5))
+  (port (port-hex 1 5) (conn-hex 2 5))
+  (port (port-hex 0 4) (conn-hex 1 3))
+  (port (port-hex 0 2) (conn-hex 1 2))
+  (port (port-hex 2 1) (conn-hex 2 2))
+  (port (port-hex 4 1) (conn-hex 4 2))
+)
+
 
 
 
@@ -110,30 +127,11 @@
     (modify ?n (can-build 1))
 )
 
-(defrule calculate-port-nodes-0
+(defrule calculate-port-nodes
     (declare (salience 2000))
-    (or
-      (and
-        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 0))
-        (hex (id ?hid2) (xpos ?x) (ypos ?y2&:(+ ?y 1)))
-      )
-      (and
-        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 1))
-        (hex (id ?hid2) (xpos ?x2&:(- ?x 1)) (ypos ?y))
-      )
-      (and
-        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 2))
-        (hex (id ?hid2) (xpos ?x2&:(- ?x 1)) (ypos ?y2&:(- ?y 1)))
-      )
-      (and
-        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 3))
-        (hex (id ?hid2) (xpos ?x) (ypos ?y2&:(- ?y 1)))
-      )
-      (and
-        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 4|5))
-        (hex (id ?hid2) (xpos ?x2&:(+ ?x 1)) (ypos ?y))
-      )
-    )
+    (port (port-hex ?x1 ?y1) (conn-hex ?x2 ?y2))
+    (hex (id ?hid1) (xpos ?x1) (ypos ?y1) (port ?res&~nil))
+    (hex (id ?hid2) (xpos ?x2) (ypos ?y2))
     (or
       ?n <- (node (id ?nid) (hexes $? ?hid1 $? ?hid2 $?) (port nil))
       ?n <- (node (id ?nid) (hexes $? ?hid2 $? ?hid1 $?) (port nil))
@@ -141,8 +139,6 @@
     =>
     (modify ?n (port ?res))
 )
-
-
 
 
 
