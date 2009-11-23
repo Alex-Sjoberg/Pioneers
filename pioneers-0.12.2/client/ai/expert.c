@@ -2117,7 +2117,7 @@ void setup_clips(void)
   Hex * hid;
   Node * nid;
   Edge * eid;
-  int i,j,k,xpos,ypos,number,robber;
+  int i,j,k,xpos,ypos,number,robber,facing;
   const char * resource;
   const char * port;
   char buf[512];
@@ -2130,10 +2130,11 @@ void setup_clips(void)
         ypos = j;
         resource = resource_mapping[hid->terrain];
         port = port_mapping[hid->resource];
+        facing = hid->facing;
         number = hid->roll;
         robber = hid->robber;
 
-        sprintf(buf,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (number %d) (prob %d))",(unsigned long) hid,xpos,ypos,resource,port,number,(int) dice_prob(number));
+        sprintf(buf,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (port-orient %d) (number %d) (prob %d))",(unsigned long) hid,xpos,ypos,resource,port,facing,number,(int) dice_prob(number));
         write_clips(buf);
 
         if (hid->robber) {
