@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd pioneers-0.12.2
+cd pioneers
 make && make install && ../bin/pioneersai -s localhost -p 5556 -n Computer -c -a expert
