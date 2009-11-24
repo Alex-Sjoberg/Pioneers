@@ -110,37 +110,37 @@
     (modify ?n (can-build 1))
 )
 
-(defrule calculate-port-nodes-0
-    (declare (salience 2000))
-    (or
-      (and
-        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 0))
-        (hex (id ?hid2) (xpos ?x) (ypos ?y2&:(+ ?y 1)))
-      )
-      (and
-        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 1))
-        (hex (id ?hid2) (xpos ?x2&:(- ?x 1)) (ypos ?y))
-      )
-      (and
-        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 2))
-        (hex (id ?hid2) (xpos ?x2&:(- ?x 1)) (ypos ?y2&:(- ?y 1)))
-      )
-      (and
-        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 3))
-        (hex (id ?hid2) (xpos ?x) (ypos ?y2&:(- ?y 1)))
-      )
-      (and
-        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 4|5))
-        (hex (id ?hid2) (xpos ?x2&:(+ ?x 1)) (ypos ?y))
-      )
-    )
-    (or
-      ?n <- (node (id ?nid) (hexes $? ?hid1 $? ?hid2 $?) (port nil))
-      ?n <- (node (id ?nid) (hexes $? ?hid2 $? ?hid1 $?) (port nil))
-    )
-    =>
-    (modify ?n (port ?res))
-)
+;(defrule calculate-port-nodes-0
+;    (declare (salience 2000))
+;    (or
+;      (and
+;        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 0))
+;        (hex (id ?hid2) (xpos ?x) (ypos ?y2&:(+ ?y 1)))
+;      )
+;      (and
+;        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 1))
+;        (hex (id ?hid2) (xpos ?x2&:(- ?x 1)) (ypos ?y))
+;      )
+;      (and
+;        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 2))
+;        (hex (id ?hid2) (xpos ?x2&:(- ?x 1)) (ypos ?y2&:(- ?y 1)))
+;      )
+;      (and
+;        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 3))
+;        (hex (id ?hid2) (xpos ?x) (ypos ?y2&:(- ?y 1)))
+;      )
+;      (and
+;        (hex (id ?hid1) (xpos ?x) (ypos ?y) (port ?res&~nil&~none) (port-orient 4|5))
+;        (hex (id ?hid2) (xpos ?x2&:(+ ?x 1)) (ypos ?y))
+;      )
+;    )
+;    (or
+;      ?n <- (node (id ?nid) (hexes $? ?hid1 $? ?hid2 $?) (port nil))
+;      ?n <- (node (id ?nid) (hexes $? ?hid2 $? ?hid1 $?) (port nil))
+;    )
+;    =>
+;    (modify ?n (port ?res))
+;)
 
 
 
