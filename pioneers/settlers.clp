@@ -292,67 +292,69 @@
 
 ;TRADING WITH THE BANK
 
-;(defrule get-trading-price-1
-;    (my-id ?pid)
-;    (settlement (player ?pid) (node ?nid))
-;    (hex (id ?hid) (port 3to1))
-;    (node (id ?nid) (hexes 
-;    =>
-;    (assert (my-maritime-trade 3))
-;)
-;(defrule get-trading-price-2
-;    (not (hex (id ?id) (port 3to1)))
-;    =>
-;    (assert (my-maritime-trade 4))
-;)
-;
-;(defrule trade-4-for-road
-;    (goal build-road)
-;    (my-maritime-trade ?price)
-;    (resource-cards (kind ?want-kind&lumber|brick) (amnt 0))
-;    (or
-;        (resource-cards (kind ?trade&~lumber&~brick) (amnt ?amnt&:(>= ?amnt ?price)))
-;        (resource-cards (kind ?trade&~?want&lumber|brick) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
-;    )
-;    =>
-;    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
-;    (exit)
-;)
-;(defrule trade-4-for-development-card
-;    (goal buy-development-card)
-;    (my-maritime-trade ?price)
-;    (resource-cards (kind ?want&wool|grain|ore) (amnt 0))
-;    (or
-;        (resource-cards (kind ?trade&~wool&~grain&~ore) (amnt ?amnt&:(>= ?amnt ?price)))
-;        (resource-cards (kind ?trade&~?want&wool|grain|ore) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
-;    )
-;    =>
-;    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
-;    (exit)
-;)
-;(defrule trade-4-for-settlement
-;    (goal build-settlement)
-;    (my-maritime-trade ?price)
-;    (resource-cards (kind ?want&lumber|brick|wool|grain) (amnt 0))
-;    (or
-;        (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
-;        (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
-;    )
-;    =>
-;    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
-;    (exit)
-;)
-;(defrule trade-4-for-settlement
-;    (goal build-city)
-;    (my-maritime-trade ?price)
-;    (resource-cards (kind grain) (amnt ?amnt&:(< ?amnt 2))
-;    (resource-cards (kind ore) (amnt ?amnt&:(< ?amnt 3))
-;    (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
-;    (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
-;    =>
-;    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
-;    (exit)
-;)
+;(printout t "Do Maritime numtotrade, resourcetotrade, resourcetoget)
+
+(defrule get-trading-price-1
+    (my-id ?pid)
+    (settlement (player ?pid) (node ?nid))
+    (hex (id ?hid) (port 3to1))
+    (node (id ?nid) (hexes 
+    =>
+    (assert (my-maritime-trade 3))
+)
+(defrule get-trading-price-2
+    (not (hex (id ?id) (port 3to1)))
+    =>
+    (assert (my-maritime-trade 4))
+)
+
+(defrule trade-4-for-road
+    (goal build-road)
+    (my-maritime-trade ?price)
+    (resource-cards (kind ?want-kind&lumber|brick) (amnt 0))
+    (or
+        (resource-cards (kind ?trade&~lumber&~brick) (amnt ?amnt&:(>= ?amnt ?price)))
+        (resource-cards (kind ?trade&~?want&lumber|brick) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    )
+    =>
+    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (exit)
+)
+(defrule trade-4-for-development-card
+    (goal buy-development-card)
+    (my-maritime-trade ?price)
+    (resource-cards (kind ?want&wool|grain|ore) (amnt 0))
+    (or
+        (resource-cards (kind ?trade&~wool&~grain&~ore) (amnt ?amnt&:(>= ?amnt ?price)))
+        (resource-cards (kind ?trade&~?want&wool|grain|ore) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    )
+    =>
+    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (exit)
+)
+(defrule trade-4-for-settlement
+    (goal build-settlement)
+    (my-maritime-trade ?price)
+    (resource-cards (kind ?want&lumber|brick|wool|grain) (amnt 0))
+    (or
+        (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
+        (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    )
+    =>
+    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (exit)
+)
+(defrule trade-4-for-settlement
+    (goal build-city)
+    (my-maritime-trade ?price)
+    (resource-cards (kind grain) (amnt ?amnt&:(< ?amnt 2))
+    (resource-cards (kind ore) (amnt ?amnt&:(< ?amnt 3))
+    (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
+    (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    =>
+    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (exit)
+)
 
 
 
