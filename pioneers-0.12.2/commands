@@ -1,9 +1,0 @@
-find . | grep "\.Po$" | xargs git update-index --assume-unchanged
-git update-index --assume-unchanged server/.deps/*
-git update-index --assume-unchanged client/help/C/Makefile
-git update-index --assume-unchanged config.status
-git update-index --assume-unchanged config.h
-git update-index --assume-unchanged po/Makefile
-git update-index --assume-unchanged po/Makefile.in
-git update-index --assume-unchanged Makefile
-git update-index --assume-unchanged intltool-merge

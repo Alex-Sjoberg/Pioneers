@@ -2098,7 +2098,7 @@ void setup_clips(void)
     dup2(fd1[1],1);
     close(fd1[1]);
 
-    execlp("clips",  NULL);
+    execlp("clips", "clips", (char*) NULL);
   }
 
   close(fd0[0]);
@@ -2108,7 +2108,7 @@ void setup_clips(void)
   **********************************/
 
   /* Load any external files needed */
-  write_clips("(load \"settlers.clp\")");
+  write_clips("(load \"../settlers.clp\")");
 
   /* Output the board state */
   Map * map = callbacks.get_map();
@@ -2445,8 +2445,8 @@ static void play_soldier(char * args) {
 
 static void maritime_trade(char * args) {
   int i, num, ntrade, nget;
-  char * trade_res;
-  char * get_res;
+  char trade_res[20];
+  char get_res[20];
 
   sscanf(args, "%d %s %s", &num, trade_res, get_res);
 
