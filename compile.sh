@@ -2,7 +2,7 @@
 
 INSTALL_DIR=`pwd`
 
-cd pioneers-0.12.2
+cd pioneers
 make distclean
 ./configure --prefix=$INSTALL_DIR
 make
