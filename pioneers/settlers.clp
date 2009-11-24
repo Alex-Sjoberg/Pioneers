@@ -286,24 +286,25 @@
 ;FINDING THE GOAL
 (defrule determine-goal
     =>
-    (assert (goal build-road))
+    (assert (goal build-city))
 )
 
 
 ;TRADING WITH THE BANK
 
-;(printout t "Do Maritime numtotrade, resourcetotrade, resourcetoget)
 
 (defrule get-trading-price-1
+    (declare (salience 2000))
     (my-id ?pid)
     (settlement (player ?pid) (node ?nid))
     (hex (id ?hid) (port 3to1))
-    (node (id ?nid) (hexes 
+    (node (id ?nid) (hexes $? ?hid $?))
     =>
     (assert (my-maritime-trade 3))
 )
 (defrule get-trading-price-2
-    (not (hex (id ?id) (port 3to1)))
+    ;(not (hex (id ?id) (port 3to1)))
+    (declare (salience 2000))
     =>
     (assert (my-maritime-trade 4))
 )
@@ -311,13 +312,13 @@
 (defrule trade-4-for-road
     (goal build-road)
     (my-maritime-trade ?price)
-    (resource-cards (kind ?want-kind&lumber|brick) (amnt 0))
+    (resource-cards (kind ?want&lumber|brick) (amnt 0))
     (or
         (resource-cards (kind ?trade&~lumber&~brick) (amnt ?amnt&:(>= ?amnt ?price)))
         (resource-cards (kind ?trade&~?want&lumber|brick) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
     )
     =>
-    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
     (exit)
 )
 (defrule trade-4-for-development-card
@@ -329,7 +330,7 @@
         (resource-cards (kind ?trade&~?want&wool|grain|ore) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
     )
     =>
-    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
     (exit)
 )
 (defrule trade-4-for-settlement
@@ -341,21 +342,25 @@
         (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
     )
     =>
-    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
     (exit)
 )
-(defrule trade-4-for-settlement
+(defrule trade-4-for-city
     (goal build-city)
     (my-maritime-trade ?price)
-    (resource-cards (kind grain) (amnt ?amnt&:(< ?amnt 2))
-    (resource-cards (kind ore) (amnt ?amnt&:(< ?amnt 3))
-    (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
-    (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    (or
+        (resource-cards (kind ?want&grain) (amnt ?amnt&:(< ?amnt 2)))
+        (resource-cards (kind ?want&ore) (amnt ?amnt&:(< ?amnt 3)))
+    )
+    (or
+        (resource-cards (kind ?trade&~grain&~ore) (amnt ?amnt2&:(>= ?amnt2 ?price)))
+        (resource-cards (kind ?trade&grain) (amnt ?amnt2&:(> ?amnt2 (+ ?price 2))))
+        (resource-cards (kind ?trade&ore) (amnt ?amnt2&:(> ?amnt2 (+ ?price 3))))
+    )
     =>
-    (printout t crlf "ACTION: Trade " ?price ?trade " for 1 " ?want crlf)
+    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
     (exit)
 )
-
 
 
 
@@ -408,6 +413,7 @@
 
 (defrule build-road
     (phase do-turn)
+    ;(goal build-road)
     (my-num ?pid)
     ;(player (id ?pid) (num-roads ?num&:(< ?num 15)))
     (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
@@ -438,6 +444,7 @@
 (defrule build-settlement
     (declare (salience 10))
     (phase do-turn)
+    ;(goal build-settlement)
     (my-num ?pid)
     (player (id ?pid) (num-settlements ?num&:(< ?num 5)))
     (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
@@ -461,6 +468,7 @@
 (defrule build-city
     (declare (salience 20))
     (phase do-turn)
+    ;(goal build-city)
     (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
     (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
     (my-num ?pid)
@@ -472,6 +480,7 @@
 
 (defrule buy-devel-card
     (phase do-turn)
+    ;(goal buy-devel-card)
     (resource-cards (kind wool) (amnt ?amnt&:(>= ?amnt 1)))
     (resource-cards (kind grain) (amnt ?amnt&:(>= ?amnt 1)))
     (resource-cards (kind ore) (amnt ?amnt&:(>= ?amnt 1)))
