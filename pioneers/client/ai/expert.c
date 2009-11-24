@@ -2442,3 +2442,20 @@ static void play_soldier(char * args) {
     }
   }
 }
+
+static void maritime_trade(char * args) {
+  int i, num, ntrade, nget;
+  char * trade_res;
+  char * get_res;
+
+  sscanf(args, "%d %s %s", &num, trade_res, get_res);
+
+  for (i = 0; i < NO_RESOURCE; i++) {
+    if (strncmp(trade_res, resource_mapping[i], strlen(resource_mapping[i])) == 0)
+      ntrade = i;
+    if (strncmp(get_res, resource_mapping[i], strlen(resource_mapping[i])) == 0)
+      nget = i;
+  }
+
+  cb_maritime(num, ntrade, nget);
+}
