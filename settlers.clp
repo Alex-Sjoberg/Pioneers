@@ -90,26 +90,101 @@
   (port (port-hex 4 1) (conn-hex 4 2))
 )
 
-(deffacts consts
-  (goal build-settlement)
+
+(deffacts initial-state
+  (phase init-turn)
 )
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                      INIT-TURN
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; FINDING THE GOAL
+(defrule determine-goal
+    (phase init-turn)
+    =>
+    (assert (goal build-city))
+)
+
 ; swap all the edges so we don't have to match on both orders
 (defrule swap-edges
-    (declare (salience 2000))
+    (phase init-turn)
     (edge (id ?eid) (nodes ?n1 ?n2))
     (not (edge (nodes ?n2 ?n1)))
     =>
     (assert (edge (id ?eid) (nodes ?n2 ?n1)))
 )
 
+(defrule calculate-port-nodes
+    (phase init-turn)
+    (port (port-hex ?x1 ?y1) (conn-hex ?x2 ?y2))
+    (hex (id ?hid1) (xpos ?x1) (ypos ?y1) (port ?res&~nil))
+    (hex (id ?hid2) (xpos ?x2) (ypos ?y2))
+    (or
+      ?n <- (node (id ?nid) (hexes $? ?hid1 $? ?hid2 $?) (port nil))
+      ?n <- (node (id ?nid) (hexes $? ?hid2 $? ?hid1 $?) (port nil))
+    )
+    =>
+    (modify ?n (port ?res))
+)
+
+; calculate the number of roads each player has
+(defrule init-find-roads
+    (phase init-turn)
+    (my-num ?id)
+    =>
+    (assert (road-count (player ?id) (count 0)))
+)
+
+(defrule get-trading-price-1
+    (phase init-turn)
+    (my-id ?pid)
+    (settlement (player ?pid) (node ?nid))
+    ;(hex (id ?hid) (port 3to1))
+    (node (id ?nid) (port 3to1))
+    =>
+    (assert (my-maritime-trade 3))
+)
+(defrule get-trading-price-2
+    ;(not (hex (id ?id) (port 3to1)))
+    (phase init-turn)
+    =>
+    (assert (my-maritime-trade 4))
+)
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                     INIT-TURN-2
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ; calculate which nodes can be built upon and which cannot
 (defrule can-build-on-nodes
-    (declare (salience 1000))
+    (phase init-turn-2)
     ?n <- (node (id ?nid) (hexes $? ?hid $?) (can-build 0))
     (not
       (or
@@ -131,32 +206,8 @@
     (modify ?n (can-build 1))
 )
 
-(defrule calculate-port-nodes
-    (declare (salience 2000))
-    (port (port-hex ?x1 ?y1) (conn-hex ?x2 ?y2))
-    (hex (id ?hid1) (xpos ?x1) (ypos ?y1) (port ?res&~nil))
-    (hex (id ?hid2) (xpos ?x2) (ypos ?y2))
-    (or
-      ?n <- (node (id ?nid) (hexes $? ?hid1 $? ?hid2 $?) (port nil))
-      ?n <- (node (id ?nid) (hexes $? ?hid2 $? ?hid1 $?) (port nil))
-    )
-    =>
-    (modify ?n (port ?res))
-)
-
-
-
-
-; calculate the number of roads each player has
-(defrule init-find-roads
-    (declare (salience 2000))
-    (my-num ?id)
-    =>
-    (assert (road-count (player ?id) (count 0)))
-)
-
 (defrule find-my-roads
-    (declare (salience 1000))
+    (phase init-turn-2)
     (my-num ?id)
     (road (player ?id))
     =>
@@ -164,7 +215,7 @@
 )
 
 (defrule count-my-roads
-    (declare (salience 1000))
+    (phase init-turn-2)
     (my-num ?id)
     ?o <- (one-road ?id)
     ?c <- (road-count (player ?id) (count ?count))
@@ -177,10 +228,27 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                         TURN
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ; INITIAL-SETUP
 (defrule find-settlement-possibilities
     ; At least one settlement to place
-    (phase initial-setup)
+    (phase turn)
+    (game-phase initial-setup)
     (settlements-to-place ?num&:(> ?num 0))
 
     ; Find a node that doesn't have a settlement...
@@ -204,7 +272,8 @@
 (defrule place-starting-settlement
     (declare (salience -10))
 
-    (phase initial-setup)
+    (phase turn)
+    (game-phase initial-setup)
     (settlements-to-place ?num&:(> ?num 0))
     (possible-settlement (node ?nid) (prob-sum ?psum))
 
@@ -219,7 +288,8 @@
 )
 
 (defrule place-starting-road
-    (phase initial-setup)
+    (phase turn)
+    (game-phase initial-setup)
     (my-num ?pnum)
 
     (roads-to-place ?num&:(> ?num 0))
@@ -244,7 +314,8 @@
 )
 
 (defrule end-initial-setup
-    (phase initial-setup)
+    (phase turn)
+    (game-phase initial-setup)
     (settlements-to-place 0)
     (roads-to-place 0)
     =>
@@ -258,14 +329,16 @@
 
 ; DISCARD
 (defrule discard-cards
-    (phase discard)
+    (phase turn)
+    (game-phase discard)
     =>
     (assert (discarding))
     (printout t crlf "ACTION: Discard")
 )
 
 (defrule find-least-valuable-card
-    (phase discard)
+    (phase turn)
+    (game-phase discard)
     (discarding)
     ?n <- (num-to-discard ?num&:(> ?num 0))
     ?c <- (resource-cards (kind ?kind) (amnt ?amnt&:(> ?amnt 0)))
@@ -279,6 +352,7 @@
 
 (defrule done-discarding
     (declare (salience -10))
+    (phase turn)
     ?f <- (discarding)
     =>
     (retract ?f)
@@ -287,33 +361,17 @@
 )
 
 
-;FINDING THE GOAL
-(defrule determine-goal
-    =>
-    (assert (goal build-city))
-)
+
+
+
+
 
 
 ;TRADING WITH THE BANK
 
-
-(defrule get-trading-price-1
-    (declare (salience 2000))
-    (my-id ?pid)
-    (settlement (player ?pid) (node ?nid))
-    ;(hex (id ?hid) (port 3to1))
-    (node (id ?nid) (port 3to1))
-    =>
-    (assert (my-maritime-trade 3))
-)
-(defrule get-trading-price-2
-    ;(not (hex (id ?id) (port 3to1)))
-    (declare (salience 2000))
-    =>
-    (assert (my-maritime-trade 4))
-)
-
 (defrule trade-4-for-road
+    (phase turn)
+    (game-phase do-turn)
     (goal build-road)
     (my-maritime-trade ?price)
     (resource-cards (kind ?want&lumber|brick) (amnt 0))
@@ -326,6 +384,8 @@
     (exit)
 )
 (defrule trade-4-for-development-card
+    (phase turn)
+    (game-phase do-turn)
     (goal buy-development-card)
     (my-maritime-trade ?price)
     (resource-cards (kind ?want&wool|grain|ore) (amnt 0))
@@ -338,6 +398,8 @@
     (exit)
 )
 (defrule trade-4-for-settlement
+    (phase turn)
+    (game-phase do-turn)
     (goal build-settlement)
     (my-maritime-trade ?price)
     (resource-cards (kind ?want&lumber|brick|wool|grain) (amnt 0))
@@ -350,6 +412,8 @@
     (exit)
 )
 (defrule trade-4-for-city
+    (phase turn)
+    (game-phase do-turn)
     (goal build-city)
     (my-maritime-trade ?price)
     (or
@@ -368,21 +432,47 @@
 
 
 
+
+
+
+
+
 ; MOVE-ROBBER
-(defrule move-robber
-    (declare (salience 1))
-    (phase place-robber)
+(defrule find-robber-placements
+;    (declare (salience 2))
+    (phase turn)
+    (game-phase place-robber)
     (my-num ?pid)
-    (hex (id ?hid) (prob ?prob))
-    (not (hex (id ~?hid) (prob ?prob2&:(> ?prob2 ?prob))))
+    (or
+      (settlement (player ~?pid) (node ?nid))
+      (city (player ~?pid) (node ?nid))
+    )
+    (node (id ?nid) (hexes $? ?hid $?))
     (not (robber (hex ?hid)))
+    (hex (id ?hid) (prob ?prob))
     (not
       (and
-        (node (id ?nid) (hexes $? ?hid $?))
+        (node (id ?tnid) (hexes $? ?hid $?))
         (or
-          (settlement (node ?nid) (player ?pid))
-          (city (node ?nid) (player ?pid))
+          (settlement (player ?pid) (node ?tnid))
+          (city (player ?pid) (node ?tnid))
         )
+      )
+    )
+    =>
+    (assert (potential-robber-placement ?hid))
+)
+
+(defrule move-robber
+;    (declare (salience 1))
+    (phase turn)
+    (game-phase place-robber)
+    (potential-robber-placement ?hid)
+    (hex (id ?hid) (prob ?prob))
+    (not
+      (and
+        (potential-robber-placement ?hid2)
+        (hex (id ?hid2) (prob ?prob2&:(> ?prob2 ?prob)))
       )
     )
     =>
@@ -392,10 +482,15 @@
 
 
 
+
+
+
+
 ; DO-TURN
 (defrule play-soldier
     (declare (salience 1000))
-    (phase do-turn)
+    (phase turn)
+    (game-phase do-turn)
     (devel-card (kind soldier) (can-play 1))
     (my-num ?pid)
     (robber (hex ?hid))
@@ -407,9 +502,18 @@
     (exit)
 )
 
+(defrule play-victory
+    (phase turn)
+    (game-phase do-turn)
+    (devel-card (kind victory) (can-play 1))
+    =>
+    (printout t crlf "ACTION: Play Victory" crlf)
+)
+
 (defrule roll-dice
     (declare (salience 500))
-    (phase do-turn)
+    (phase turn)
+    (game-phase do-turn)
     (not (dice-already-rolled))
     =>
     (printout t crlf "ACTION: Roll Dice" crlf)
@@ -417,7 +521,8 @@
 )
 
 (defrule build-road
-    (phase do-turn)
+    (phase turn)
+    (game-phase do-turn)
     ;(goal build-road)
     (my-num ?pid)
     ;(player (id ?pid) (num-roads ?num&:(< ?num 15)))
@@ -451,7 +556,8 @@
 
 (defrule build-settlement
     (declare (salience 10))
-    (phase do-turn)
+    (phase turn)
+    (game-phase do-turn)
     ;(goal build-settlement)
     (my-num ?pid)
     (player (id ?pid) (num-settlements ?num&:(< ?num 5)))
@@ -475,7 +581,8 @@
 
 (defrule build-city
     (declare (salience 20))
-    (phase do-turn)
+    (phase turn)
+    (game-phase do-turn)
     (my-num ?pid)
     (player (id ?pid) (num-cities ?num&:(< ?num 4)))
     ;(goal build-city)
@@ -489,7 +596,8 @@
 )
 
 (defrule buy-devel-card
-    (phase do-turn)
+    (phase turn)
+    (game-phase do-turn)
     ;(goal buy-devel-card)
     (resource-cards (kind wool) (amnt ?amnt&:(>= ?amnt 1)))
     (resource-cards (kind grain) (amnt ?amnt&:(>= ?amnt 1)))
@@ -499,12 +607,70 @@
     (exit)
 )
 
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                       END-TURN
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defrule end-turn
-    (declare (salience -1000))
+    (phase end-turn)
     =>
     (printout t crlf "ACTION: End Turn (default)" crlf)
     (exit)
 )
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                      CONTROL-FACTS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defrule move-to-init-turn-2
+  (declare (salience -100))
+  ?f <- (phase init-turn)
+  =>
+  (retract ?f)
+  (assert (phase init-turn-2))
+)
+
+(defrule move-to-turn
+  (declare (salience -100))
+  ?f <- (phase init-turn-2)
+  =>
+  (retract ?f)
+  (assert (phase turn))
+)
+
+(defrule move-to-end-turn
+  (declare (salience -100))
+  ?f <- (phase turn)
+  =>
+  (retract ?f)
+  (assert (phase end-turn))
+)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ;Settlers of Catan

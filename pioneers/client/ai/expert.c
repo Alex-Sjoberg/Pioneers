@@ -1174,7 +1174,7 @@ static gboolean will_play_development_card(DevelType cardtype)
 static void expert_turn(void)
 {
   setup_clips();
-  write_clips("(assert (phase do-turn))");
+  write_clips("(assert (game-phase do-turn))");
   close_clips();
 #if 0
 	resource_values_t resval;
@@ -1424,7 +1424,7 @@ static void expert_place_robber(void)
 	float bestscore = -1000;
 
   setup_clips();
-  write_clips("(assert (phase place-robber))");
+  write_clips("(assert (game-phase place-robber))");
   close_clips();
 }
 
@@ -1673,7 +1673,7 @@ static void expert_discard(int num)
 {
   setup_clips();
 
-  write_clips("(assert (phase discard))");
+  write_clips("(assert (game-phase discard))");
   sprintf(buf,"(assert (num-to-discard %d))",num);
   write_clips(buf);
 
@@ -1819,7 +1819,7 @@ static void expert_setup(unsigned num_settlements, unsigned num_roads)
 	ai_wait();
 
   setup_clips();
-  write_clips("(assert (phase initial-setup))");
+  write_clips("(assert (game-phase initial-setup))");
 
   sprintf(buf, "(assert (settlements-to-place %d))", num_settlements);
   write_clips(buf);
@@ -2437,6 +2437,24 @@ static void play_soldier(char * args) {
     DevelType cardtype = deck_card_type(deck, i);
 
     if (cardtype == DEVEL_SOLDIER) {
+      cb_play_develop(i);
+      return;
+    }
+  }
+}
+
+static void play_victory(char * args) {
+  const DevelDeck * deck = get_devel_deck();
+  int i;
+
+  for (i = 0; i < deck->num_cards; i++) {
+    DevelType cardtype = deck_card_type(deck, i);
+
+    if (cardtype == DEVEL_CHAPEL ||
+        cardtype == DEVEL_UNIVERSITY ||
+        cardtype == DEVEL_GOVERNORS_HOUSE ||
+        cardtype == DEVEL_LIBRARY ||
+        cardtype == DEVEL_MARKET) {
       cb_play_develop(i);
       return;
     }

@@ -1,0 +1,6 @@
+libglib2.0-dev
+intltool
+autoconf
+libtool
+automake1.10
+libgtk2.0-dev
