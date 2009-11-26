@@ -92,7 +92,7 @@
 
 
 (deffacts initial-state
-  (phase init-turn)
+  (phase init-turn-1)
 )
 
 
@@ -120,14 +120,14 @@
 
 ; FINDING THE GOAL
 (defrule determine-goal
-    (phase init-turn)
+    (phase init-turn-1)
     =>
     (assert (goal build-city))
 )
 
 ; swap all the edges so we don't have to match on both orders
 (defrule swap-edges
-    (phase init-turn)
+    (phase init-turn-1)
     (edge (id ?eid) (nodes ?n1 ?n2))
     (not (edge (nodes ?n2 ?n1)))
     =>
@@ -135,7 +135,7 @@
 )
 
 (defrule calculate-port-nodes
-    (phase init-turn)
+    (phase init-turn-1)
     (port (port-hex ?x1 ?y1) (conn-hex ?x2 ?y2))
     (hex (id ?hid1) (xpos ?x1) (ypos ?y1) (port ?res&~nil))
     (hex (id ?hid2) (xpos ?x2) (ypos ?y2))
@@ -149,14 +149,21 @@
 
 ; calculate the number of roads each player has
 (defrule init-find-roads
-    (phase init-turn)
-    (my-num ?id)
+    (phase init-turn-1)
+    (player (id ?pid))
     =>
-    (assert (road-count (player ?id) (count 0)))
+    (assert (road-count (player ?pid) (count 0)))
+)
+
+(defrule count-roads
+    (phase init-turn-2)
+    (road (player ?pid))
+    =>
+    (assert (add-to-road-sum ?pid))
 )
 
 (defrule get-trading-price-1
-    (phase init-turn)
+    (phase init-turn-1)
     (my-id ?pid)
     (settlement (player ?pid) (node ?nid))
     ;(hex (id ?hid) (port 3to1))
@@ -166,7 +173,7 @@
 )
 (defrule get-trading-price-2
     ;(not (hex (id ?id) (port 3to1)))
-    (phase init-turn)
+    (phase init-turn-1)
     =>
     (assert (my-maritime-trade 4))
 )
@@ -206,22 +213,12 @@
     (modify ?n (can-build 1))
 )
 
-(defrule find-my-roads
-    (phase init-turn-2)
-    (my-num ?id)
-    (road (player ?id))
+(defrule count-road-sums
+    ?c <- (add-to-road-sum ?pid)
+    ?f <- (road-count (player ?pid) (count ?cnt))
     =>
-    (assert (one-road ?id))
-)
-
-(defrule count-my-roads
-    (phase init-turn-2)
-    (my-num ?id)
-    ?o <- (one-road ?id)
-    ?c <- (road-count (player ?id) (count ?count))
-    =>
-    (retract ?o ?c)
-    (assert (road-count (player ?id) (count (+ ?count 1))))
+    (retract ?c)
+    (modify ?f (count (+ ?cnt 1)))
 )
 
 
@@ -439,7 +436,7 @@
 
 ; MOVE-ROBBER
 (defrule find-robber-placements
-;    (declare (salience 2))
+    (declare (salience 2))
     (phase turn)
     (game-phase place-robber)
     (my-num ?pid)
@@ -464,7 +461,7 @@
 )
 
 (defrule move-robber
-;    (declare (salience 1))
+    (declare (salience 1))
     (phase turn)
     (game-phase place-robber)
     (potential-robber-placement ?hid)
@@ -476,6 +473,7 @@
       )
     )
     =>
+    (facts)
     (printout t crlf "ACTION: Place Robber " ?hid crlf)
     (exit)
 )
@@ -525,7 +523,7 @@
     (game-phase do-turn)
     ;(goal build-road)
     (my-num ?pid)
-    ;(player (id ?pid) (num-roads ?num&:(< ?num 15)))
+    (road-count (player ?pid) (count ?cnt&:(< ?cnt 15)))
     (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
     (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
     (or
@@ -638,7 +636,7 @@
 
 (defrule move-to-init-turn-2
   (declare (salience -100))
-  ?f <- (phase init-turn)
+  ?f <- (phase init-turn-1)
   =>
   (retract ?f)
   (assert (phase init-turn-2))
