@@ -1,2 +1,8 @@
-BUG: There is no good function in Pioneers to see the number of roads that a player has used, even though it is public knowledge. Thus, the AI will have to calculate this from the number of (road (player ?pid)) facts it sees and then use this to make sure that it doesn't try to place more than 15 roads.
+BUG: Check to see if there are development cards left in the deck before trying to buy one.
+
+
+Fixed bugs:
+
 BUG: When placing a robber, it will only place on an 8 that isn't touching itself. If it can't find one, then it probably won't work.
+BUG: There is no good function in Pioneers to see the number of roads that a player has used, even though it is public knowledge. Thus, the AI will have to calculate this from the number of (road (player ?pid)) facts it sees and then use this to make sure that it doesn't try to place more than 15 roads.
+BUG: Bad graphics.
