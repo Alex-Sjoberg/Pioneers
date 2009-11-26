@@ -16,9 +16,8 @@
     (slot xpos)
     (slot ypos)
     (slot resource (allowed-values lumber brick wool grain ore sea desert))
-    (slot port)
-    (slot port-orient)
-    (slot number (default 0))
+    (slot port (allowed-values lumber brick wool grain ore 3to1 nil))
+    (slot number (default 0) (range 0 12))
     (slot prob (type INTEGER) (range 0 5))
 )
 
@@ -34,7 +33,7 @@
 )
 
 (deftemplate edge
-    (slot id)
+    (slot id (type INTEGER))
     (multislot nodes (type INTEGER) (cardinality 2 2))
 )
 
@@ -59,12 +58,13 @@
 )
 
 (deftemplate resource-cards
-    (slot kind)
-    (slot amnt)
+    (slot kind (allowed-values lumber brick wool grain ore sea desert))
+    (slot amnt (type INTEGER))
 )
 
 (deftemplate devel-card
-    (slot kind)
+    (slot kind (allowed-values road_building monopoly year_of_plenty victory soldier))
+    (slot amnt (type INTEGER))
     (slot can-play)
 )
 
@@ -581,9 +581,9 @@
     (declare (salience 20))
     (phase turn)
     (game-phase do-turn)
+    ;(goal build-city)
     (my-num ?pid)
     (player (id ?pid) (num-cities ?num&:(< ?num 4)))
-    ;(goal build-city)
     (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
     (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
     (my-num ?pid)
@@ -593,13 +593,14 @@
     (exit)
 )
 
-(defrule buy-devel-card
+(defrule buy-development-card
     (phase turn)
     (game-phase do-turn)
-    ;(goal buy-devel-card)
-    (resource-cards (kind wool) (amnt ?amnt&:(>= ?amnt 1)))
-    (resource-cards (kind grain) (amnt ?amnt&:(>= ?amnt 1)))
-    (resource-cards (kind ore) (amnt ?amnt&:(>= ?amnt 1)))
+    ;(goal buy-development-card)
+    (num-develop-in-deck ~0)
+    (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 1)))
+    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 1)))
+    (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 1)))
     =>
     (printout t crlf "ACTION: Buy Development Card" crlf)
     (exit)

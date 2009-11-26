@@ -66,7 +66,7 @@ const struct action actions[] = {
                  /* 7 */   {"Buy Development Card", &buy_develop},
                  /* 8 */   {"Play Soldier", &play_soldier},
                  /* 9 */   {"Play Victory", &play_victory},
-                 /* 10 */   {"Do Maritime", &maritime_trade},
+                 /* 10 */  {"Do Maritime", &maritime_trade},
                           };
 
 int fd0[2],fd1[2],cpid;
@@ -96,10 +96,6 @@ const char * devel_mapping[] = {
   "road_building",
   "monopoly",
   "year_of_plenty",
-  "victory",
-  "victory",
-  "victory",
-  "victory",
   "victory",
   "soldier"
 };

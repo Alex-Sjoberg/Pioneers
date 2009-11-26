@@ -2130,11 +2130,10 @@ void setup_clips(void)
         ypos = j;
         resource = resource_mapping[hid->terrain];
         port = port_mapping[hid->resource];
-        facing = hid->facing;
         number = hid->roll;
         robber = hid->robber;
 
-        sprintf(buf,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (port-orient %d) (number %d) (prob %d))",(unsigned long) hid,xpos,ypos,resource,port,facing,number,(int) dice_prob(number));
+        sprintf(buf,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (number %d) (prob %d))",(unsigned long) hid,xpos,ypos,resource,port,number,(int) dice_prob(number));
         write_clips(buf);
 
         if (hid->robber) {
@@ -2190,8 +2189,29 @@ void setup_clips(void)
 
   /* Development cards */
   const DevelDeck * deck = get_devel_deck();
+  int devels[5][2] = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0} };
   for (i = 0; i < deck->num_cards; i++) {
-    sprintf(buf, "(devel-card (kind %s) (can-play %d))", devel_mapping[deck->cards[i].type], can_play_develop(i));
+    int j;
+    switch (deck->cards[i].type) {
+      case DEVEL_CHAPEL:
+      case DEVEL_UNIVERSITY:
+      case DEVEL_GOVERNORS_HOUSE:
+      case DEVEL_LIBRARY:
+      case DEVEL_MARKET:
+        j = 3;
+        break;
+      case DEVEL_SOLDIER:
+        j = 4;
+        break;
+      default:
+        j = i;
+    }
+    devels[j][0]++;
+    devels[j][1] |= can_play_develop(i);
+  }
+
+  for (i = 0; i < 5; i++) {
+    sprintf(buf, "(devel-card (kind %s) (amnt %d) (can-play %d))", devel_mapping[i], devels[i][0], devels[i][1]);
     write_clips(buf);
   }
   write_clips(")");
@@ -2238,9 +2258,9 @@ void setup_clips(void)
   sprintf(buf, "(current-player %d)", current_player());
   write_clips(buf);
 
-  /* Can we buy a development card? */
-  if (can_buy_develop())
-    write_clips("(can-buy-develop)");
+  /* How many development cards are in the deck? */
+  sprintf(buf, "(num-develop-in-deck %d)", stock_num_develop());
+  write_clips(buf);
 
   write_clips(")");
   /* END CLIPS INITIALIZATION */
