@@ -597,7 +597,7 @@
     (phase turn)
     (game-phase do-turn)
     ;(goal buy-development-card)
-    (num-develop-in-deck ~0)
+    (num-develop-in-deck ?num&:(> ?num 0))
     (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 1)))
     (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 1)))
     (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 1)))
@@ -605,7 +605,6 @@
     (printout t crlf "ACTION: Buy Development Card" crlf)
     (exit)
 )
-
 
 
 
