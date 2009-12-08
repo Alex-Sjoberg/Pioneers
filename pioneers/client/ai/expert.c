@@ -2110,9 +2110,10 @@ void setup_clips(void)
   /* Load any external files needed */
   write_clips("(load \"../settlers.clp\")");
 
+  FILE *fp = fopen("../temp_facts.clp", "w");
+
   /* Output the board state */
   Map * map = callbacks.get_map();
-  write_clips("(deffacts board");
 
   Hex * hid;
   Node * nid;
@@ -2133,30 +2134,24 @@ void setup_clips(void)
         number = hid->roll;
         robber = hid->robber;
 
-        sprintf(buf,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (number %d) (prob %d))",(unsigned long) hid,xpos,ypos,resource,port,number,(int) dice_prob(number));
-        write_clips(buf);
+        fprintf(fp,"(hex (id %lu) (xpos %d) (ypos %d) (resource %s) (port %s) (number %d) (prob %d))\n",(unsigned long) hid,xpos,ypos,resource,port,number,(int) dice_prob(number));
 
-        if (hid->robber) {
-          sprintf(buf, "(robber (hex %lu))", (unsigned long) hid);
-          write_clips(buf);
-        }
+        if (hid->robber)
+          fprintf(fp, "(robber (hex %lu))\n", (unsigned long) hid);
 
         /* Information about each node */
         for (k = 0; k < 6; k++) {
           nid = hid->nodes[k];
-          sprintf(buf, "(node (id %lu) (hexes %lu %lu %lu))", (unsigned long) nid, (unsigned long) nid->hexes[0], (unsigned long) nid->hexes[1], (unsigned long) nid->hexes[2]);
-          write_clips(buf);
+          fprintf(fp, "(node (id %lu) (hexes %lu %lu %lu))\n", (unsigned long) nid, (unsigned long) nid->hexes[0], (unsigned long) nid->hexes[1], (unsigned long) nid->hexes[2]);
 
           /* Building information */
           if (nid->owner != -1)
             switch (nid->type) {
               case BUILD_SETTLEMENT:
-                sprintf(buf, "(settlement (node %lu) (player %d))", (unsigned long) nid, nid->owner);
-                write_clips(buf);
+                fprintf(fp, "(settlement (node %lu) (player %d))\n", (unsigned long) nid, nid->owner);
                 break;
               case BUILD_CITY:
-                sprintf(buf, "(city (node %lu) (player %d))", (unsigned long) nid, nid->owner);
-                write_clips(buf);
+                fprintf(fp, "(city (node %lu) (player %d))\n", (unsigned long) nid, nid->owner);
                 break;
               default:;
             }
@@ -2165,27 +2160,19 @@ void setup_clips(void)
         /* Information about each edge */
         for (k = 0; k < 6; k++) {
           eid = hid->edges[k];
-          sprintf(buf, "(edge (id %lu) (nodes %lu %lu))", (unsigned long) eid, (unsigned long) eid->nodes[0], (unsigned long) eid->nodes[1]);
-          write_clips(buf);
+          fprintf(fp, "(edge (id %lu) (nodes %lu %lu))\n", (unsigned long) eid, (unsigned long) eid->nodes[0], (unsigned long) eid->nodes[1]);
 
           if (eid->owner != -1) {
-            sprintf(buf, "(road (edge %lu) (player %d))", (unsigned long) eid, eid->owner);
-            write_clips(buf);
+            fprintf(fp, "(road (edge %lu) (player %d))\n", (unsigned long) eid, eid->owner);
           }
         }
       }
     }
   }
-  write_clips(")");
-
-  /* Output the cards held */
-  write_clips("(deffacts cards");
 
   /* Resource cards */
-	for (i = 0; i < NO_RESOURCE; i++) {
-    sprintf(buf, "(resource-cards (kind %s) (amnt %d))", resource_mapping[i], resource_asset(i));
-		write_clips(buf);
-  }
+	for (i = 0; i < NO_RESOURCE; i++)
+    fprintf(fp, "(resource-cards (kind %s) (amnt %d))\n", resource_mapping[i], resource_asset(i));
 
   /* Development cards */
   const DevelDeck * deck = get_devel_deck();
@@ -2204,25 +2191,21 @@ void setup_clips(void)
         j = 4;
         break;
       default:
-        j = i;
+        j = deck->cards[i].type;
     }
     devels[j][0]++;
     devels[j][1] |= can_play_develop(i);
   }
 
-  for (i = 0; i < 5; i++) {
-    sprintf(buf, "(devel-card (kind %s) (amnt %d) (can-play %d))", devel_mapping[i], devels[i][0], devels[i][1]);
-    write_clips(buf);
-  }
-  write_clips(")");
+  for (i = 0; i < 5; i++)
+    fprintf(fp, "(devel-card (kind %s) (amnt %d) (can-play %d))\n", devel_mapping[i], devels[i][0], devels[i][1]);
 
 
   /* Output the player information */
-  write_clips("(deffacts players");
   for (i = 0; i < num_players(); i++) {
     gint * stats = player_get(i)->statistics;
 
-    sprintf(buf, "(player (id %d) (name %s) (score %d) (num-resource-cards %d) (num-devel-cards %d) (has-largest-army %d) (has-longest-road %d) (num-soldiers %d) (num-settlements %d) (num-cities %d))",
+    fprintf(fp, "(player (id %d) (name %s) (score %d) (num-resource-cards %d) (num-devel-cards %d) (has-largest-army %d) (has-longest-road %d) (num-soldiers %d) (num-settlements %d) (num-cities %d))\n",
         i,
         player_name(i,0),
         player_get_score(i),
@@ -2234,39 +2217,33 @@ void setup_clips(void)
         stats[STAT_SETTLEMENTS],
         stats[STAT_CITIES]
         );
-    write_clips(buf);
   }
-  write_clips(")");
 
 
   /* Miscellaneous information deffacts */
-  write_clips("(deffacts misc-info");
 
   /* Have the dice been rolled? */
   if (have_rolled_dice())
-    write_clips("(dice-already-rolled)");
+    fprintf(fp, "(dice-already-rolled)\n", buf);
 
   /* Number of players */
-  sprintf(buf, "(num-players %d)", num_players());
-  write_clips(buf);
+  fprintf(fp, "(num-players %d)\n", num_players());
 
   /* My player number */
-  sprintf(buf, "(my-num %d)", my_player_num());
-  write_clips(buf);
+  fprintf(fp, "(my-num %d)\n", my_player_num());
 
   /* ID of current player */
-  sprintf(buf, "(current-player %d)", current_player());
-  write_clips(buf);
+  fprintf(fp, "(current-player %d)\n", current_player());
 
   /* How many development cards are in the deck? */
-  sprintf(buf, "(num-develop-in-deck %d)", stock_num_develop());
-  write_clips(buf);
+  fprintf(fp, "(num-develop-in-deck %d)\n", stock_num_develop());
 
-  write_clips(")");
   /* END CLIPS INITIALIZATION */
 
 
+  fclose(fp);
   write_clips("(reset)");
+  write_clips("(load-facts \"../temp_facts.clp\")");
 }
 
 /*
