@@ -2108,7 +2108,7 @@ void setup_clips(void)
   **********************************/
 
   /* Load any external files needed */
-  write_clips("(load \"../settlers.clp\")");
+  write_clips("(load \"../colden.clp\")");
 
   FILE *fp = fopen("../temp_facts.clp", "w");
 
