@@ -663,21 +663,73 @@
 
 
 
-(defmodule MAIN)
+;MAIN section
 
-(defrule discover-I-can-move-robber?@!@!#
-  (game-phase do-turn) => (focus MOVE-ROBBER))
-(defrule discover-Imstu-discard-cards
-  (game-phase discard) => (focus DISCARD))
-(defrule discover-Imstu-inital-setup
-  (game-phase initial-setup) => (focus INITIAL-SETUP))
+(defrule discover-move-robber
+  (declare (salience -10))
+  (game-phase do-turn)
+  ?g <- (goal decide-strategy)
+  =>
+  (retract ?g)
+  (assert (goal move-robber))
+)
+
+(defrule discover-discard
+  (declare (salience -10))
+  (game-phase discard)
+  ?g <- (goal decide-strategy)
+  =>
+  (retract ?g)
+  (assert (goal discard))
+)
+
+(defrule discover-initial-setup
+  (declare (salience -10))
+  (game-phase initial-setup)
+  ?g <- (goal decide-strategy)
+  =>
+  (retract ?g)
+  (assert (goal initial-setup))
+)
+
+(defrule discover-initial-setup
+  (declare (salience -10))
+  (game-phase initial-setup)
+  ?g <- (goal decide-strategy)
+  =>
+  (retract ?g)
+  (assert (goal initial-setup))
+)
+
+(defrule 
+
+
 
 (defrule determine-strategy
   (game-phase do-turn)
-
+  (total-resource-prob (kind lumber) (prob ?lumber))
+  (total-resource-prob (kind brick) (prob ?brick))
+  (total-resource-prob (kind wool) (prob ?wool))
+  (total-resource-prob (kind grain) (prob ?grain))
+  (total-resource-prob (kind ore) (prob ?ore))
   =>
-  
-  (focus INIT-SETTLEMENT-STRATEGY))
+  (assert (city-total (+ ?grain ?ore))
+          (settlement-total (+ ?lumber ?brick)))
+)
+
+(defrule discover-city-strategy
+  (city-total ?city)
+  (settlement-total ?settlement&:(> ?city ?settlement))
+  =>
+  (focus INIT-CITY-STRATEGY)
+)
+
+(defrule discover-settlement-strategy
+  (city-total ?city)
+  (settlement-total ?settlement&:(<= ?city ?settlement))
+  =>
+  (focus INIT-SETTLEMENT-STRATEGY)
+)
 
 
 
@@ -686,31 +738,31 @@
 
 
 
-(defmodule INIT-CITY-STRATEGY)
+;INIT-CITY-STRATEGY section
 ;determine whether to build a city or development card or go for largest army
 
 
 
 
-(defmodule INIT-SETTLEMENT-STRATEGY)
+;INIT-SETTLEMENT-STRATEGY section
 ;determine whether to build a settlement or city largest army
 
-(defmodule BUILD-CITY)
+;BUILD-CITY section
 
-(defmodule BUILD-SETTLEMENT)
+;BUILD-SETTLEMENT section
 
-(defmodule BUILD-ROAD)
+;BUILD-ROAD section
 
-(defmodule TRADE)
+;TRADE section
 
-(defmodule MOVE-ROBBER)
+;MOVE-ROBBER section
 
 
-(defmodule BUILD-LONGEST-ROAD)
+;BUILD-LONGEST-ROAD section
 
-(defmodule BUILD-LARGEST-ARMY)
+;BUILD-LARGEST-ARMY section
 
-(defmodule BUY-DEVELOPMENT-CARD)
+;BUY-DEVELOPMENT-CARD section
 
 
 
