@@ -2244,6 +2244,7 @@ void setup_clips(void)
   fclose(fp);
   write_clips("(reset)");
   write_clips("(load-facts \"../temp_facts.clp\")");
+  write_clips("(watch facts)");
 }
 
 /*
