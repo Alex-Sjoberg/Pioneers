@@ -663,6 +663,57 @@
 
 
 
+(defmodule MAIN)
+
+(defrule discover-I-can-move-robber?@!@!#
+  (game-phase do-turn) => (focus MOVE-ROBBER))
+(defrule discover-Imstu-discard-cards
+  (game-phase discard) => (focus DISCARD))
+(defrule discover-Imstu-inital-setup
+  (game-phase initial-setup) => (focus INITIAL-SETUP))
+
+(defrule determine-strategy
+  (game-phase do-turn)
+
+  =>
+  
+  (focus INIT-SETTLEMENT-STRATEGY))
+
+
+
+
+
+
+
+
+(defmodule INIT-CITY-STRATEGY)
+;determine whether to build a city or development card or go for largest army
+
+
+
+
+(defmodule INIT-SETTLEMENT-STRATEGY)
+;determine whether to build a settlement or city largest army
+
+(defmodule BUILD-CITY)
+
+(defmodule BUILD-SETTLEMENT)
+
+(defmodule BUILD-ROAD)
+
+(defmodule TRADE)
+
+(defmodule MOVE-ROBBER)
+
+
+(defmodule BUILD-LONGEST-ROAD)
+
+(defmodule BUILD-LARGEST-ARMY)
+
+(defmodule BUY-DEVELOPMENT-CARD)
+
+
+
 
 
 
