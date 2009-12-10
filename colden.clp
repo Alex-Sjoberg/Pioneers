@@ -78,6 +78,11 @@
   (multislot conn-hex)
 )
 
+(deftemplate total-resource-prob
+  (slot kind)
+  (slot prob)
+)
+
 (deffacts port-locations
   (port (port-hex 6 2) (conn-hex 5 2))
   (port (port-hex 6 4) (conn-hex 5 3))
@@ -632,7 +637,40 @@
 
 
 
+(defrule find-my-resource-total-probs
+    (phase init-turn-1)
+    (my-id ?pid)
+    (settlement (node ?nid) (player ?pid))
+    (node (id ?nid) (hexes $? ?hid $?))
+    (hex (id ?hid) (resource ?res&~desert&~sea) (prob ?prob))
+    =>
+    (assert (add-to-sum ?res ?prob))
+)
 
+(defrule init-resource-probs
+    (phase init-turn-1)
+    (add-to-sum ?res ?prob)
+    (not (total-resource-prob (kind ?res)))
+    =>
+    (assert (total-resource-prob (kind ?res) (prob 0)))
+)
+
+(defrule sum-resource-probs
+    (phase init-turn-1)
+    ?a <- (add-to-sum ?res ?prob)
+    ?f <- (total-resource-prob (kind ?res) (prob ?sprob))
+    =>
+    (modify ?f (prob (+ ?sprob ?prob)))
+    (retract ?a)
+)
+
+(defrule blarg
+    (declare (salience -1))
+    (phase init-turn-1)
+    (total-resource-prob (kind ?res) (prob ?prob))
+    =>
+    (printout t "Total prob for " ?res " is " ?prob crlf)
+)
 
 
 
