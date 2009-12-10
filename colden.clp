@@ -160,11 +160,32 @@
     (assert (road-count (player ?pid) (count 0)))
 )
 
-(defrule count-roads
-    (phase init-turn-2)
-    (road (player ?pid))
+
+(defrule find-my-resource-total-probs
+    (phase init-turn-1)
+    (my-id ?pid)
+    (settlement (node ?nid) (player ?pid))
+    (node (id ?nid) (hexes $? ?hid $?))
+    (hex (id ?hid) (resource ?res&~desert&~sea) (prob ?prob))
     =>
-    (assert (add-to-road-sum ?pid))
+    (assert (add-to-sum ?res ?prob))
+)
+
+(defrule init-resource-probs
+    (phase init-turn-1)
+    (add-to-sum ?res ?prob)
+    (not (total-resource-prob (kind ?res)))
+    =>
+    (assert (total-resource-prob (kind ?res) (prob 0)))
+)
+
+(defrule sum-resource-probs
+    (phase init-turn-1)
+    ?a <- (add-to-sum ?res ?prob)
+    ?f <- (total-resource-prob (kind ?res) (prob ?sprob))
+    =>
+    (modify ?f (prob (+ ?sprob ?prob)))
+    (retract ?a)
 )
 
 (defrule get-trading-price-1
@@ -176,6 +197,7 @@
     =>
     (assert (my-maritime-trade 3))
 )
+
 (defrule get-trading-price-2
     ;(not (hex (id ?id) (port 3to1)))
     (phase init-turn-1)
@@ -218,7 +240,15 @@
     (modify ?n (can-build 1))
 )
 
+(defrule count-roads
+    (phase init-turn-2)
+    (road (player ?pid))
+    =>
+    (assert (add-to-road-sum ?pid))
+)
+
 (defrule count-road-sums
+    (phase init-turn-2)
     ?c <- (add-to-road-sum ?pid)
     ?f <- (road-count (player ?pid) (count ?cnt))
     =>
@@ -671,7 +701,7 @@
 
 (defrule discover-move-robber
   (declare (salience -10))
-  (game-phase do-turn)
+  (game-phase move-robber)
   ?g <- (goal decide-strategy)
   =>
   (retract ?g)
@@ -685,15 +715,6 @@
   =>
   (retract ?g)
   (assert (goal discard))
-)
-
-(defrule discover-initial-setup
-  (declare (salience -10))
-  (game-phase initial-setup)
-  ?g <- (goal decide-strategy)
-  =>
-  (retract ?g)
-  (assert (goal initial-setup))
 )
 
 (defrule discover-initial-setup
@@ -730,46 +751,9 @@
 
 (defrule discover-settlement-strategy
   (city-total ?city)
-  (settlement-total ?settlement&:(<= ?city ?settlement))
+  (settlement-total ?settlement&:(> ?settlement ?city))
   =>
   (focus INIT-SETTLEMENT-STRATEGY)
-)
-
-
-
-(defrule find-my-resource-total-probs
-    (phase init-turn-1)
-    (my-id ?pid)
-    (settlement (node ?nid) (player ?pid))
-    (node (id ?nid) (hexes $? ?hid $?))
-    (hex (id ?hid) (resource ?res&~desert&~sea) (prob ?prob))
-    =>
-    (assert (add-to-sum ?res ?prob))
-)
-
-(defrule init-resource-probs
-    (phase init-turn-1)
-    (add-to-sum ?res ?prob)
-    (not (total-resource-prob (kind ?res)))
-    =>
-    (assert (total-resource-prob (kind ?res) (prob 0)))
-)
-
-(defrule sum-resource-probs
-    (phase init-turn-1)
-    ?a <- (add-to-sum ?res ?prob)
-    ?f <- (total-resource-prob (kind ?res) (prob ?sprob))
-    =>
-    (modify ?f (prob (+ ?sprob ?prob)))
-    (retract ?a)
-)
-
-(defrule blarg
-    (declare (salience -1))
-    (phase init-turn-1)
-    (total-resource-prob (kind ?res) (prob ?prob))
-    =>
-    (printout t "Total prob for " ?res " is " ?prob crlf)
 )
 
 
