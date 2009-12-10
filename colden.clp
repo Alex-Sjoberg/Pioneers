@@ -118,13 +118,6 @@
 ;                      INIT-TURN
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; FINDING THE GOAL
-(defrule determine-goal
-    (phase init-turn-1)
-    =>
-    (assert (goal build-city))
-)
-
 ; swap all the edges so we don't have to match on both orders
 (defrule swap-edges
     (phase init-turn-1)
@@ -178,10 +171,13 @@
     (assert (my-maritime-trade 4))
 )
 
-
-
-
-
+(defrule move-to-init-turn-2
+  (declare (salience -10))
+  ?f <- (phase init-turn-1)
+  =>
+  (retract ?f)
+  (assert (phase init-turn-2))
+)
 
 
 
@@ -221,6 +217,13 @@
     (modify ?f (count (+ ?cnt 1)))
 )
 
+(defrule move-to-turn
+  (declare (salience -10))
+  ?f <- (phase init-turn-2)
+  =>
+  (retract ?f)
+  (assert (phase turn))
+)
 
 
 
@@ -324,44 +327,18 @@
 
 
 
-; DISCARD
-(defrule discard-cards
-    (phase turn)
-    (game-phase discard)
-    =>
-    (assert (discarding))
-    (printout t crlf "ACTION: Discard")
-)
-
-(defrule find-least-valuable-card
-    (phase turn)
-    (game-phase discard)
-    (discarding)
-    ?n <- (num-to-discard ?num&:(> ?num 0))
-    ?c <- (resource-cards (kind ?kind) (amnt ?amnt&:(> ?amnt 0)))
-    (not (resource-cards (amnt ?namnt&:(> ?namnt ?amnt))))
-    =>
-    (retract ?n)
-    (assert (num-to-discard (- ?num 1)))
-    (modify ?c (amnt (- ?amnt 1)))
-    (printout t " " ?kind)
-)
-
-(defrule done-discarding
-    (declare (salience -10))
-    (phase turn)
-    ?f <- (discarding)
-    =>
-    (retract ?f)
-    (printout t crlf)
-    (exit)
-)
 
 
 
 
 
+;to win the girls heart,
+;make her feel important and that her ideas matter over a period of time
+;do small things that are thoughtful
+;when she is stressed out
 
+;mia considers this cute:
+;Before tonight, I never believed in predestination...
 
 
 ;TRADING WITH THE BANK
@@ -380,20 +357,7 @@
     (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
     (exit)
 )
-(defrule trade-4-for-development-card
-    (phase turn)
-    (game-phase do-turn)
-    (goal buy-development-card)
-    (my-maritime-trade ?price)
-    (resource-cards (kind ?want&wool|grain|ore) (amnt 0))
-    (or
-        (resource-cards (kind ?trade&~wool&~grain&~ore) (amnt ?amnt&:(>= ?amnt ?price)))
-        (resource-cards (kind ?trade&~?want&wool|grain|ore) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
-    )
-    =>
-    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
-    (exit)
-)
+
 (defrule trade-4-for-settlement
     (phase turn)
     (game-phase do-turn)
@@ -408,6 +372,7 @@
     (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
     (exit)
 )
+
 (defrule trade-4-for-city
     (phase turn)
     (game-phase do-turn)
@@ -433,50 +398,6 @@
 
 
 
-
-; MOVE-ROBBER
-(defrule find-robber-placements
-    (declare (salience 2))
-    (phase turn)
-    (game-phase place-robber)
-    (my-num ?pid)
-    (or
-      (settlement (player ~?pid) (node ?nid))
-      (city (player ~?pid) (node ?nid))
-    )
-    (node (id ?nid) (hexes $? ?hid $?))
-    (not (robber (hex ?hid)))
-    (hex (id ?hid) (prob ?prob))
-    (not
-      (and
-        (node (id ?tnid) (hexes $? ?hid $?))
-        (or
-          (settlement (player ?pid) (node ?tnid))
-          (city (player ?pid) (node ?tnid))
-        )
-      )
-    )
-    =>
-    (assert (potential-robber-placement ?hid))
-)
-
-(defrule move-robber
-    (declare (salience 1))
-    (phase turn)
-    (game-phase place-robber)
-    (potential-robber-placement ?hid)
-    (hex (id ?hid) (prob ?prob))
-    (not
-      (and
-        (potential-robber-placement ?hid2)
-        (hex (id ?hid2) (prob ?prob2&:(> ?prob2 ?prob)))
-      )
-    )
-    =>
-    (facts)
-    (printout t crlf "ACTION: Place Robber " ?hid crlf)
-    (exit)
-)
 
 
 
@@ -635,24 +556,10 @@
 ;                      CONTROL-FACTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defrule move-to-init-turn-2
-  (declare (salience -100))
-  ?f <- (phase init-turn-1)
-  =>
-  (retract ?f)
-  (assert (phase init-turn-2))
-)
 
-(defrule move-to-turn
-  (declare (salience -100))
-  ?f <- (phase init-turn-2)
-  =>
-  (retract ?f)
-  (assert (phase turn))
-)
 
 (defrule move-to-end-turn
-  (declare (salience -100))
+  (declare (salience -10))
   ?f <- (phase turn)
   =>
   (retract ?f)
@@ -664,18 +571,15 @@
 
 
 ;MAIN section
-
-(defrule discover-move-robber
-  (declare (salience -10))
-  (game-phase do-turn)
+(defrule discover-place-robber
+  (game-phase place-robber)
   ?g <- (goal decide-strategy)
   =>
   (retract ?g)
-  (assert (goal move-robber))
+  (assert (goal place-robber))
 )
 
 (defrule discover-discard
-  (declare (salience -10))
   (game-phase discard)
   ?g <- (goal decide-strategy)
   =>
@@ -684,7 +588,6 @@
 )
 
 (defrule discover-initial-setup
-  (declare (salience -10))
   (game-phase initial-setup)
   ?g <- (goal decide-strategy)
   =>
@@ -692,21 +595,11 @@
   (assert (goal initial-setup))
 )
 
-(defrule discover-initial-setup
-  (declare (salience -10))
-  (game-phase initial-setup)
-  ?g <- (goal decide-strategy)
-  =>
-  (retract ?g)
-  (assert (goal initial-setup))
-)
-
-(defrule 
 
 
-
-(defrule determine-strategy
+(defrule determine-strategy "If we must take our turn, decide whether to go for cities or settlements."
   (game-phase do-turn)
+  (goal decide-strategy)
   (total-resource-prob (kind lumber) (prob ?lumber))
   (total-resource-prob (kind brick) (prob ?brick))
   (total-resource-prob (kind wool) (prob ?wool))
@@ -718,17 +611,23 @@
 )
 
 (defrule discover-city-strategy
+  (game-phase do-turn)
+  ?g <- (goal decide-strategy)
   (city-total ?city)
   (settlement-total ?settlement&:(> ?city ?settlement))
   =>
-  (focus INIT-CITY-STRATEGY)
+  (retract ?g)
+  (assert (goal init-city-strategy))
 )
 
 (defrule discover-settlement-strategy
+  (game-phase do-turn)
+  ?g <- (goal decide-strategy)
   (city-total ?city)
   (settlement-total ?settlement&:(<= ?city ?settlement))
   =>
-  (focus INIT-SETTLEMENT-STRATEGY)
+  (retract ?g)
+  (assert (goal init-settlement-strategy))
 )
 
 
@@ -739,9 +638,79 @@
 
 
 ;INIT-CITY-STRATEGY section
-;determine whether to build a city or development card or go for largest army
+;if you have everything needed for a city, then build it
+;if you only have 2 settlements, try to build a settlement
+;if you don't have any cities, try to build a city
+;if you don't have any soldiers and you have at least one city buy a development card
+;if someone has more soldiers than you and you have at least 5 points, buy a development card
+;try to build a city
+;buy a development card
 
 
+;High priority rules
+(defrule build-city-if-have-resources
+  (declare (salience 10))
+  ?g <- (goal init-city-strategy)
+  (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
+  (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
+  =>
+  (retract ?g)
+  (assert (goal build-city))
+)
+
+(defrule try-build-settlement
+  (declare (salience 10))
+  ?g <- (goal init-city-strategy)
+  (settlement-count ?n&:(<= ?n 2))
+  =>
+  (retract ?g)
+  (assert (goal build-settlement))
+)
+
+;Medium priority rules
+(defrule build-city-if-have-none
+  ?g <- (goal init-city-strategy)
+  (my-num ?pid)
+  (player (id ?pid) (num-cities ?num&:(= ?num 0)))
+  =>
+  (retract ?g)
+  (assert (goal build-city))
+)
+
+(defrule build-city-if-have-none
+  ?g <- (goal init-city-strategy)
+  (my-num ?pid)
+  (player (id ?pid) (num-cities ?num&:(= ?num 0)))
+  =>
+  (retract ?g)
+  (assert (goal build-city))
+)
+
+(defrule buy-development-card-over-city
+  ?g <- (goal init-city-strategy)
+  (my-num ?pid)
+  (or
+    (player (id ?pid) (num-cities ?num&:(>= ?num 1)))
+    (and
+      (num-victory-points ?pts&:(>= ?pts 5))
+      (my-soldiers ?mysol)
+      (largest-opposing-army ?othersol&:(>= ?othersol ?mysol))
+    )
+  )
+  =>
+  (retract ?g)
+  (assert (goal buy-development-card))
+)
+
+;Low priority catch-all rules
+(defrule else-buy-development-card
+  (declare (salience -10))
+  ?g <- (goal init-city-strategy)
+  =>
+  (retract ?g)
+  (assert (goal buy-development-card))
+)
+  
 
 
 ;INIT-SETTLEMENT-STRATEGY section
@@ -755,14 +724,115 @@
 
 ;TRADE section
 
+;DISCARD
+(defrule discard-cards
+  (declare (salience 10))
+  (goal discard)
+  =>
+  (printout t crlf "ACTION: Discard")
+)
+
+(defrule find-least-valuable-card
+    (goal discard)
+    ?n <- (num-to-discard ?num&:(> ?num 0))
+    ?c <- (resource-cards (kind ?kind) (amnt ?amnt&:(> ?amnt 0)))
+    (not (resource-cards (amnt ?namnt&:(> ?namnt ?amnt))))
+    =>
+    (retract ?n)
+    (assert (num-to-discard (- ?num 1)))
+    (modify ?c (amnt (- ?amnt 1)))
+    (printout t " " ?kind)
+)
+
+(defrule done-discarding
+    (declare (salience -10))
+    (phase discard)
+    =>
+    (printout t crlf)
+    (exit)
+)
+
+
 ;MOVE-ROBBER section
+(defrule find-robber-placements
+    (declare (salience 10))
+    (goal place-robber)
+    (my-num ?pid)
+    (or
+      (settlement (player ~?pid) (node ?nid))
+      (city (player ~?pid) (node ?nid))
+    )
+    (node (id ?nid) (hexes $? ?hid $?))
+    (not (robber (hex ?hid)))
+    (hex (id ?hid) (prob ?prob))
+    (not
+      (and
+        (node (id ?tnid) (hexes $? ?hid $?))
+        (or
+          (settlement (player ?pid) (node ?tnid))
+          (city (player ?pid) (node ?tnid))
+        )
+      )
+    )
+    =>
+    (assert (potential-robber-placement ?hid))
+)
+
+(defrule move-robber
+    (goal place-robber)
+    (potential-robber-placement ?hid)
+    (hex (id ?hid) (prob ?prob))
+    (not
+      (and
+        (potential-robber-placement ?hid2)
+        (hex (id ?hid2) (prob ?prob2&:(> ?prob2 ?prob)))
+      )
+    )
+    =>
+    (facts)
+    (printout t crlf "ACTION: Place Robber " ?hid crlf)
+    (exit)
+)
 
 
-;BUILD-LONGEST-ROAD section
 
-;BUILD-LARGEST-ARMY section
 
 ;BUY-DEVELOPMENT-CARD section
+
+(defrule trade-for-grain
+  (declare (salience 10))
+  (goal buy-development-card)
+  (resource-cards (kind grain) (amnt ?gamnt&:(< ?gamnt 2)))
+  =>
+  (printout t "ACTION: Trade for " (- 2 ?gamnt) " grain." crlf)
+  (exit)
+)
+
+(defrule trade-for-ore
+  (declare (salience 10))
+  (goal buy-development-card)
+  (resource-cards (kind ore) (amnt ?oamnt&:(< ?oamnt 3)))
+  =>
+  (printout t "ACTION: Trade for " (- 3 ?oamnt) " ore." crlf)
+  (exit)
+)
+
+(defrule maritime-trade-for-development-card
+  (declare (salience 10))
+  (goal buy-development-card)
+  (my-maritime-trade ?price)
+  (resource-cards (kind ?want&wool|grain|ore) (amnt 0))
+  (or
+      (resource-cards (kind ?trade&~wool&~grain&~ore) (amnt ?amnt&:(>= ?amnt ?price)))
+      (resource-cards (kind ?trade&~?want&wool|grain|ore) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+  )
+  =>
+  (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
+  (exit)
+)
+
+  
+  
 
 
 
