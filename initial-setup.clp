@@ -7,6 +7,20 @@
 ;if someone offers you one for two if you need it, 
 
 ; INITIAL-SETUP
+
+
+(defrule count-num-opponents-settlements-to-place
+    (declare (salience 10))
+    (goal initial-setup)
+    (settlements-to-place ?snum)
+    (my-num ?pid)
+    (not (settlement (player ?pid)))
+    (num-players ?pnum)
+    =>
+    (assert (num-opponents-settlements-to-place (* 2 (- ?pnum ?pid 1) (+ (* -1 ?snum) 2))))
+)
+
+
 (defrule find-settlement-possibilities
     ; At least one settlement to place
     (goal initial-setup)

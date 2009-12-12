@@ -23,10 +23,10 @@
   (assert (goal before-dice))
 )
 
-(defrule discover-initial-setup
+(defrule discover-strategy
+  (declare (salience -10))
   ?g <- (goal decide-action)
-  (game-phase initial-setup)
   =>
   (retract ?g)
-  (assert (goal initial-setup))
+  (assert (goal decide-strategy))
 )

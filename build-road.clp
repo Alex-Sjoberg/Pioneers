@@ -37,7 +37,6 @@
 
 
 (defrule trade-4-for-road
-    (code-phase process)
     (goal build-road)
     (my-maritime-trade ?price)
     (resource-cards (kind ?want&lumber|brick) (amnt 0))

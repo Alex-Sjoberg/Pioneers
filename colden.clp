@@ -97,29 +97,26 @@
 
 
 (deffacts initial-state
-  (goal load-files)
   (victory-sum 0)
 )
 
 (defrule load-clips-files
-    ?p <- (goal load-files)
     =>
-    (load "before-dice.clp")
-    (load "build-city.clp")
-    (load "build-road.clp")
-    (load "build-settlement.clp")
-    (load "decide-action.clp")
-    (load "decide-strategy.clp")
-    (load "discard.clp")
-    (load "init-city-strategy.clp")
-    (load "init-settlement-strategy.clp")
-    (load "init-turn-1.clp")
-    (load "init-turn-2.clp")
-    (load "initial-setup.clp")
-    (load "place-robber.clp")
-    (load "trade.clp")
-    (retract ?p)
-    (assert (goal init-turn-1)
+    (load "../before-dice.clp")
+    (load "../build-city.clp")
+    (load "../build-road.clp")
+    (load "../build-settlement.clp")
+    (load "../decide-action.clp")
+    (load "../decide-strategy.clp")
+    (load "../discard.clp")
+    (load "../init-city-strategy.clp")
+    (load "../init-settlement-strategy.clp")
+    (load "../init-turn-1.clp")
+    (load "../init-turn-2.clp")
+    (load "../initial-setup.clp")
+    (load "../place-robber.clp")
+    (load "../trade.clp")
+    (assert (goal init-turn-1))
 )
 
 

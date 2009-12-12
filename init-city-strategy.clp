@@ -41,15 +41,6 @@
   (assert (goal build-city))
 )
 
-(defrule build-city-if-have-none
-  ?g <- (goal init-city-strategy)
-  (my-num ?pid)
-  (player (id ?pid) (num-cities ?num&:(= ?num 0)))
-  =>
-  (retract ?g)
-  (assert (goal build-city))
-)
-
 (defrule buy-development-card-over-city
   ?g <- (goal init-city-strategy)
   (my-num ?pid)

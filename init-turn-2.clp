@@ -47,10 +47,18 @@
 
 
 
+(defrule discover-initial-setup
+  ?g <- (goal init-turn-2)
+  (game-phase initial-setup)
+  =>
+  (retract ?g)
+  (assert (goal initial-setup))
+)
+
 (defrule move-to-turn
   (declare (salience -10))
-  ?f <- (goal init-turn-2)
+  ?g <- (goal init-turn-2)
   =>
-  (retract ?f)
-  (assert (goal decide-strategy))
+  (retract ?g)
+  (assert (goal decide-action))
 )
