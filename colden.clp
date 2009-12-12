@@ -700,7 +700,7 @@
 
 
 ;BUILD-ROAD section
-(defrule trade-4-for-road
+(defrule maritime-trade-for-road
     (phase turn)
     (game-phase do-turn)
     (goal build-road)
