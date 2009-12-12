@@ -1991,6 +1991,7 @@ static void expert_new_statistics(gint player_num, StatisticType type,
 	}
 }
 
+// aoeu
 void expert_init(G_GNUC_UNUSED int argc, G_GNUC_UNUSED char **argv)
 {
 	callbacks.setup = &expert_setup;

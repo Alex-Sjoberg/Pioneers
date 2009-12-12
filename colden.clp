@@ -98,6 +98,7 @@
 
 (deffacts initial-state
   (phase init-turn-1)
+  (victory-sum 0)
 )
 
 
@@ -136,7 +137,9 @@
 )
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; FIND-RESOURCE-TOTAL-PROBS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defrule find-my-resource-total-probs
     (phase init-turn-1)
     (my-id ?pid)
@@ -144,12 +147,12 @@
     (node (id ?nid) (hexes $? ?hid $?))
     (hex (id ?hid) (resource ?res&~desert&~sea) (prob ?prob))
     =>
-    (assert (add-to-sum ?res ?prob))
+    (assert (add-to-resource-sum ?res ?prob))
 )
 
 (defrule init-resource-probs
     (phase init-turn-1)
-    (add-to-sum ?res ?prob)
+    (add-to-resource-sum ?res ?prob)
     (not (total-resource-prob (kind ?res)))
     =>
     (assert (total-resource-prob (kind ?res) (prob 0)))
@@ -157,13 +160,35 @@
 
 (defrule sum-resource-probs
     (phase init-turn-1)
-    ?a <- (add-to-sum ?res ?prob)
+    ?a <- (add-to-resource-sum ?res ?prob)
     ?f <- (total-resource-prob (kind ?res) (prob ?sprob))
     =>
     (modify ?f (prob (+ ?sprob ?prob)))
     (retract ?a)
 )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; SUM-VICTORY-POINTS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defrule find-victory-points
+    (phase init-turn-1)
+    (devel-card (kind victory) (amnt ?num))
+    =>
+    (assert (add-to-victory-sum ?num))
+)
+
+(defrule sum-victory-points
+    (phase init-turn-1)
+    ?a <- (add-to-victory-sum ?add)
+    ?s <- (victory-sum ?sum)
+    =>
+    (retract ?a ?s)
+    (assert (victory-sum (+ ?sum ?add)))
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; TRADING PRICES
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defrule get-trading-price-1
     (phase init-turn-1)
     (my-id ?pid)
