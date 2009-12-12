@@ -262,6 +262,10 @@
 ;                         TURN
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;if there is not much brick or lumber and there is a lot of wheat or ore, don't consider the settlement strategy even if the best spot dot-wise is for that strategy
+;if you are the last person, order your settlements so that you get the resources you want
+;if someone offers you one for two if you need it, 
+
 ; INITIAL-SETUP
 (defrule find-settlement-possibilities
     ; At least one settlement to place
@@ -361,54 +365,6 @@
 
 ;TRADING WITH THE BANK
 
-(defrule trade-4-for-road
-    (phase turn)
-    (game-phase do-turn)
-    (goal build-road)
-    (my-maritime-trade ?price)
-    (resource-cards (kind ?want&lumber|brick) (amnt 0))
-    (or
-        (resource-cards (kind ?trade&~lumber&~brick) (amnt ?amnt&:(>= ?amnt ?price)))
-        (resource-cards (kind ?trade&~?want&lumber|brick) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
-    )
-    =>
-    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
-    (exit)
-)
-
-(defrule trade-4-for-settlement
-    (phase turn)
-    (game-phase do-turn)
-    (goal build-settlement)
-    (my-maritime-trade ?price)
-    (resource-cards (kind ?want&lumber|brick|wool|grain) (amnt 0))
-    (or
-        (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
-        (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
-    )
-    =>
-    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
-    (exit)
-)
-
-(defrule trade-4-for-city
-    (phase turn)
-    (game-phase do-turn)
-    (goal build-city)
-    (my-maritime-trade ?price)
-    (or
-        (resource-cards (kind ?want&grain) (amnt ?amnt&:(< ?amnt 2)))
-        (resource-cards (kind ?want&ore) (amnt ?amnt&:(< ?amnt 3)))
-    )
-    (or
-        (resource-cards (kind ?trade&~grain&~ore) (amnt ?amnt2&:(>= ?amnt2 ?price)))
-        (resource-cards (kind ?trade&grain) (amnt ?amnt2&:(> ?amnt2 (+ ?price 2))))
-        (resource-cards (kind ?trade&ore) (amnt ?amnt2&:(> ?amnt2 (+ ?price 3))))
-    )
-    =>
-    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
-    (exit)
-)
 
 
 
@@ -457,80 +413,7 @@
     (exit)
 )
 
-(defrule build-road
-    (phase turn)
-    (game-phase do-turn)
-    ;(goal build-road)
-    (my-num ?pid)
-    (road-count (player ?pid) (count ?cnt&:(< ?cnt 15)))
-    (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
-    (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
-    (or
-      (settlement (player ?pid) (node ?nid))
-      (city (player ?pid) (node ?nid))
-    )
-    (or
-      (and
-        (edge (id ?eid1) (nodes ?nid ?cnode))
-        (road (player ?pid) (edge ?eid1))
-        (edge (id ?eidtobuild) (nodes ?cnode ?cnode2&~?nid))
-        (node (id ?cnode2) (can-build 1))
-      )
-      (edge (id ?eidtobuild) (nodes ?nid ?cnode2))
-    )
 
-    (not (road (edge ?eidtobuild)))
-
-    (node (id ?cnode2) (hexes ?h1 ?h2 ?h3))
-    (hex (id ?h1) (resource ?res1) (number ?p1))
-    (hex (id ?h2) (resource ?res2) (number ?p2))
-    (hex (id ?h3) (resource ?res3) (number ?p3))
-    =>
-    (printout t crlf "DEBUG: " ?res1 " " ?p1 " | " ?res2 " " ?p2 " | "  " " ?res3 " " ?p3 crlf)
-    (printout t crlf "ACTION: Build Road " ?eidtobuild crlf)
-    (exit)
-)
-
-(defrule build-settlement
-    (declare (salience 10))
-    (phase turn)
-    (game-phase do-turn)
-    ;(goal build-settlement)
-    (my-num ?pid)
-    (player (id ?pid) (num-settlements ?num&:(< ?num 5)))
-    (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
-    (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
-    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 1)))
-    (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 1)))
-    (road (player ?pid) (edge ?edge))
-    (edge (id ?edge) (nodes $? ?node $?))
-    (node (id ?node) (can-build 1))
-
-    (node (id ?node) (hexes ?h1 ?h2 ?h3))
-    (hex (id ?h1) (resource ?res1) (number ?p1))
-    (hex (id ?h2) (resource ?res2) (number ?p2))
-    (hex (id ?h3) (resource ?res3) (number ?p3))
-    =>
-    (printout t crlf "DEBUG: " ?res1 " " ?p1 " | " ?res2 " " ?p2 " | "  " " ?res3 " " ?p3 crlf)
-    (printout t crlf "ACTION: Build Settlement " ?node crlf)
-    (exit)
-)
-
-(defrule build-city
-    (declare (salience 20))
-    (phase turn)
-    (game-phase do-turn)
-    ;(goal build-city)
-    (my-num ?pid)
-    (player (id ?pid) (num-cities ?num&:(< ?num 4)))
-    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
-    (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
-    (my-num ?pid)
-    (settlement (player ?pid) (node ?node))
-    =>
-    (printout t crlf "ACTION: Build City " ?node crlf)
-    (exit)
-)
 
 (defrule buy-development-card
     (phase turn)
@@ -553,36 +436,6 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;                       END-TURN
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defrule end-turn
-    (phase end-turn)
-    =>
-    (printout t crlf "ACTION: End Turn (default)" crlf)
-    (exit)
-)
-
-
-
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;                      CONTROL-FACTS
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-(defrule move-to-end-turn
-  (declare (salience -10))
-  ?f <- (phase turn)
-  =>
-  (retract ?f)
-  (assert (phase end-turn))
-)
 
 
 
@@ -634,7 +487,8 @@
   (settlement-total ?settlement&:(> ?city ?settlement))
   =>
   (retract ?g)
-  (assert (goal init-city-strategy))
+  (assert (goal init-city-strategy)
+          (strategy cities))
 )
 
 (defrule discover-settlement-strategy
@@ -644,7 +498,8 @@
   (settlement-total ?settlement&:(> ?settlement ?city))
   =>
   (retract ?g)
-  (assert (goal init-settlement-strategy))
+  (assert (goal init-settlement-strategy)
+          (strategy settlements))
 )
 
 
@@ -731,11 +586,147 @@
 
 ;BUILD-CITY section
 
+(defrule maritime-trade-for-city
+    (phase turn)
+    (game-phase do-turn)
+    (goal build-city)
+    (my-maritime-trade ?price)
+    (or
+        (resource-cards (kind ?want&grain) (amnt ?amnt&:(< ?amnt 2)))
+        (resource-cards (kind ?want&ore) (amnt ?amnt&:(< ?amnt 3)))
+    )
+    (or
+        (resource-cards (kind ?trade&~grain&~ore) (amnt ?amnt2&:(>= ?amnt2 ?price)))
+        (resource-cards (kind ?trade&grain) (amnt ?amnt2&:(> ?amnt2 (+ ?price 2))))
+        (resource-cards (kind ?trade&ore) (amnt ?amnt2&:(> ?amnt2 (+ ?price 3))))
+    )
+    =>
+    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
+    (exit)
+)
+
+
+(defrule trade-for-city
+  (goal build-city)
+  =>
+
+  (printout t crlf "ACTION: Trade Domestic brick 0 lumber 0 grain 2 ore 1 sheep 0 brick 0 lumber 0 grain 2 ore 1 sheep 0" crlf)
+)
+
+(defrule determine-best-city-location "needs to be improved"
+  (goal build-city)
+  (my-num ?pid)
+  (settlement (player ?pid) (node ?node))
+  =>
+  (assert (best-city-location ?node))
+)
+
+(defrule build-city
+    (goal build-city)
+    (best-city-location ?node)
+    (my-num ?pid)
+    (player (id ?pid) (num-cities ?num&:(< ?num 4)))
+    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
+    (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
+    =>
+    (printout t crlf "ACTION: Build City " ?node crlf)
+    (exit)
+)
+
+
+
 ;BUILD-SETTLEMENT section
 
+(defrule maritime-trade-for-settlement
+    (goal build-settlement)
+    (my-maritime-trade ?price)
+    (resource-cards (kind ?want&lumber|brick|wool|grain) (amnt 0))
+    (or
+        (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
+        (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    )
+    =>
+    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
+    (exit)
+)
+
+(defrule build-settlement
+    (goal build-settlement)
+    (my-num ?pid)
+    (player (id ?pid) (num-settlements ?num&:(< ?num 5)))
+    (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
+    (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
+    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 1)))
+    (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 1)))
+    (road (player ?pid) (edge ?edge))
+    (edge (id ?edge) (nodes $? ?node $?))
+    (node (id ?node) (can-build 1))
+
+    (node (id ?node) (hexes ?h1 ?h2 ?h3))
+    (hex (id ?h1) (resource ?res1) (number ?p1))
+    (hex (id ?h2) (resource ?res2) (number ?p2))
+    (hex (id ?h3) (resource ?res3) (number ?p3))
+    =>
+    (printout t crlf "DEBUG: " ?res1 " " ?p1 " | " ?res2 " " ?p2 " | "  " " ?res3 " " ?p3 crlf)
+    (printout t crlf "ACTION: Build Settlement " ?node crlf)
+    (exit)
+)
+
+
+
 ;BUILD-ROAD section
+(defrule trade-4-for-road
+    (phase turn)
+    (game-phase do-turn)
+    (goal build-road)
+    (my-maritime-trade ?price)
+    (resource-cards (kind ?want&lumber|brick) (amnt 0))
+    (or
+        (resource-cards (kind ?trade&~lumber&~brick) (amnt ?amnt&:(>= ?amnt ?price)))
+        (resource-cards (kind ?trade&~?want&lumber|brick) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+    )
+    =>
+    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
+    (exit)
+)
+
+(defrule build-road
+    (goal build-road)
+    (my-num ?pid)
+    (road-count (player ?pid) (count ?cnt&:(< ?cnt 15)))
+    (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
+    (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
+    (or
+      (settlement (player ?pid) (node ?nid))
+      (city (player ?pid) (node ?nid))
+    )
+    (or
+      (and
+        (edge (id ?eid1) (nodes ?nid ?cnode))
+        (road (player ?pid) (edge ?eid1))
+        (edge (id ?eidtobuild) (nodes ?cnode ?cnode2&~?nid))
+        (node (id ?cnode2) (can-build 1))
+      )
+      (edge (id ?eidtobuild) (nodes ?nid ?cnode2))
+    )
+
+    (not (road (edge ?eidtobuild)))
+
+    (node (id ?cnode2) (hexes ?h1 ?h2 ?h3))
+    (hex (id ?h1) (resource ?res1) (number ?p1))
+    (hex (id ?h2) (resource ?res2) (number ?p2))
+    (hex (id ?h3) (resource ?res3) (number ?p3))
+    =>
+    (printout t crlf "DEBUG: " ?res1 " " ?p1 " | " ?res2 " " ?p2 " | "  " " ?res3 " " ?p3 crlf)
+    (printout t crlf "ACTION: Build Road " ?eidtobuild crlf)
+    (exit)
+)
+
 
 ;TRADE section
+;client needs to print out all the possible quotes and the system pick one
+;don't accept trades for resources you have good supplies of
+;accept trades for resources you don't have access to
 
 ;DISCARD
 (defrule discard-cards
@@ -767,6 +758,9 @@
 
 
 ;MOVE-ROBBER section
+
+;might not put on the highest dot count if it cuts off the only source of something
+
 (defrule find-robber-placements
     (declare (salience 10))
     (goal place-robber)
@@ -881,3 +875,25 @@
 ;4 lumber
 ;5 none
 ;6 any
+
+
+(defrule end-turn
+    (declare (salience -1000))
+    =>
+    (printout t crlf "ACTION: End Turn (default)" crlf)
+    (exit)
+)
+
+;(defrule end-turn
+;    (phase end-turn)
+;    =>
+;    (printout t crlf "ACTION: End Turn (default)" crlf)
+;    (exit)
+;)
+;(defrule move-to-end-turn
+;  (declare (salience -1000))
+;  ?f <- (phase turn)
+;  =>
+;  (retract ?f)
+;  (assert (phase end-turn))
+;)
