@@ -48,7 +48,7 @@
     (declare (salience 10))
     (goal initial-setup)
     (settlements-to-place ?snum)
-    (my-num ?pid)
+    (my-id ?pid)
     (not (settlement (player ?pid)))
     (num-players ?pnum)
     =>
@@ -98,7 +98,7 @@
 
 (defrule place-starting-road
     (goal initial-setup)
-    (my-num ?pnum)
+    (my-id ?pnum)
 
     (roads-to-place ?num&:(> ?num 0))
 

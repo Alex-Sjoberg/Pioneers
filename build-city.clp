@@ -2,6 +2,7 @@
 
 (defrule maritime-trade-for-city
     (goal build-city)
+    (willing-to-trade)
     (my-maritime-trade ?price)
     (or
         (resource-cards (kind ?want&grain) (amnt ?amnt&:(< ?amnt 2)))
@@ -28,20 +29,40 @@
 
 (defrule determine-best-city-location "needs to be improved"
   (goal build-city)
-  (my-num ?pid)
+  (my-id ?pid)
   (settlement (player ?pid) (node ?node))
   =>
   (assert (best-city-location ?node))
 )
 
+(defrule build-city-if-no-settlement
+  ?g <- (goal build-city)
+  (my-id ?pid)
+  (not (settlement (player ?pid)))
+  =>
+  (retract ?g)
+  (assert (goal build-settlemnt)
+          (willing-to-trade))
+)
+
 (defrule build-city
     (goal build-city)
     (best-city-location ?node)
-    (my-num ?pid)
+    (my-id ?pid)
     (player (id ?pid) (num-cities ?num&:(< ?num 4)))
     (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
     (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
     =>
     (printout t crlf "ACTION: Build City " ?node crlf)
     (exit)
+)
+
+(defrule city-else-build-settlement
+  (declare (salience -10))
+  ?g <- (goal build-city)
+  =>
+  (retract ?g)
+  (printout t "Switched GOAL to build-settlement" crlf)
+  (assert (goal build-settlement)
+          (willing-to-trade))
 )

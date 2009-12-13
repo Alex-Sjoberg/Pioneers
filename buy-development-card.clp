@@ -15,6 +15,7 @@
 
 (defrule maritime-trade-for-development-card
   (goal buy-development-card)
+  (willing-to-trade)
   (my-maritime-trade ?price)
   (resource-cards (kind ?want&wool|grain|ore) (amnt 0))
   (or

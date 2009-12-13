@@ -14,36 +14,47 @@
 ;High priority rules
 (defrule build-city-if-have-resources
   (declare (salience 10))
-  ?g <- (goal init-city-strategy)
+  (or
+    ?g <- (goal init-city-strategy)
+    ?g <- (goal init-settlement-strategy)
+  )
+  (my-id ?pid)
+  (settlement (player ?pid))
   (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
   (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
   =>
   (retract ?g)
+  (printout t "Switched GOAL to build-city" crlf)
   (assert (goal build-city))
 )
+
+; in init-settlement-strategy.clp
+;(defrule build-settlement-if-have-resources
 
 (defrule try-build-settlement
   (declare (salience 10))
   ?g <- (goal init-city-strategy)
-  (settlement-count ?n&:(<= ?n 2))
+  (settlement-count ?n&:(<= ?n 3))
   =>
   (retract ?g)
+  (printout t "Switched GOAL to build-settlement" crlf)
   (assert (goal build-settlement))
 )
 
 ;Medium priority rules
 (defrule build-city-if-have-none
   ?g <- (goal init-city-strategy)
-  (my-num ?pid)
+  (my-id ?pid)
   (player (id ?pid) (num-cities ?num&:(= ?num 0)))
   =>
   (retract ?g)
+  (printout t "Switched GOAL to build-city" crlf)
   (assert (goal build-city))
 )
 
 (defrule buy-development-card-over-city
   ?g <- (goal init-city-strategy)
-  (my-num ?pid)
+  (my-id ?pid)
   (or
     (player (id ?pid) (num-cities ?num&:(>= ?num 1)))
     (and
@@ -54,6 +65,7 @@
   )
   =>
   (retract ?g)
+  (printout t "Switched GOAL to buy-development-card" crlf)
   (assert (goal buy-development-card))
 )
 
@@ -63,5 +75,6 @@
   ?g <- (goal init-city-strategy)
   =>
   (retract ?g)
+  (printout t "Switched GOAL to buy-development-card" crlf)
   (assert (goal buy-development-card))
 )

@@ -3,6 +3,7 @@
   (game-phase place-robber)
   =>
   (retract ?g)
+  (printout t "Switching GOAL to place-robber" crlf)
   (assert (goal place-robber))
 )
 
@@ -11,6 +12,7 @@
   (game-phase discard)
   =>
   (retract ?g)
+  (printout t "Switching GOAL to discard" crlf)
   (assert (goal discard))
 )
 
@@ -20,6 +22,7 @@
   (not (dice-already-rolled))
   =>
   (retract ?g)
+  (printout t "Switching GOAL to before-dice" crlf)
   (assert (goal before-dice))
 )
 
@@ -28,5 +31,6 @@
   ?g <- (goal decide-action)
   =>
   (retract ?g)
+  (printout t "Switching GOAL to decide-strategy" crlf)
   (assert (goal decide-strategy))
 )

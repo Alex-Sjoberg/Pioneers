@@ -5,7 +5,7 @@
 (defrule find-robber-placements
     (declare (salience 10))
     (goal place-robber)
-    (my-num ?pid)
+    (my-id ?pid)
     (or
       (settlement (player ~?pid) (node ?nid))
       (city (player ~?pid) (node ?nid))
@@ -37,7 +37,6 @@
       )
     )
     =>
-    (facts)
     (printout t crlf "ACTION: Place Robber " ?hid crlf)
     (exit)
 )

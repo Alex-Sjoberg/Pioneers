@@ -98,6 +98,11 @@
 
 (deffacts initial-state
   (victory-sum 0)
+  (total-resource-prob (kind lumber) (prob 0))
+  (total-resource-prob (kind brick) (prob 0))
+  (total-resource-prob (kind wool) (prob 0))
+  (total-resource-prob (kind grain) (prob 0))
+  (total-resource-prob (kind ore) (prob 0))
 )
 
 (defrule load-clips-files
@@ -131,7 +136,7 @@
 
 (defrule play-victory
     (game-phase do-turn)
-    (my-num ?pid)
+    (my-id ?pid)
     (player (id ?pid) (score ?score))
     (devel-card (kind victory) (amnt ?amnt) (can-play 1))
     (test (>= (+ ?score ?amnt) 10))

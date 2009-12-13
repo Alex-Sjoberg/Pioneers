@@ -2,7 +2,7 @@
 
 (defrule build-road
     (goal build-road)
-    (my-num ?pid)
+    (my-id ?pid)
     (road-count (player ?pid) (count ?cnt&:(< ?cnt 15)))
     (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
     (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
@@ -27,7 +27,6 @@
     (hex (id ?h2) (resource ?res2) (number ?p2))
     (hex (id ?h3) (resource ?res3) (number ?p3))
     =>
-    (printout t crlf "DEBUG: " ?res1 " " ?p1 " | " ?res2 " " ?p2 " | "  " " ?res3 " " ?p3 crlf)
     (printout t crlf "ACTION: Build Road " ?eidtobuild crlf)
     (exit)
 )
@@ -36,7 +35,7 @@
 
 
 
-(defrule trade-4-for-road
+(defrule trade-for-road
     (goal build-road)
     (my-maritime-trade ?price)
     (resource-cards (kind ?want&lumber|brick) (amnt 0))

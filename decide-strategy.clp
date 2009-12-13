@@ -16,6 +16,7 @@
   (settlement-total ?settlement&:(> ?city ?settlement))
   =>
   (retract ?g)
+  (printout t "Switched GOAL to init-city-strategy" crlf)
   (assert (goal init-city-strategy)
           (strategy cities))
 )
@@ -23,9 +24,10 @@
 (defrule discover-settlement-strategy
   ?g <- (goal decide-strategy)
   (city-total ?city)
-  (settlement-total ?settlement&:(> ?settlement ?city))
+  (settlement-total ?settlement&:(>= ?settlement ?city))
   =>
   (retract ?g)
+  (printout t "Switched GOAL to init-settlement-strategy" crlf)
   (assert (goal init-settlement-strategy)
           (strategy settlements))
 )
