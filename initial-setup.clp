@@ -4,7 +4,6 @@
 
 ;DONE figure out how much the intersection will produce, count dots
 ;if there is not much brick or lumber and there is a lot of wheat or ore, don't consider the settlement strategy even if the best spot dot-wise is for that strategy
-;if you are the last person, order your settlements so that you get the resources you want
 ;if someone offers you one for two if you need it, 
 ;if it is a rare resource, place on it if there is already someone there, since that will deter the robber
 ;if you are settlements, don't make a 6/8 your only source of lumber or brick if you are the only one on that node
@@ -20,11 +19,11 @@
 ;it is harder to get blocked in when you build in two different places, do this especially if you are ore/grain and can't build roads right away
 ;build your starting roads toward your third and fourth settlements, and don't try to connect them right away or you will waste time
 
-;highest dots
-;wood/brick or ore/grain
+;DONE highest dots
+;DONE lumber/brick or ore/grain
 ;consider ports nearby
-;wood and ore do not go well together
-;wood, wheat, and sheep sort of go together since they are all needed for a settlement
+;lumber and ore do not go well together
+;lumber, wheat, and sheep sort of go together since they are all needed for a settlement
 ;if there is a lot of sheep and you can get the sheep port, maybe go for that
 ;go for places with expansion opportunites, especially in the direction of those with 6-8 dots if other players are yet to play
 ;expansion also includes resouces you nee
@@ -36,6 +35,7 @@
 ;try to make up for the resources you missed on your first one or make them corresponding
 ;try not to repeat numbers
 ;if you are going for the middle strategy, try for a 3-1 port
+;if you are the last person, order your settlements so that you get the resources you want
 
 ;statistics say clumping does happen
 ;especially for your second settlement, 
@@ -43,6 +43,14 @@
 
 ; INITIAL-SETUP
 
+
+(defglobal ?*total-dots* = 5
+           ?*min-brick-lumber* = 2
+           ?*total-brick* = 2
+           ?*min-ore-grain* = 2
+           ?*total-ore* = 2
+           ?*resource-rarity* = 3
+)
 
 (defrule count-num-opponents-settlements-to-place
     (declare (salience 10))
@@ -78,16 +86,17 @@
       )
     )
     =>
-    (assert (available-settlement-node (node ?nid) (hexes ?h1 ?h2 ?h3)))
+    (assert (possible-settlement-node (id ?nid) (hexes ?h1 ?h2 ?h3)))
 )
 
-
-(defrule score-nodes-by-what-can-be-calculated-from-the-hexes-themselves
-    "total dots
-     min of brick+lumber
-     amount of brick
-     min of ore+grain
-     amount of ore"
+(deffunction count-this-resource (?h1 ?h2 ?h3 ?res)
+    (bind ?num 0)
+    (if (eq ?res ?h1) then (bind ?num (+ ?num 1)))
+    (if (eq ?res ?h2) then (bind ?num (+ ?num 1)))
+    (if (eq ?res ?h3) then (bind ?num (+ ?num 1)))
+    (return ?num)
+)
+(defrule score-nodes-by-what-can-be-calculated-from-the-hexes-themselves "total dots min of brick+lumber amount of brick min of ore+grain amount of ore"
     (goal initial-setup)
     (possible-settlement-node (id ?nid) (hexes ?h1 ?h2 ?h3))
     (hex (id ?h1) (prob ?dots1) (resource ?res1))
@@ -95,21 +104,15 @@
     (hex (id ?h3) (prob ?dots3) (resource ?res3))
     =>
     (assert (node-attribute (id ?nid) (attr total-dots) (val (+ ?dots1 ?dots2 ?dots3)))
-            (node-attribute (id ?nid) (attr min-brick-wood)
-                (val (min (+ (count-this-resource lumber)
-                             (count-this-resource brick))))
-            (node-attribute (id ?nid) (attr total-brick) (val (count-this-resource brick)))
+            (node-attribute (id ?nid) (attr min-brick-lumber)
+                (val (min (count-this-resource ?h1 ?h2 ?h3 lumber)
+                          (count-this-resource ?h1 ?h2 ?h3 brick))))
+            (node-attribute (id ?nid) (attr total-brick) (val (count-this-resource ?h1 ?h2 ?h3 brick)))
             (node-attribute (id ?nid) (attr min-ore-grain)
-                (val (min (+ (count-this-resource ore)
-                             (count-this-resource grain))))
-            (node-attribute (id ?nid) (attr total-ore) (val (count-this-resource ore)))
-)
-(deffunction count-this-resource (?h1 ?h2 ?h3 ?res)
-    (bind ?num 0)
-    (if (eq ?res ?h1) then (bind ?num (+ ?num 1)))
-    (if (eq ?res ?h2) then (bind ?num (+ ?num 1)))
-    (if (eq ?res ?h3) then (bind ?num (+ ?num 1)))
-    (return ?num)
+                (val (min (count-this-resource ?h1 ?h2 ?h3 ore)
+                          (count-this-resource ?h1 ?h2 ?h3 grain))))
+            (node-attribute (id ?nid) (attr total-ore) (val (count-this-resource ?h1 ?h2 ?h3 ore)))
+    )
 )
 
 (defrule score-nodes-by-resource-rarity
@@ -126,25 +129,48 @@
 )
 (defrule find-hex-rarity
     (hex (id ?hid) (resource ?res) (prob ?this))
-    (dot-total (kind ?res) (amnt ?total))
+    (dot-total (kind ?res) (amnt ?total&~0))
     =>
-    (assert (hex-rarity (id ?hid) (rarity (/ ?this ?total)))
+    (assert (hex-rarity (id ?hid) (rarity (/ ?this ?total))))
+)
+
+(defrule score-nodes-by-dot-lopsidedness "one high number and two low numbers is a robber magnet"
+    =>    
+)
+
+(defrule score-nodes-by-dot-differentness "one high number and two low numbers is a robber magnet"
+    =>    
 )
 
 
-(defrule place-starting-settlement
-    (declare (salience -10))
+(defrule calculate-overall-goodness-of-nodes
+    (possible-settlement-node (id ?nid) (hexes ?h1 ?h2 ?h3))
+    (node-attribute (id ?nid) (attr total-dots) (val ?total-dots))
+    (node-attribute (id ?nid) (attr min-brick-lumber) (val ?min-brick-lumber))
+    (node-attribute (id ?nid) (attr total-brick) (val ?total-brick))
+    (node-attribute (id ?nid) (attr min-ore-grain) (val ?min-ore-grain))
+    (node-attribute (id ?nid) (attr total-ore) (val ?total-ore))
+    (node-attribute (id ?nid) (attr resource-rarity) (val ?resource-rarity))
+    =>
+    (assert (calculated-node (id ?nid) (score
+        (+ (* ?*total-dots* ?total-dots)
+           (* ?*min-brick-lumber* ?min-brick-lumber)
+           (* ?*total-brick* ?total-brick)
+           (* ?*min-ore-grain* ?min-ore-grain)
+           (* ?*total-ore* ?total-ore)
+           (* ?*resource-rarity* ?resource-rarity)
+        ))))
+)
 
+(defrule place-starting-settlement
     (goal initial-setup)
     (settlements-to-place ?num&:(> ?num 0))
-    (possible-settlement (node ?nid) (prob-sum ?psum))
+    (calculated-node (id ?nid) (score ?score))
 
     ; ...and for which there is no other possible settlement spot
     ; which has a higher probability
-    (not (possible-settlement (prob-sum ?psum2&:(> ?psum2 ?psum))))
-
+    (not (calculated-node (score ?score2&:(> ?score2 ?score))))
     =>
-
     (printout t crlf "ACTION: Build Settlement " ?nid crlf)
     (exit)
 )
@@ -180,4 +206,5 @@
     (roads-to-place 0)
     =>
     (printout t crlf "ACTION: End Turn" crlf)
+    (exit)
 )

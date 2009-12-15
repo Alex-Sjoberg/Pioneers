@@ -100,6 +100,21 @@
     (slot amnt)
 )
 
+(deftemplate dot-addend
+    (slot kind)
+    (slot amnt)
+)
+
+(deftemplate possible-settlement-node
+    (slot id)
+    (multislot hexes)
+)
+
+(deftemplate calculated-node
+    (slot id)
+    (slot score)
+)
+
 (deffacts port-locations
   (port (port-hex 6 2) (conn-hex 5 2))
   (port (port-hex 6 4) (conn-hex 5 3))
@@ -119,18 +134,12 @@
   (dot-total (kind brick) (amnt 0))
   (dot-total (kind wool) (amnt 0))
   (dot-total (kind ore) (amnt 0))
-  (dot-total (kind grain9) (amnt 0))
+  (dot-total (kind grain) (amnt 0))
   (total-resource-prob (kind lumber) (prob 0))
   (total-resource-prob (kind brick) (prob 0))
   (total-resource-prob (kind wool) (prob 0))
   (total-resource-prob (kind grain) (prob 0))
   (total-resource-prob (kind ore) (prob 0))
-  (dot-count 10)
-  (min-brick-lumber 3)
-  (total-brick 3)
-  (min-ore-grain 3)
-  (total-ore 3)
-  (resource-rarity 3)
 )
 
 (defrule load-clips-files
@@ -149,6 +158,7 @@
     (load "../initial-setup.clp")
     (load "../place-robber.clp")
     (load "../trade.clp")
+    (printout t "Switching GOAL to init-turn-1" crlf)
     (assert (goal init-turn-1))
 )
 
@@ -183,6 +193,7 @@
 (defrule end-turn
     (declare (salience -1000))
     =>
+    (facts)
     (printout t crlf "ACTION: End Turn (default)" crlf)
     (exit)
 )

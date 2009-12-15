@@ -108,13 +108,19 @@
 ; RESOURCE RARITY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defrule sum-resource-rarity
+(defrule start-sum-resource-rarity
     (hex (id ?hid) (resource ?res) (prob ?prob))
-    ?t <- (dot-total (kind ?res) (amnt ?amnt))
     =>
-    (modify ?t (amnt ?prob))
+    (assert (dot-addend (kind ?res) (amnt ?prob)))
 )
 
+(defrule finish-sum-resource-rarity
+    ?a <- (dot-addend (kind ?res) (amnt ?amnt))
+    ?t <- (dot-total (kind ?res) (amnt ?total))
+    =>
+    (retract ?a)
+    (modify ?t (amnt (+ ?amnt ?total)))
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; MOVE TO INIT-TURN-2
