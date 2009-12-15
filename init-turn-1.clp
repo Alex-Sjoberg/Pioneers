@@ -39,7 +39,11 @@
     (goal init-turn-1)
     (my-id ?pid)
     (settlement (node ?nid) (player ?pid))
-    (node (id ?nid) (hexes $? ?hid $?))
+    (or
+      (node (id ?nid) (hexes ?hid ? ?))
+      (node (id ?nid) (hexes ? ?hid ?))
+      (node (id ?nid) (hexes ? ? ?hid))
+    )
     (hex (id ?hid) (resource ?res&~desert&~sea) (prob ?prob))
     =>
     (assert (add-to-resource-sum ?res ?prob))
@@ -49,7 +53,11 @@
     (goal init-turn-1)
     (my-id ?pid)
     (city (node ?nid) (player ?pid))
-    (node (id ?nid) (hexes $? ?hid $?))
+    (or
+      (node (id ?nid) (hexes ?hid ? ?))
+      (node (id ?nid) (hexes ? ?hid ?))
+      (node (id ?nid) (hexes ? ? ?hid))
+    )
     (hex (id ?hid) (resource ?res&~desert&~sea) (prob ?prob))
     =>
     (assert (add-to-resource-sum ?res (* 2 ?prob)))

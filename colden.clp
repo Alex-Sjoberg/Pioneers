@@ -87,7 +87,12 @@
 )
 
 (deftemplate resource-cards
-    (slot kind (allowed-values lumber brick wool grain ore sea desert))
+    (slot kind (allowed-values lumber brick wool grain ore))
+    (slot amnt (type INTEGER))
+)
+
+(deftemplate bank-cards
+    (slot kind (allowed-values lumber brick wool grain ore))
     (slot amnt (type INTEGER))
 )
 

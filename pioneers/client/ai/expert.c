@@ -2175,6 +2175,10 @@ void setup_clips(void)
 	for (i = 0; i < NO_RESOURCE; i++)
     fprintf(fp, "(resource-cards (kind %s) (amnt %d))\n", resource_mapping[i], resource_asset(i));
 
+  /* Bank cards */
+	for (i = 0; i < NO_RESOURCE; i++)
+    fprintf(fp, "(bank-cards (kind %s) (amnt %d))\n", resource_mapping[i], get_bank()[i]);
+
   /* Development cards */
   const DevelDeck * deck = get_devel_deck();
   int devels[5][2] = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0} };

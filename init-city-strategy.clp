@@ -34,7 +34,8 @@
 (defrule try-build-settlement
   (declare (salience 10))
   ?g <- (goal init-city-strategy)
-  (settlement-count ?n&:(<= ?n 3))
+  (my-id ?pid)
+  (player (id ?pid) (num-settlements ?n&:(<= ?n 3)))
   =>
   (retract ?g)
   (printout t "Switched GOAL to build-settlement" crlf)
@@ -75,6 +76,6 @@
   ?g <- (goal init-city-strategy)
   =>
   (retract ?g)
-  (printout t "Switched GOAL to buy-development-card" crlf)
+  (printout t "Switched GOAL to buy-development-card-else" crlf)
   (assert (goal buy-development-card))
 )

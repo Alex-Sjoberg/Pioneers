@@ -78,7 +78,7 @@
     )
     (node (id ?nid) (hexes $? ?hid $?))
     (not (robber (hex ?hid)))
-    (hex (id ?hid) (prob ?prob))
+    (hex (id ?hid) (prob ?prob) (resource ?res&~sea&~desert))
     (not
       (and
         (node (id ?tnid) (hexes $? ?hid $?))
@@ -97,8 +97,38 @@
 (defrule move-robber
     (declare (salience -20))
     (goal place-robber)
+    (or
+      (potential-robber-placement ?hid)
+      (and
+        (not (potential-robber-placement ?))
+        (hex (id ?hid) (resource ?res&~sea&~desert))
+        (not (robber (hex ?hid)))
+        (not
+          (and
+            (or
+              (node (id ?nid) (hexes ?hid ? ?))
+              (node (id ?nid) (hexes ? ?hid ?))
+              (node (id ?nid) (hexes ? ? ?hid))
+            )
+            (my-id ?pid)
+            (settlement (node ?nid) (player ?pid))
+          )
+        )
+      )
+    )
     (hex-score (id ?hid) (score ?score))
-    (not (hex-score (id ?hid2) (score ?score2&:(> ?score2 ?score))))
+    (not
+      (and
+        (potential-robber-placement ?hid2)
+        (hex-score (id ?hid2) (score ?score2&:(> ?score2 ?score)))
+      )
+    )
+    ;(not
+    ;  (and
+    ;    (potential-robber-placement ?hid2)
+    ;    (hex (id ?hid2) (prob ?prob2&:(> ?prob2 ?prob)))
+    ;  )
+    ;)
     =>
     (printout t crlf "ACTION: Place Robber " ?hid crlf)
     (exit)
