@@ -120,15 +120,17 @@
   (dot-total (kind wool) (amnt 0))
   (dot-total (kind ore) (amnt 0))
   (dot-total (kind grain9) (amnt 0))
-)
-
-(deffacts initial-placement-weights
-    (dot-count 10)
-    (min-brick-lumber 3)
-    (total-brick 3)
-    (min-ore-grain 3)
-    (total-ore 3)
-    (resource-rarity 3)
+  (total-resource-prob (kind lumber) (prob 0))
+  (total-resource-prob (kind brick) (prob 0))
+  (total-resource-prob (kind wool) (prob 0))
+  (total-resource-prob (kind grain) (prob 0))
+  (total-resource-prob (kind ore) (prob 0))
+  (dot-count 10)
+  (min-brick-lumber 3)
+  (total-brick 3)
+  (min-ore-grain 3)
+  (total-ore 3)
+  (resource-rarity 3)
 )
 
 (defrule load-clips-files
@@ -162,7 +164,7 @@
 
 (defrule play-victory
     (game-phase do-turn)
-    (my-num ?pid)
+    (my-id ?pid)
     (player (id ?pid) (score ?score))
     (devel-card (kind victory) (amnt ?amnt) (can-play 1))
     (test (>= (+ ?score ?amnt) 10))

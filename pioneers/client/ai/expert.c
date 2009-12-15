@@ -2109,9 +2109,9 @@ void setup_clips(void)
   **********************************/
 
   /* Load any external files needed */
-  write_clips("(load \"../colden.clp\")");
+  write_clips("(load \"../colden2.clp\")");
 
-  FILE *fp = fopen("../temp_facts.clp", "w");
+  FILE *fp = fopen("../temp_facts2.clp", "w");
 
   /* Output the board state */
   Map * map = callbacks.get_map();
@@ -2231,7 +2231,7 @@ void setup_clips(void)
   fprintf(fp, "(num-players %d)\n", num_players());
 
   /* My player number */
-  fprintf(fp, "(my-num %d)\n", my_player_num());
+  fprintf(fp, "(my-id %d)\n", my_player_num());
 
   /* ID of current player */
   fprintf(fp, "(current-player %d)\n", current_player());
@@ -2244,8 +2244,7 @@ void setup_clips(void)
 
   fclose(fp);
   write_clips("(reset)");
-  write_clips("(load-facts \"../temp_facts.clp\")");
-  write_clips("(watch facts)");
+  write_clips("(load-facts \"../temp_facts2.clp\")");
 }
 
 /*

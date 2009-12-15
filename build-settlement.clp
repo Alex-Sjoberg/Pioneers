@@ -2,6 +2,7 @@
 
 (defrule maritime-trade-for-settlement
     (goal build-settlement)
+    (willing-to-trade)
     (my-maritime-trade ?price)
     (resource-cards (kind ?want&lumber|brick|wool|grain) (amnt 0))
     (or
@@ -15,7 +16,7 @@
 
 (defrule build-settlement
     (goal build-settlement)
-    (my-num ?pid)
+    (my-id ?pid)
     (player (id ?pid) (num-settlements ?num&:(< ?num 5)))
     (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
     (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
@@ -30,7 +31,24 @@
     (hex (id ?h2) (resource ?res2) (number ?p2))
     (hex (id ?h3) (resource ?res3) (number ?p3))
     =>
-    (printout t crlf "DEBUG: " ?res1 " " ?p1 " | " ?res2 " " ?p2 " | "  " " ?res3 " " ?p3 crlf)
     (printout t crlf "ACTION: Build Settlement " ?node crlf)
     (exit)
+)
+
+(defrule build-road-if-none
+  (declare (salience -10))
+  ?g <- (goal build-settlement)
+  (not
+    (and
+      (my-id ?pid)
+      (node (id ?nid) (can-build 1))
+      (road (edge ?eid) (player ?pid))
+      (edge (id ?eid) (nodes $? ?nid $?))
+    )
+  )
+  =>
+  (retract ?g)
+  (printout t "Switched GOAL to build-road" crlf)
+  (assert (goal build-road)
+          (willing-to-trade))
 )

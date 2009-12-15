@@ -51,6 +51,7 @@
   (game-phase initial-setup)
   =>
   (retract ?g)
+  (printout t "Switching GOAL to initial-setup" crlf)
   (assert (goal initial-setup))
 )
 
@@ -59,5 +60,6 @@
   ?g <- (goal init-turn-2)
   =>
   (retract ?g)
+  (printout t "Switching GOAL to decide-action" crlf)
   (assert (goal decide-action))
 )

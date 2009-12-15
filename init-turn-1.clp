@@ -36,7 +36,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; FIND-RESOURCE-TOTAL-PROBS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defrule find-my-resource-total-probs
+(defrule find-my-resource-settlement-probs
     (goal init-turn-1)
     (my-id ?pid)
     (settlement (node ?nid) (player ?pid))
@@ -46,12 +46,14 @@
     (assert (add-to-resource-sum ?res ?prob))
 )
 
-(defrule init-resource-probs
+(defrule find-my-resource-city-probs
     (goal init-turn-1)
-    (add-to-resource-sum ?res ?prob)
-    (not (total-resource-prob (kind ?res)))
+    (my-id ?pid)
+    (city (node ?nid) (player ?pid))
+    (node (id ?nid) (hexes $? ?hid $?))
+    (hex (id ?hid) (resource ?res&~desert&~sea) (prob ?prob))
     =>
-    (assert (total-resource-prob (kind ?res) (prob 0)))
+    (assert (add-to-resource-sum ?res (* 2 ?prob)))
 )
 
 (defrule sum-resource-probs
@@ -122,5 +124,6 @@
   ?f <- (goal init-turn-1)
   =>
   (retract ?f)
+  (printout t "Switching GOAL to init-turn-2" crlf)
   (assert (goal init-turn-2))
 )
