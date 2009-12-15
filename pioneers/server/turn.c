@@ -419,7 +419,7 @@ gboolean check_victory(Player * player)
 	if (points >= game->params->victory_points) {
 		GList *list;
 
-    fprintf(stderr, "player %d won\n", player->num);
+    fprintf(stderr, "player %s won\n", player->name);
 		player_broadcast(player, PB_ALL, FIRST_VERSION,
 				 LATEST_VERSION, "won with %d\n", points);
 		game->is_game_over = TRUE;

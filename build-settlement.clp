@@ -5,6 +5,7 @@
     (willing-to-trade)
     (my-maritime-trade ?price)
     (resource-cards (kind ?want&lumber|brick|wool|grain) (amnt 0))
+    (bank-cards (kind ?want) (amnt ~0))
     (or
         (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
         (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))

@@ -12,7 +12,7 @@
     )
     (node (id ?nid) (hexes $? ?hid $?))
     (not (robber (hex ?hid)))
-    (hex (id ?hid) (prob ?prob))
+    (hex (id ?hid) (prob ?prob) (resource ?res&~sea&~desert))
     (not
       (and
         (node (id ?tnid) (hexes $? ?hid $?))
@@ -28,7 +28,25 @@
 
 (defrule move-robber
     (goal place-robber)
-    (potential-robber-placement ?hid)
+    (or
+      (potential-robber-placement ?hid)
+      (and
+        (not (potential-robber-placement ?))
+        (hex (id ?hid) (resource ?res&~sea&~desert))
+        (not (robber (hex ?hid)))
+        (not
+          (and
+            (or
+              (node (id ?nid) (hexes ?hid ? ?))
+              (node (id ?nid) (hexes ? ?hid ?))
+              (node (id ?nid) (hexes ? ? ?hid))
+            )
+            (my-id ?pid)
+            (settlement (node ?nid) (player ?pid))
+          )
+        )
+      )
+    )
     (hex (id ?hid) (prob ?prob))
     (not
       (and

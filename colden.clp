@@ -70,7 +70,12 @@
 )
 
 (deftemplate resource-cards
-    (slot kind (allowed-values lumber brick wool grain ore sea desert))
+    (slot kind (allowed-values lumber brick wool grain ore))
+    (slot amnt (type INTEGER))
+)
+
+(deftemplate bank-cards
+    (slot kind (allowed-values lumber brick wool grain ore))
     (slot amnt (type INTEGER))
 )
 
@@ -193,7 +198,6 @@
 (defrule end-turn
     (declare (salience -1000))
     =>
-    (facts)
     (printout t crlf "ACTION: End Turn (default)" crlf)
     (exit)
 )
