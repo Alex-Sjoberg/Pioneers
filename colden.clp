@@ -54,6 +54,17 @@
     (slot val)
 )
 
+(deftemplate hex-score
+    (slot id)
+    (slot score)
+)
+
+(deftemplate hex-attribute
+    (slot id)
+    (slot attr)
+    (slot val)
+)
+
 (deftemplate hex-rarity
     (slot id)
     (slot rarity)
@@ -105,12 +116,28 @@
     (slot amnt)
 )
 
+(deftemplate hex-addend
+    (slot id)
+    (slot nid)
+    (slot val)
+)
+
+(deftemplate hex-total
+    (slot id)
+    (slot val)
+)
+
 (deftemplate possible-settlement-node
     (slot id)
     (multislot hexes)
 )
 
 (deftemplate calculated-node
+    (slot id)
+    (slot score)
+)
+
+(deftemplate calculated-hex
     (slot id)
     (slot score)
 )
@@ -193,7 +220,6 @@
 (defrule end-turn
     (declare (salience -1000))
     =>
-    (facts)
     (printout t crlf "ACTION: End Turn (default)" crlf)
     (exit)
 )
