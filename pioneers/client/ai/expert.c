@@ -1496,6 +1496,12 @@ static void expert_free_road(void)
 
 static void expert_year_of_plenty(const gint bank[NO_RESOURCE])
 {
+
+  setup_clips();
+  write_clips("(assert (game-phase choose-plenty))");
+  close_clips();
+
+#if 0
 	gint want[NO_RESOURCE];
 	gint assets[NO_RESOURCE];
 	int i;
@@ -1542,6 +1548,7 @@ static void expert_year_of_plenty(const gint bank[NO_RESOURCE])
 	want[r2]++;
 
 	cb_choose_plenty(want);
+#endif
 }
 
 /*
@@ -2109,9 +2116,12 @@ void setup_clips(void)
   **********************************/
 
   /* Load any external files needed */
-  write_clips("(load \"../colden2.clp\")");
+  write_clips("(load \"../colden.clp\")");
+  write_clips("(load \"../weights2.clp\")");
 
-  FILE *fp = fopen("../temp_facts2.clp", "w");
+  char fbuf[64];
+  sprintf(fbuf, "../temp_facts%d.clp", my_player_num());
+  FILE *fp = fopen(fbuf, "w");
 
   /* Output the board state */
   Map * map = callbacks.get_map();
@@ -2248,7 +2258,9 @@ void setup_clips(void)
 
   fclose(fp);
   write_clips("(reset)");
-  write_clips("(load-facts \"../temp_facts2.clp\")");
+
+  sprintf(buf, "(load-fats \"%s\")", fbuf);
+  write_clips(buf);
 }
 
 /*
@@ -2461,6 +2473,41 @@ static void play_victory(char * args) {
       return;
     }
   }
+}
+
+static void play_plenty(char * args) {
+  const DevelDeck * deck = get_devel_deck();
+  int i;
+
+  for (i = 0; i < deck->num_cards; i++) {
+    DevelType cardtype = deck_card_type(deck, i);
+
+    if (cardtype == DEVEL_YEAR_OF_PLENTY) {
+      cb_play_develop(i);
+      return;
+    }
+  }
+}
+
+static void choose_plenty(char * args) {
+  char res1[20];
+  char res2[20];
+  gint want[NO_RESOURCE];
+  int i;
+
+  for (i = 0; i < NO_RESOURCE; i++)
+    want[i] = 0;
+
+  sscanf(args, "%s %s", res1, res2);
+
+  for (i = 0; i < NO_RESOURCE; i++) {
+    if (strncmp(res1, resource_mapping[i], strlen(resource_mapping[i])) == 0)
+      want[i]++;
+    if (strncmp(res2, resource_mapping[i], strlen(resource_mapping[i])) == 0)
+      want[i]++;
+  }
+
+  cb_choose_plenty(want);
 }
 
 static void maritime_trade(char * args) {

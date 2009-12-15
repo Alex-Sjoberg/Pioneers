@@ -189,6 +189,7 @@
     (load "../init-turn-2.clp")
     (load "../initial-setup.clp")
     (load "../place-robber.clp")
+    (load "../choose-plenty.clp")
     (load "../trade.clp")
     (printout t "Switching GOAL to init-turn-1" crlf)
     (assert (goal init-turn-1))

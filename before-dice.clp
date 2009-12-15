@@ -13,6 +13,15 @@
     (exit)
 )
 
+(defrule play-plenty
+    (goal before-dice)
+
+    (devel-card (kind year-of-plenty) (can-play 1))
+    =>
+    (printout t crlf "ACTION: Play Year Of Plenty" crlf)
+    (exit)
+)
+
 (defrule roll-dice
     (declare (salience -10))
     (goal before-dice)
