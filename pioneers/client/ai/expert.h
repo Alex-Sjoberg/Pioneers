@@ -47,6 +47,7 @@ static void roll_dice(char*);
 static void buy_develop(char*);
 static void play_soldier(char*);
 static void play_victory(char*);
+static void play_road_building(char*);
 static void maritime_trade(char*);
 
 struct action {
@@ -66,11 +67,24 @@ const struct action actions[] = {
                  /* 7 */   {"Buy Development Card", &buy_develop},
                  /* 8 */   {"Play Soldier", &play_soldier},
                  /* 9 */   {"Play Victory", &play_victory},
-                 /* 10 */  {"Do Maritime", &maritime_trade},
+                 /* 10 */  {"Play Road Building", &play_road_building},
+                 /* 11 */  {"Do Maritime", &maritime_trade},
                           };
 
 int fd0[2],fd1[2],cpid;
 char buf[4096];
+
+// typedef enum {
+//   DEVEL_ROAD_BUILDING,
+//   DEVEL_MONOPOLY,
+//   DEVEL_YEAR_OF_PLENTY,
+//   DEVEL_CHAPEL,
+//   DEVEL_UNIVERSITY,
+//   DEVEL_GOVERNORS_HOUSE,
+//   DEVEL_LIBRARY,
+//   DEVEL_MARKET,
+//   DEVEL_SOLDIER
+// } DevelType;
 
 const char * resource_mapping[] = {
   "brick",
