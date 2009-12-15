@@ -32,7 +32,6 @@
     (assert (road-count (player ?pid) (count 0)))
 )
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; FIND-RESOURCE-TOTAL-PROBS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,4 +1,5 @@
 ;BUILD-ROAD section
+;build roads in the direction of the settlement goal
 
 (defrule build-road
     (goal build-road)
