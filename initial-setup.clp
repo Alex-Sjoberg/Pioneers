@@ -2,11 +2,7 @@
 ;                         TURN
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;figure out how much the intersection will produce, count dots
-;make choices based on the combinations
-;
-
-
+;DONE figure out how much the intersection will produce, count dots
 ;if there is not much brick or lumber and there is a lot of wheat or ore, don't consider the settlement strategy even if the best spot dot-wise is for that strategy
 ;if you are the last person, order your settlements so that you get the resources you want
 ;if someone offers you one for two if you need it, 
@@ -35,7 +31,11 @@
 ;consider resource rarity
 ;if you are player 4 or the last to place, coordinate your settlement placements
 ;don't put two settlements on the same numbers
-;
+
+;SECOND PLACEMENT
+;try to make up for the resources you missed on your first one or make them corresponding
+;try not to repeat numbers
+;if you are going for the middle strategy, try for a 3-1 port
 
 ;statistics say clumping does happen
 ;especially for your second settlement, 
@@ -56,9 +56,11 @@
 )
 
 
-(defrule find-settlement-possibilities
-    ; At least one settlement to place
+(defrule find-available-nodes "don't even consider nodes we can't place on"
+    (declare (salience 10))
     (goal initial-setup)
+
+    ; At least one settlement to place
     (settlements-to-place ?num&:(> ?num 0))
 
     ; Find a node that doesn't have a settlement...
@@ -76,8 +78,59 @@
       )
     )
     =>
-    (assert (possible-settlement (node ?nid) (prob-sum (+ ?p1 ?p2 ?p3))))
+    (assert (available-settlement-node (node ?nid) (hexes ?h1 ?h2 ?h3)))
 )
+
+
+(defrule score-nodes-by-what-can-be-calculated-from-the-hexes-themselves
+    "total dots
+     min of brick+lumber
+     amount of brick
+     min of ore+grain
+     amount of ore"
+    (goal initial-setup)
+    (possible-settlement-node (id ?nid) (hexes ?h1 ?h2 ?h3))
+    (hex (id ?h1) (prob ?dots1) (resource ?res1))
+    (hex (id ?h2) (prob ?dots2) (resource ?res2))
+    (hex (id ?h3) (prob ?dots3) (resource ?res3))
+    =>
+    (assert (node-attribute (id ?nid) (attr total-dots) (val (+ ?dots1 ?dots2 ?dots3)))
+            (node-attribute (id ?nid) (attr min-brick-wood)
+                (val (min (+ (count-this-resource lumber)
+                             (count-this-resource brick))))
+            (node-attribute (id ?nid) (attr total-brick) (val (count-this-resource brick)))
+            (node-attribute (id ?nid) (attr min-ore-grain)
+                (val (min (+ (count-this-resource ore)
+                             (count-this-resource grain))))
+            (node-attribute (id ?nid) (attr total-ore) (val (count-this-resource ore)))
+)
+(deffunction count-this-resource (?h1 ?h2 ?h3 ?res)
+    (bind ?num 0)
+    (if (eq ?res ?h1) then (bind ?num (+ ?num 1)))
+    (if (eq ?res ?h2) then (bind ?num (+ ?num 1)))
+    (if (eq ?res ?h3) then (bind ?num (+ ?num 1)))
+    (return ?num)
+)
+
+(defrule score-nodes-by-resource-rarity
+    (goal initial-setup)
+    (possible-settlement-node (id ?nid) (hexes ?h1 ?h2 ?h3))
+    (hex (id ?h1) (resource ?res1))
+    (hex-rarity (id ?h1) (rarity ?r1))
+    (hex (id ?h2) (resource ?res2))
+    (hex-rarity (id ?h2) (rarity ?r2))
+    (hex (id ?h3) (resource ?res3))
+    (hex-rarity (id ?h3) (rarity ?r3))
+    =>
+    (assert (node-attribute (id ?nid) (attr resource-rarity) (val (+ ?r1 ?r2 ?r3))))
+)
+(defrule find-hex-rarity
+    (hex (id ?hid) (resource ?res) (prob ?this))
+    (dot-total (kind ?res) (amnt ?total))
+    =>
+    (assert (hex-rarity (id ?hid) (rarity (/ ?this ?total)))
+)
+
 
 (defrule place-starting-settlement
     (declare (salience -10))

@@ -42,9 +42,21 @@
     (slot node)
 )
 
-(deftemplate possible-settlement
+(deftemplate available-settlement-node
     (slot node)
     (slot prob-sum)
+    (multislot hexes)
+)
+
+(deftemplate node-attribute
+    (slot id)
+    (slot attr)
+    (slot val)
+)
+
+(deftemplate hex-rarity
+    (slot id)
+    (slot rarity)
 )
 
 (deftemplate city
@@ -83,6 +95,11 @@
   (slot prob)
 )
 
+(deftemplate dot-total
+    (slot kind)
+    (slot amnt)
+)
+
 (deffacts port-locations
   (port (port-hex 6 2) (conn-hex 5 2))
   (port (port-hex 6 4) (conn-hex 5 3))
@@ -98,6 +115,20 @@
 
 (deffacts initial-state
   (victory-sum 0)
+  (dot-total (kind lumber) (amnt 0))
+  (dot-total (kind brick) (amnt 0))
+  (dot-total (kind wool) (amnt 0))
+  (dot-total (kind ore) (amnt 0))
+  (dot-total (kind grain9) (amnt 0))
+)
+
+(deffacts initial-placement-weights
+    (dot-count 10)
+    (min-brick-lumber 3)
+    (total-brick 3)
+    (min-ore-grain 3)
+    (total-ore 3)
+    (resource-rarity 3)
 )
 
 (defrule load-clips-files

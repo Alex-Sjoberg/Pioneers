@@ -46,7 +46,6 @@
 
 
 
-
 (defrule discover-initial-setup
   ?g <- (goal init-turn-2)
   (game-phase initial-setup)

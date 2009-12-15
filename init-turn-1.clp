@@ -102,8 +102,16 @@
     (assert (my-maritime-trade 4))
 )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; RESOURCE RARITY
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+(defrule sum-resource-rarity
+    (hex (id ?hid) (resource ?res) (prob ?prob))
+    ?t <- (dot-total (kind ?res) (amnt ?amnt))
+    =>
+    (modify ?t (amnt ?prob))
+)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
