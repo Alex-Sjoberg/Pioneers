@@ -113,6 +113,16 @@
   (total-resource-prob (kind wool) (prob 0))
   (total-resource-prob (kind grain) (prob 0))
   (total-resource-prob (kind ore) (prob 0))
+  (trade-commodity (direction they-want) (kind lumber) (amnt 0))
+  (trade-commodity (direction they-want) (kind brick) (amnt 0))
+  (trade-commodity (direction they-want) (kind grain) (amnt 0))
+  (trade-commodity (direction they-want) (kind ore) (amnt 0))
+  (trade-commodity (direction they-want) (kind wool) (amnt 0))
+  (trade-commodity (direction they-supply) (kind lumber) (amnt 0))
+  (trade-commodity (direction they-supply) (kind brick) (amnt 0))
+  (trade-commodity (direction they-supply) (kind grain) (amnt 0))
+  (trade-commodity (direction they-supply) (kind ore) (amnt 0))
+  (trade-commodity (direction they-supply) (kind wool) (amnt 0))
 )
 
 (defrule load-clips-files

@@ -60,9 +60,8 @@
     )
     (not (road (edge ?eid)))
     =>
+    (facts)
     (assert (action "Build Road" ?eid))
-    ;(printout t crlf "ACTION: Build Road " ?eid crlf)
-    ;(exit)
 )
 
 (defrule transition-to-look-for-nodes
