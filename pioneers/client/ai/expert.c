@@ -210,20 +210,6 @@ static gboolean should_buy(const gint assets[NO_RESOURCE], BuildType bt,
 }
 
 /*
- * If I buy this, what will I have left?  Note that some values in need[]
- * can be negative if I can't afford it.
- */
-static void leftover_resources(const gint assets[NO_RESOURCE],
-			       BuildType bt, gint need[NO_RESOURCE])
-{
-	gint i;
-	const gint *cost = cost_of(bt);
-
-	for (i = 0; i < NO_RESOURCE; i++)
-		need[i] = assets[i] - cost[i];
-}
-
-/*
  * Probability of a dice roll
  */
 
@@ -742,40 +728,6 @@ static Edge *best_road_spot(const resource_values_t * resval)
 }
 
 
-/*
- * Any road at all that's valid for us to build
- */
-
-static void rand_road_iterator(Node * n, void *rock)
-{
-	int i;
-	Edge **out = (Edge **) rock;
-
-	if (n == NULL)
-		return;
-
-	for (i = 0; i < 3; i++) {
-		Edge *e = n->edges[i];
-
-		if ((e) && (can_road_be_built(e, my_player_num())))
-			*out = e;
-	}
-}
-
-/*
- * Find any road we can legally build
- *
- */
-static Edge *find_random_road(void)
-{
-	Edge *e = NULL;
-
-	for_each_node(&rand_road_iterator, &e);
-
-	return e;
-}
-
-
 static void places_can_build_iterator(Node * n, void *rock)
 {
 	int *count = (int *) rock;
@@ -793,21 +745,6 @@ static int places_can_build_settlement(void)
 	return count;
 }
 
-/*
- * How many resource cards does player have?
- *
- */
-static int num_assets(gint assets[NO_RESOURCE])
-{
-	int i;
-	int count = 0;
-
-	for (i = 0; i < NO_RESOURCE; i++) {
-		count += assets[i];
-	}
-
-	return count;
-}
 
 static int player_get_num_resource(int player)
 {
@@ -898,273 +835,6 @@ static int resource_desire(gint assets[NO_RESOURCE],
 	return res;
 }
 
-
-static void findit_iterator(Node * n, void *rock)
-{
-	Node **node = (Node **) rock;
-	int i;
-
-	if (!n)
-		return;
-	if (n->owner != my_player_num())
-		return;
-
-	/* if i own this node */
-	for (i = 0; i < 3; i++) {
-		if (n->edges[i] == NULL)
-			continue;
-		if (n->edges[i]->owner == my_player_num())
-			return;
-	}
-
-	*node = n;
-}
-
-
-/* Find the settlement with no roads yet
- *
- */
-
-static Node *void_settlement(void)
-{
-	Node *ret = NULL;
-
-	for_each_node(&findit_iterator, (void *) &ret);
-
-	return ret;
-}
-
-/*
- * Game setup
- * Build one house and one road
- */
-static void expert_setup_house(void)
-{
-	Node *node;
-	resource_values_t resval;
-
-	reevaluate_resources(&resval);
-
-	if (stock_num_settlements() == 0) {
-		ai_panic(N_("No settlements in stock to use for setup"));
-		return;
-	}
-
-	node = best_settlement_spot(TRUE, &resval);
-
-	if (node == NULL) {
-		ai_panic(N_("There is no place to setup a settlement"));
-		return;
-	}
-
-	/*node_add(player, BUILD_SETTLEMENT, node->x, node->y, node->pos, FALSE); */
-	cb_build_settlement(node);
-}
-
-
-/*
- * Game setup
- * Build one house and one road
- */
-static void expert_setup_road(void)
-{
-	Node *node;
-	Edge *e = NULL;
-	int i;
-	resource_values_t resval;
-	float tmp;
-
-	reevaluate_resources(&resval);
-
-	if (stock_num_roads() == 0) {
-		ai_panic(N_("No roads in stock to use for setup"));
-		return;
-	}
-
-	node = void_settlement();
-
-	e = best_road_to_road_spot(node, &tmp, &resval);
-
-	/* if didn't find one just pick one randomly */
-	if (e == NULL) {
-		for (i = 0; i < G_N_ELEMENTS(node->edges); i++) {
-			if (is_edge_on_land(node->edges[i])) {
-				e = node->edges[i];
-				break;
-			}
-		}
-		if (e == NULL) {
-			ai_panic(N_("There is no place to setup a road"));
-			return;
-		}
-	}
-
-	cb_build_road(e);
-}
-
-/*
- * Determine if there are any trades that I can do which will give me
- * enough to buy something.
- */
-static gboolean find_optimal_trade(gint assets[NO_RESOURCE],
-				   const resource_values_t * resval,
-				   gint ports[NO_RESOURCE],
-				   gint * amount,
-				   Resource * trade_away,
-				   Resource * want_resource)
-{
-	int i;
-	Resource res = NO_RESOURCE;
-	Resource temp;
-	gint need[NO_RESOURCE];
-	BuildType bt = BUILD_NONE;
-
-	for (i = 0; i < G_N_ELEMENTS(build_preferences); i++) {
-		bt = build_preferences[i];
-
-		/* If we should buy something, why haven't we bought it? */
-		if (should_buy(assets, bt, resval, need))
-			continue;
-
-		/* See what we need, and if we can get it. */
-		res = which_one(need);
-		if (res == NO_RESOURCE || get_bank()[res] == 0)
-			continue;
-
-		/* See what we have left after we buy this (one value
-		 * will be negative), and whether we have enough of something
-		 * to trade for what's missing.
-		 */
-		leftover_resources(assets, bt, need);
-		for (temp = 0; temp < NO_RESOURCE; temp++) {
-			if (temp == res)
-				continue;
-			if (need[temp] > ports[temp]) {
-				*amount = ports[temp];
-				*trade_away = temp;
-				*want_resource = res;
-				return TRUE;
-			}
-		}
-	}
-	return FALSE;
-}
-
-/** I am allowed to do a maritime trade, but will I do it?
- * @param assets The resources I already have
- * @param resval The value of the resources
- * @retval amount The amount to trade
- * @retval trade_away The resource to trade away
- * @retval want_resource The resource I want to have
- * @return TRUE if I want to do the trade
- */
-static gboolean will_do_maritime_trade(gint assets[NO_RESOURCE],
-				       const resource_values_t * resval,
-				       gint * amount,
-				       Resource * trade_away,
-				       Resource * want_resource)
-{
-	MaritimeInfo info;
-	Resource res, want, discard;
-	gint ports[NO_RESOURCE];
-
-	map_maritime_info(callbacks.get_map(), &info, my_player_num());
-
-	for (res = 0; res < NO_RESOURCE; res++) {
-		if (info.specific_resource[res])
-			ports[res] = 2;
-		else if (info.any_resource)
-			ports[res] = 3;
-		else
-			ports[res] = 4;
-	}
-
-	/* See if we can trade at all. */
-	for (res = 0; res < NO_RESOURCE; res++) {
-		if (assets[res] >= ports[res])
-			break;
-	}
-	if (res == NO_RESOURCE)
-		return FALSE;
-
-	/* See if we can do a single trade that allows us to buy something. */
-	if (find_optimal_trade(assets, resval, ports, amount, trade_away,
-			       want_resource))
-		return TRUE;
-
-	/*
-	 * We can trade, but we won't be able to buy anything.
-	 *
-	 * Try a simple heuristic - if there's a resource we can trade away
-	 * and still have at least 1 left, and we need something (and we can
-	 * get it), do the trade.  Try to use the best port for this.
-	 */
-	want = resource_desire(assets, resval);
-	if (want == NO_RESOURCE || get_bank()[want] == 0)
-		return FALSE;
-
-	discard = NO_RESOURCE;
-	for (res = 0; res < NO_RESOURCE; res++) {
-		if (res == want)
-			continue;
-		if (assets[res] > ports[res] &&
-		    (discard == NO_RESOURCE
-		     || ports[discard] > ports[res]))
-			discard = res;
-	}
-
-	if (discard != NO_RESOURCE) {
-		*trade_away = discard;
-		*want_resource = want;
-		*amount = ports[discard];
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-/** I can play the card, but will I do it?
- *  @param cardtype The type of card to consider
- *  @return TRUE if the card is to be played
- */
-static gboolean will_play_development_card(DevelType cardtype)
-{
-	gint amount, cards, i;
-
-	if (is_victory_card(cardtype)) {
-		return TRUE;
-	}
-
-	switch (cardtype) {
-	case DEVEL_SOLDIER:
-		return TRUE;
-	case DEVEL_YEAR_OF_PLENTY:
-		/* only when the bank is full enough */
-		amount = 0;
-		for (i = 0; i < NO_RESOURCE; i++)
-			amount += get_bank()[i];
-		if (amount >= 2) {
-			return TRUE;
-		}
-		break;
-	case DEVEL_ROAD_BUILDING:
-		/* don't if don't have two roads left */
-		if (stock_num_roads() < 2)
-			break;
-		return TRUE;
-	case DEVEL_MONOPOLY:
-		/* don't unless there are enough cards out */
-		for (i = 0, cards = 0; i < num_players(); i++)
-			if (i != my_player_num())
-				cards += player_get_num_resource(i);
-		if (cards >= 6)
-			return TRUE;
-		break;
-	default:
-		break;
-	}
-	return FALSE;
-}
 
 /*
  * What to do? what to do?
@@ -1292,127 +962,6 @@ static void expert_turn(void)
 #endif
 }
 
-#define randchat(array,nochat_percent)				\
-	do {							\
-		int p = (G_N_ELEMENTS(array)*1000/nochat_percent);	\
-		int n = (rand() % p) / 10;			\
-		if (n < G_N_ELEMENTS(array) )			\
-			ai_chat (array[n]);			\
-	} while(0)
-
-static const char *chat_turn_start[] = {
-	N_("Ok, let's go!"),
-	N_("I'll beat you all now! ;)"),
-	N_("Now for another try..."),
-};
-
-static const char *chat_receive_one[] = {
-	N_("At least I get something..."),
-	N_("One is better than none..."),
-};
-
-static const char *chat_receive_many[] = {
-	N_("Wow!"),
-	N_("Ey, I'm becoming rich ;)"),
-	N_("This is really a good year!"),
-};
-static const char *chat_other_receive_many[] = {
-	N_("You really don't deserve that much!"),
-	N_("You don't know what to do with that many resources ;)"),
-	N_("Ey, wait for my robber and lose all this again!"),
-};
-static const char *chat_self_moved_robber[] = {
-	N_("Hehe!"),
-	N_("Go, robber, go!"),
-};
-static const char *chat_moved_robber_to_me[] = {
-	N_("You bastard!"),
-	N_("Can't you move that robber somewhere else?!"),
-	N_("Why always me??"),
-};
-static const char *chat_discard_self[] = {
-	N_("Oh no!"),
-	N_("Grrr!"),
-	N_("Who the hell rolled that 7??"),
-	N_("Why always me?!?"),
-};
-static const char *chat_discard_other[] = {
-	N_("Say good bye to your cards... :)"),
-	N_("*evilgrin*"),
-	N_("/me says farewell to your cards ;)"),
-	N_("That's the price for being rich... :)"),
-};
-static const char *chat_stole_from_me[] = {
-	N_("Ey! Where's that card gone?"),
-	N_("Thieves! Thieves!!"),
-	N_("Wait for my revenge..."),
-};
-static const char *chat_monopoly_other[] = {
-	N_("Oh no :("),
-	N_("Must this happen NOW??"),
-	N_("Args"),
-};
-static const char *chat_largestarmy_self[] = {
-	N_("Hehe, my soldiers rule!"),
-};
-static const char *chat_largestarmy_other[] = {
-	N_("First robbing us, then grabbing the points..."),
-};
-static const char *chat_longestroad_self[] = {
-	N_("See that road!"),
-};
-static const char *chat_longestroad_other[] = {
-	N_("Pf, you won't win with roads alone..."),
-};
-
-static float score_node_hurt_opponents(Node * node)
-{
-	/* no building there */
-	if (node->owner == -1)
-		return 0;
-
-	/* do I have a house there? */
-	if (my_player_num() == node->owner) {
-		if (node->type == BUILD_SETTLEMENT) {
-			return -2.0;
-		} else {
-			return -3.5;
-		}
-	}
-
-	/* opponent has house there */
-	if (node->type == BUILD_SETTLEMENT) {
-		return 1.5;
-	} else {
-		return 2.5;
-	}
-}
-
-/*
- * How much does putting the robber here hurt my opponents?
- */
-static float score_hex_hurt_opponents(Hex * hex)
-{
-	int i;
-	float score = 0;
-
-	if (hex == NULL)
-		return -1000;
-
-	/* don't move the pirate. */
-	if (!can_robber_or_pirate_be_moved(hex)
-	    || hex->terrain == SEA_TERRAIN)
-		return -1000;
-
-	for (i = 0; i < 6; i++) {
-		score += score_node_hurt_opponents(hex->nodes[i]);
-	}
-
-	/* multiply by resource/roll value */
-	score *= default_score_hex(hex);
-
-	return score;
-}
 
 /*
  * Find the best (worst for opponents) place to put the robber
@@ -1453,42 +1002,8 @@ static void expert_steal_building(void)
 		}
 	}
 	cb_rob(victim);
-	randchat(chat_self_moved_robber, 15);
 }
 
-/*
- * A devel card game us two free roads. let's build them
- *
- */
-
-static void expert_free_road(void)
-{
-	Edge *e;
-	resource_values_t resval;
-
-	reevaluate_resources(&resval);
-
-	e = best_road_spot(&resval);
-
-	if (e == NULL) {
-		e = best_road_to_road(&resval);
-	}
-
-	if (e == NULL) {
-		e = find_random_road();
-	}
-
-	if (e != NULL) {
-
-		cb_build_road(e);
-		return;
-
-	} else {
-		log_message(MSG_ERROR,
-			    "unable to find spot to build free road\n");
-		cb_disconnect();
-	}
-}
 
 /*
  * We played a year of plenty card. pick the two resources we most need
@@ -1596,80 +1111,6 @@ static void expert_monopoly(void)
 }
 
 
-/*
- * Of these resources which is least valuable to us
- *
- * Get rid of the one we have the most of
- * if there's a tie let resource_values_t settle it
- */
-
-static int least_valuable(gint assets[NO_RESOURCE],
-			  resource_values_t * resval)
-{
-	int ret = NO_RESOURCE;
-	int res;
-	int most = 0;
-	float mostval = -1;
-
-	for (res = 0; res < NO_RESOURCE; res++) {
-		if (assets[res] > most) {
-			if (resval->value[res] > mostval) {
-				ret = res;
-				most = assets[res];
-				mostval = resval->value[res];
-			}
-		}
-	}
-
-	return ret;
-}
-
-/*
- * Which resource do we desire the least?
- */
-
-static int resource_desire_least(gint my_assets[NO_RESOURCE],
-				 resource_values_t * resval)
-{
-	int i;
-	int res;
-	gint assets[NO_RESOURCE];
-	gint need[NO_RESOURCE];
-	int leastval;
-
-	/* make copy of what we got */
-	for (res = 0; res != NO_RESOURCE; res++) {
-		assets[res] = my_assets[res];
-	}
-
-	/* eliminate things we need to build stuff */
-	for (i = 0; i < G_N_ELEMENTS(build_preferences); i++) {
-		BuildType bt = build_preferences[i];
-		if (should_buy(assets, bt, resval, need)) {
-			cost_buy(cost_of(bt), assets);
-		}
-	}
-
-	/* of what's left what do do we care for least */
-	leastval = least_valuable(assets, resval);
-	if (leastval != NO_RESOURCE)
-		return leastval;
-
-	/* otherwise least valuable of what we have in total */
-	leastval = least_valuable(my_assets, resval);
-	if (leastval != NO_RESOURCE)
-		return leastval;
-
-	/* last resort just pick something */
-	for (res = 0; res < NO_RESOURCE; res++) {
-		if (my_assets[res] > 0)
-			return res;
-	}
-
-	/* Should never get here */
-	g_assert_not_reached();
-	return 0;
-}
 
 
 /*
@@ -1823,8 +1264,6 @@ static void expert_consider_quote(G_GNUC_UNUSED gint partner,
 
 static void expert_setup(unsigned num_settlements, unsigned num_roads)
 {
-	ai_wait();
-
   setup_clips();
   write_clips("(assert (game-phase initial-setup))");
 
@@ -1847,11 +1286,20 @@ static void expert_setup(unsigned num_settlements, unsigned num_roads)
 
 static void expert_roadbuilding(gint num_roads)
 {
+  setup_clips();
+  write_clips("(assert (game-phase road-building))");
+
+  sprintf(buf, "(assert (free-roads %d))", num_roads);
+  write_clips(buf);
+
+  close_clips();
+  /*
 	ai_wait();
 	if (num_roads > 0)
 		expert_free_road();
 	else
 		cb_end_turn();
+  */
 }
 
 static void expert_discard_start(void)
@@ -1861,18 +1309,13 @@ static void expert_discard_start(void)
 
 static void expert_discard_add(gint player_num, gint discard_num)
 {
-	if (player_num == my_player_num()) {
-		randchat(chat_discard_self, 10);
-		ai_wait();
+	if (player_num == my_player_num())
 		expert_discard(discard_num);
-	} else {
-		if (discard_starting) {
+	else if (discard_starting)
 			discard_starting = FALSE;
-			randchat(chat_discard_other, 10);
-		}
-	}
 }
 
+#if 0
 static void expert_gold_choose(gint gold_num, const gint * bank)
 {
 	resource_values_t resval;
@@ -1906,6 +1349,7 @@ static void expert_gold_choose(gint gold_num, const gint * bank)
 	cb_choose_gold(want);
 
 }
+#endif
 
 static void expert_error(const gchar * message)
 {
@@ -1922,14 +1366,17 @@ static void expert_error(const gchar * message)
 
 static void expert_game_over(gint player_num, G_GNUC_UNUSED gint points)
 {
+  /*
 	if (player_num == my_player_num())
 		ai_chat(N_("Yippie!"));
 	else
 		ai_chat(N_("My congratulations"));
+  */
 	cb_disconnect();
 }
 
 /* functions for chatting follow */
+#if 0
 static void expert_player_turn(gint player)
 {
 	if (player == my_player_num())
@@ -1997,6 +1444,7 @@ static void expert_new_statistics(gint player_num, StatisticType type,
 			randchat(chat_largestarmy_other, 10);
 	}
 }
+#endif
 
 // aoeu
 void expert_init(G_GNUC_UNUSED int argc, G_GNUC_UNUSED char **argv)
@@ -2015,7 +1463,7 @@ void expert_init(G_GNUC_UNUSED int argc, G_GNUC_UNUSED char **argv)
 	callbacks.error = &expert_error;
 
 	/* chatting */
-	callbacks.player_turn = &expert_player_turn;
+	/*callbacks.player_turn = &expert_player_turn;
 	callbacks.robber_moved = &expert_robber_moved;
 	callbacks.discard = &expert_discard_start;
 	callbacks.gold_choose = &expert_gold_choose;
@@ -2023,6 +1471,7 @@ void expert_init(G_GNUC_UNUSED int argc, G_GNUC_UNUSED char **argv)
 	callbacks.get_rolled_resources = &expert_get_rolled_resources;
 	callbacks.played_develop = &expert_played_develop;
 	callbacks.new_statistics = &expert_new_statistics;
+  */
 
   /* signal handling */
   Signal(SIGCHLD, sigchld_handler);
@@ -2481,8 +1930,22 @@ static void play_plenty(char * args) {
 
   for (i = 0; i < deck->num_cards; i++) {
     DevelType cardtype = deck_card_type(deck, i);
-
     if (cardtype == DEVEL_YEAR_OF_PLENTY) {
+      cb_play_develop(i);
+      return;
+    }
+  }
+}
+
+
+static void play_road_building(char * args) {
+  const DevelDeck * deck = get_devel_deck();
+  int i;
+
+  for (i = 0; i < deck->num_cards; i++) {
+    DevelType cardtype = deck_card_type(deck, i);
+
+    if (cardtype == DEVEL_ROAD_BUILDING) {
       cb_play_develop(i);
       return;
     }
