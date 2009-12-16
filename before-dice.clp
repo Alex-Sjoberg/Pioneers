@@ -4,6 +4,7 @@
 
     (devel-card (kind soldier) (can-play 1))
     (my-id ?pid)
+
     (robber (hex ?hid))
     (node (id ?nid) (hexes $? ?hid $?))
     (or (settlement (player ?pid) (node ?nid))

@@ -6,8 +6,8 @@
     (or
         (free-roads ?)
         (and
-            (resource-cards (kind lumber) (amnt ?amnt&:(>= ?amnt 1)))
-            (resource-cards (kind brick) (amnt ?amnt&:(>= ?amnt 1)))
+            (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
+            (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
         )
     )
     =>
@@ -60,8 +60,6 @@
     )
     (not (road (edge ?eid)))
     =>
-    (printout t ?eid)
-    (facts)
     (printout t crlf "ACTION: Build Road " ?eid crlf)
     (exit)
 )

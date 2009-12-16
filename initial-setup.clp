@@ -44,13 +44,13 @@
 ; INITIAL-SETUP
 
 
-(defglobal ?*total-dots* = 5
-           ?*min-brick-lumber* = 2
-           ?*total-brick* = 2
-           ?*min-ore-grain* = 2
-           ?*total-ore* = 2
-           ?*resource-rarity* = 3
-)
+;(defglobal ?*total-dots* = 5
+;           ?*min-brick-lumber* = 2
+;           ?*total-brick* = 2
+;           ?*min-ore-grain* = 2
+;           ?*total-ore* = 2
+;           ?*resource-rarity* = 3
+;)
 
 (defrule count-num-opponents-settlements-to-place
     (declare (salience 10))
