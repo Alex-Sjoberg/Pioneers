@@ -11,8 +11,6 @@
         (city (player ?pid) (node ?nid)))
     =>
     (assert (action "Play Soldier"))
-    ;(printout t crlf "ACTION: Play Soldier" crlf)
-    ;(exit)
 )
 
 (defrule play-plenty
@@ -21,8 +19,6 @@
     (devel-card (kind year-of-plenty) (can-play 1))
     =>
     (assert (action "Play Year Of Plenty"))
-    ;(printout t crlf "ACTION: Play Year Of Plenty" crlf)
-    ;(exit)
 )
 
 (defrule roll-dice
@@ -30,6 +26,4 @@
     (goal before-dice)
     =>
     (assert (action "Roll Dice"))
-    ;(printout t crlf "ACTION: Roll Dice" crlf)
-    ;(exit)
 )

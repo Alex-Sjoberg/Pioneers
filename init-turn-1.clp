@@ -24,14 +24,6 @@
     (modify ?n (port ?res))
 )
 
-; calculate the number of roads each player has
-(defrule init-find-roads
-    (goal init-turn-1)
-    (player (id ?pid))
-    =>
-    (assert (road-count (player ?pid) (count 0)))
-)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; FIND-RESOURCE-TOTAL-PROBS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

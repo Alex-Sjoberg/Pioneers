@@ -1,3 +1,4 @@
+; PLAYER
 (deftemplate player
   (slot id)
   (multislot name)
@@ -11,6 +12,7 @@
   (slot num-cities)
 )
 
+; HEX
 (deftemplate hex
     (slot id (type INTEGER))
     (slot xpos)
@@ -21,16 +23,7 @@
     (slot prob (type INTEGER) (range 0 5))
 )
 
-(deftemplate robber
-    (slot hex)
-)
-
-(deftemplate trade-commodity
-    (slot direction)
-    (slot kind)
-    (slot amnt)
-)
-
+; NODE
 (deftemplate node
     (slot id (type INTEGER))
     (multislot hexes (type INTEGER) (cardinality 3 3))
@@ -39,130 +32,60 @@
     (slot port)
 )
 
-(deftemplate waypoint
-    (slot id)
-    (multislot links)
-)
-
-(deftemplate node-distance
-    (slot id)
-    (slot distance)
-)
-
+; EDGE
 (deftemplate edge
     (slot id (type INTEGER))
     (multislot nodes (type INTEGER) (cardinality 2 2))
 )
 
-(deftemplate settlement
-    (slot player)
-    (slot node)
+; BULIDINGS
+(deftemplate settlement (slot player) (slot node))
+(deftemplate city (slot player) (slot node))
+(deftemplate road (slot player) (slot edge))
+
+(deftemplate robber (slot hex))
+
+
+
+(deftemplate trade-commodity
+    (slot direction)
+    (slot kind)
+    (slot amnt)
 )
+
+(deftemplate waypoint (slot id) (multislot links))
+(deftemplate node-distance (slot id) (slot distance))
 
 (deftemplate available-settlement-node
     (slot node)
     (slot prob-sum)
     (multislot hexes)
 )
+(deftemplate node-attribute (slot id) (slot attr) (slot val))
 
-(deftemplate node-attribute
-    (slot id)
-    (slot attr)
-    (slot val)
-)
+; HEX SCORING
+(deftemplate hex-score (slot id) (slot score))
+(deftemplate hex-attribute (slot id) (slot attr) (slot val))
+(deftemplate hex-rarity (slot id) (slot rarity))
+(deftemplate dot-total (slot kind) (slot amnt))
+(deftemplate dot-addend (slot kind) (slot amnt))
+(deftemplate hex-addend (slot id) (slot nid) (slot val))
+(deftemplate hex-total (slot id) (slot val))
+(deftemplate calculated-node (slot id) (slot score))
+(deftemplate calculated-hex (slot id) (slot score))
 
-(deftemplate hex-score
-    (slot id)
-    (slot score)
-)
-
-(deftemplate hex-attribute
-    (slot id)
-    (slot attr)
-    (slot val)
-)
-
-(deftemplate hex-rarity
-    (slot id)
-    (slot rarity)
-)
-
-(deftemplate city
-    (slot player)
-    (slot node)
-)
-
-(deftemplate road
-    (slot player)
-    (slot edge)
-)
-
-(deftemplate resource-cards
-    (slot kind)
-    (slot amnt)
-)
-
-(deftemplate bank-cards
-    (slot kind)
-    (slot amnt)
-)
-
+; CARDS
+(deftemplate resource-cards (slot kind) (slot amnt))
+(deftemplate bank-cards (slot kind) (slot amnt))
 (deftemplate devel-card
     (slot kind)
     (slot amnt)
     (slot can-play)
 )
 
-(deftemplate road-count
-    (slot player)
-    (slot count)
-)
-
-(deftemplate port
-  (multislot port-hex)
-  (multislot conn-hex)
-)
-
-(deftemplate total-resource-prob
-  (slot kind)
-  (slot prob)
-)
-
-(deftemplate dot-total
-    (slot kind)
-    (slot amnt)
-)
-
-(deftemplate dot-addend
-    (slot kind)
-    (slot amnt)
-)
-
-(deftemplate hex-addend
-    (slot id)
-    (slot nid)
-    (slot val)
-)
-
-(deftemplate hex-total
-    (slot id)
-    (slot val)
-)
-
-(deftemplate possible-settlement-node
-    (slot id)
-    (multislot hexes)
-)
-
-(deftemplate calculated-node
-    (slot id)
-    (slot score)
-)
-
-(deftemplate calculated-hex
-    (slot id)
-    (slot score)
-)
+(deftemplate port (multislot port-hex) (multislot conn-hex))
+(deftemplate total-resource-prob (slot kind) (slot prob))
+(deftemplate possible-settlement-node (slot id) (multislot hexes))
 
 (deffacts port-locations
   (port (port-hex 6 2) (conn-hex 5 2))
@@ -207,8 +130,10 @@
     (load "../initial-setup.clp")
     (load "../place-robber.clp")
     (load "../choose-plenty.clp")
+    (load "../choose-monopoly.clp")
     (load "../trade.clp")
     (load "../buy-development-card.clp")
+    (load "../steal-building.clp")
     (printout t "Switching GOAL to init-turn-1" crlf)
     (assert (goal init-turn-1))
 )

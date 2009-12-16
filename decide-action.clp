@@ -44,6 +44,15 @@
   (assert (goal build-road))
 )
 
+(defrule discover-steal-building
+  ?g <- (goal decide-action)
+  (game-phase steal-building)
+  =>
+  (retract ?g)
+  (printout t "Switching GOAL to steal-building" crlf)
+  (assert (goal steal-building))
+)
+
 (defrule discover-quoting
   ?g <- (goal decide-action)
   (game-phase consider-quote)

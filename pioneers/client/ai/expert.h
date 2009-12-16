@@ -49,10 +49,13 @@ static void play_soldier(char*);
 static void play_victory(char*);
 static void play_plenty(char*);
 static void choose_plenty(char*);
+static void play_monopoly(char*);
+static void choose_monopoly(char*);
 static void play_road_building(char*);
 static void maritime_trade(char*);
 static void do_quote(char*);
 static void reject_quote(char*);
+static void steal_building(char*);
 
 struct action {
   char* action;
@@ -73,10 +76,13 @@ const struct action actions[] = {
                  /* 9 */   {"Play Victory", &play_victory},
                  /* 10 */  {"Play Year Of Plenty", &play_plenty},
                  /* 11 */  {"Choose Year Of Plenty", &choose_plenty},
-                 /* 12 */  {"Play Road Building", &play_road_building},
-                 /* 13 */  {"Do Maritime", &maritime_trade},
-                 /* 14 */  {"Quote", &do_quote},
-                 /* 15 */  {"Reject Quote", &reject_quote},
+                 /* 12 */  {"Play Monopoly", &play_monopoly},
+                 /* 13 */  {"Choose Monopoly", &choose_monopoly},
+                 /* 14 */  {"Play Road Building", &play_road_building},
+                 /* 15 */  {"Do Maritime", &maritime_trade},
+                 /* 16 */  {"Quote", &do_quote},
+                 /* 17 */  {"Reject Quote", &reject_quote},
+                 /* 18 */  {"Steal From", &steal_building},
                           };
 
 int fd0[2],fd1[2],cpid;
@@ -121,6 +127,8 @@ const char * devel_mapping[] = {
   "victory",
   "soldier"
 };
+
+const int dice_prob[] = {0,0,1,2,3,4,5,6,5,4,3,2,1};
 
 
 #endif

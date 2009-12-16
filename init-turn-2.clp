@@ -27,26 +27,9 @@
     (modify ?n (can-build 1))
 )
 
-(defrule count-roads
-    (goal init-turn-2)
-    (road (player ?pid))
-    =>
-    (assert (add-to-road-sum ?pid))
-)
-
-(defrule count-road-sums
-    (goal init-turn-2)
-    ?c <- (add-to-road-sum ?pid)
-    ?f <- (road-count (player ?pid) (count ?cnt))
-    =>
-    (retract ?c)
-    (modify ?f (count (+ ?cnt 1)))
-)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CALCULATE THE NEXT NODE TO BUILD A SETTLEMENT ON
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (defrule start-find-settlement-target
