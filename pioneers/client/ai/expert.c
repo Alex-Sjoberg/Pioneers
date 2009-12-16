@@ -846,120 +846,6 @@ static void expert_turn(void)
   setup_clips();
   write_clips("(assert (game-phase do-turn))");
   close_clips();
-#if 0
-	resource_values_t resval;
-	int i;
-	gint need[NO_RESOURCE], assets[NO_RESOURCE];
-
-	if (!have_rolled_dice()) {
-		cb_roll();
-		return;
-	}
-
-	/* Don't wait before the dice roll, that will take too long */
-	ai_wait();
-	for (i = 0; i < NO_RESOURCE; ++i)
-		assets[i] = resource_asset(i);
-
-	reevaluate_resources(&resval);
-
-	/* if can then buy city */
-	if (should_buy(assets, BUILD_CITY, &resval, need)) {
-
-		Node *n = best_city_spot(&resval);
-		if (n != NULL) {
-			cb_build_city(n);
-			return;
-		}
-	}
-
-	/* if can then buy settlement */
-	if (should_buy(assets, BUILD_SETTLEMENT, &resval, need)) {
-
-		Node *n = best_settlement_spot(FALSE, &resval);
-		if (n != NULL) {
-			cb_build_settlement(n);
-			return;
-		}
-
-	}
-
-	if (should_buy(assets, BUILD_ROAD, &resval, need)) {
-
-		Edge *e = best_road_spot(&resval);
-
-		if (e == NULL) {
-			e = best_road_to_road(&resval);
-		}
-
-		if (e != NULL) {
-			cb_build_road(e);
-			return;
-		}
-	}
-
-	/* if we can buy a development card and there are some left */
-	if (should_buy(assets, DEVEL_CARD, &resval, need)) {
-		cb_buy_develop();
-		return;
-	}
-
-	/* if we have a lot of cards see if we can trade anything */
-	if (num_assets(assets) >= 3) {
-		if (can_trade_maritime()) {
-			gint amount;
-			Resource trade_away, want_resource;
-			if (will_do_maritime_trade
-			    (assets, &resval, &amount, &trade_away,
-			     &want_resource)) {
-				cb_maritime(amount, trade_away,
-					    want_resource);
-				return;
-			}
-		}
-	}
-
-	/* play development cards */
-	if (can_play_any_develop()) {
-		const DevelDeck *deck = get_devel_deck();
-		gint num_victory_cards = 0;
-		gint victory_point_target, my_points;
-
-		for (i = 0; i < deck->num_cards; i++) {
-			DevelType cardtype = deck_card_type(deck, i);
-
-			/* if it's a vp card, note this for later */
-			if (is_victory_card(cardtype)) {
-				num_victory_cards++;
-				continue;
-			}
-
-			/* can't play card we just bought */
-			if (can_play_develop(i)) {
-				if (will_play_development_card(cardtype)) {
-					cb_play_develop(i);
-					return;
-				}
-			}
-		}
-
-		/* if we have enough victory cards to win, then play them */
-		victory_point_target = game_victory_points();
-		my_points = player_get_score(my_player_num());
-		if (num_victory_cards + my_points >= victory_point_target) {
-			for (i = 0; i < deck->num_cards; i++) {
-				DevelType cardtype =
-				    deck_card_type(deck, i);
-
-				if (is_victory_card(cardtype)) {
-					cb_play_develop(i);
-					return;
-				}
-			}
-		}
-	}
-	cb_end_turn();
-#endif
 }
 
 
@@ -1015,55 +901,6 @@ static void expert_year_of_plenty(const gint bank[NO_RESOURCE])
   setup_clips();
   write_clips("(assert (game-phase choose-plenty))");
   close_clips();
-
-#if 0
-	gint want[NO_RESOURCE];
-	gint assets[NO_RESOURCE];
-	int i;
-	int r1, r2;
-	resource_values_t resval;
-
-	ai_wait();
-	for (i = 0; i < NO_RESOURCE; i++) {
-		want[i] = 0;
-		assets[i] = resource_asset(i);
-	}
-
-	/* what two resources do we desire most */
-	reevaluate_resources(&resval);
-
-	r1 = resource_desire(assets, &resval);
-
-	/* If we don't desire anything anymore, ask for a road.
-	 * This happens if we have at least 2 of each resource
-	 */
-	if (r1 == NO_RESOURCE)
-		r1 = BRICK_RESOURCE;
-
-	assets[r1]++;
-
-	reevaluate_resources(&resval);
-
-	r2 = resource_desire(assets, &resval);
-
-	if (r2 == NO_RESOURCE)
-		r2 = LUMBER_RESOURCE;
-
-	assets[r1]--;
-
-	/* If we want something that is not in the bank, request something else */
-	/* WARNING: This code can cause a lockup if the bank is empty, but
-	 * then the year of plenty must not have been playable */
-	while (bank[r1] < 1)
-		r1 = (r1 + 1) % NO_RESOURCE;
-	while (bank[r2] < (r1 == r2 ? 2 : 1))
-		r2 = (r2 + 1) % NO_RESOURCE;
-
-	want[r1]++;
-	want[r2]++;
-
-	cb_choose_plenty(want);
-#endif
 }
 
 /*
@@ -1209,57 +1046,23 @@ static void expert_consider_quote(G_GNUC_UNUSED gint partner,
 				  gint we_receive[NO_RESOURCE],
 				  gint we_supply[NO_RESOURCE])
 {
-	gint give, take, ntake;
-	gint give_res[NO_RESOURCE], take_res[NO_RESOURCE],
-	    my_assets[NO_RESOURCE];
-	gint i;
-	gboolean free_offer;
+  int i;
 
-	free_offer = TRUE;
-	for (i = 0; i < NO_RESOURCE; ++i) {
-		my_assets[i] = resource_asset(i);
-		free_offer &= we_supply[i] == 0;
-	}
+  setup_clips();
+  write_clips("(assert (game-phase consider-quote))");
 
-	for (give = 0; give < NO_RESOURCE; give++) {
-		/* A free offer is always accepted */
-		if (!free_offer) {
-			if (we_supply[give] == 0)
-				continue;
-			if (my_assets[give] == 0)
-				continue;
-		}
-		for (take = 0; take < NO_RESOURCE; take++) {
-			/* Don't do stupid offers */
-			if (!free_offer && take == give)
-				continue;
-			if (we_receive[take] == 0)
-				continue;
-			if ((ntake =
-			     trade_desired(my_assets, give, take,
-					   free_offer)) > 0)
-				goto doquote;
-		}
-	}
+  for (i = 0; i < NO_RESOURCE; i++) {
+    if (we_supply[i]) {
+      sprintf(buf, "(assert (they-supply %s))", resource_mapping[i]);
+      write_clips(buf);
+    }
+    if (we_receive[i]) {
+      sprintf(buf, "(assert (they-want %s))", resource_mapping[i]);
+      write_clips(buf);
+    }
+  }
 
-	/* Do not decline anything for free, just take it all */
-	if (free_offer) {
-		cb_quote(quote_next_num(), we_supply, we_receive);
-		log_message(MSG_INFO, "Taking the whole free offer.\n");
-		return;
-	}
-
-	log_message(MSG_INFO, _("Rejecting trade.\n"));
-	cb_end_quote();
-	return;
-
-      doquote:
-	for (i = 0; i < NO_RESOURCE; ++i) {
-		give_res[i] = (give == i && !free_offer) ? 1 : 0;
-		take_res[i] = take == i ? ntake : 0;
-	}
-	cb_quote(quote_next_num(), give_res, take_res);
-	log_message(MSG_INFO, "Quoting.\n");
+  close_clips();
 }
 
 static void expert_setup(unsigned num_settlements, unsigned num_roads)
@@ -1274,14 +1077,6 @@ static void expert_setup(unsigned num_settlements, unsigned num_roads)
   write_clips(buf);
 
   close_clips();
-  /*
-   if (num_settlements > 0)
-		expert_setup_house();
-	else if (num_roads > 0)
-		expert_setup_road();
-	else
-		cb_end_turn();
-    */
 }
 
 static void expert_roadbuilding(gint num_roads)
@@ -1293,13 +1088,6 @@ static void expert_roadbuilding(gint num_roads)
   write_clips(buf);
 
   close_clips();
-  /*
-	ai_wait();
-	if (num_roads > 0)
-		expert_free_road();
-	else
-		cb_end_turn();
-  */
 }
 
 static void expert_discard_start(void)
@@ -1314,42 +1102,6 @@ static void expert_discard_add(gint player_num, gint discard_num)
 	else if (discard_starting)
 			discard_starting = FALSE;
 }
-
-#if 0
-static void expert_gold_choose(gint gold_num, const gint * bank)
-{
-	resource_values_t resval;
-	gint assets[NO_RESOURCE];
-	gint want[NO_RESOURCE];
-	gint my_bank[NO_RESOURCE];
-	gint i;
-	int r1;
-
-	for (i = 0; i < NO_RESOURCE; i++) {
-		want[i] = 0;
-		assets[i] = resource_asset(i);
-		my_bank[i] = bank[i];
-	}
-
-	for (i = 0; i < gold_num; i++) {
-		reevaluate_resources(&resval);
-
-		r1 = resource_desire(assets, &resval);
-		/* If we don't want anything, start emptying the bank */
-		if (r1 == NO_RESOURCE) {
-			r1 = 0;
-			/* Potential deadlock, but bank is always full enough */
-			while (my_bank[r1] == 0)
-				r1++;
-		}
-		want[r1]++;
-		assets[r1]++;
-		my_bank[r1]--;
-	}
-	cb_choose_gold(want);
-
-}
-#endif
 
 static void expert_error(const gchar * message)
 {
@@ -1366,85 +1118,8 @@ static void expert_error(const gchar * message)
 
 static void expert_game_over(gint player_num, G_GNUC_UNUSED gint points)
 {
-  /*
-	if (player_num == my_player_num())
-		ai_chat(N_("Yippie!"));
-	else
-		ai_chat(N_("My congratulations"));
-  */
 	cb_disconnect();
 }
-
-/* functions for chatting follow */
-#if 0
-static void expert_player_turn(gint player)
-{
-	if (player == my_player_num())
-		randchat(chat_turn_start, 70);
-}
-
-static void expert_robber_moved(G_GNUC_UNUSED Hex * old, Hex * new)
-{
-	int idx;
-	gboolean iam_affected = FALSE;
-	for (idx = 0; idx < G_N_ELEMENTS(new->nodes); idx++) {
-		if (new->nodes[idx]->owner == my_player_num())
-			iam_affected = TRUE;
-	}
-	if (iam_affected)
-		randchat(chat_moved_robber_to_me, 20);
-}
-
-static void expert_player_robbed(G_GNUC_UNUSED gint robber_num,
-				 gint victim_num,
-				 G_GNUC_UNUSED Resource resource)
-{
-	if (victim_num == my_player_num())
-		randchat(chat_stole_from_me, 15);
-}
-
-static void expert_get_rolled_resources(gint player_num,
-					const gint * resources,
-					G_GNUC_UNUSED const gint * wanted)
-{
-	gint total = 0, i;
-	for (i = 0; i < NO_RESOURCE; ++i)
-		total += resources[i];
-	if (player_num == my_player_num()) {
-		if (total == 1)
-			randchat(chat_receive_one, 60);
-		else if (total >= 3)
-			randchat(chat_receive_many, 20);
-	} else if (total >= 3)
-		randchat(chat_other_receive_many, 30);
-}
-
-static void expert_played_develop(gint player_num,
-				  G_GNUC_UNUSED gint card_idx,
-				  DevelType type)
-{
-	if (player_num != my_player_num() && type == DEVEL_MONOPOLY)
-		randchat(chat_monopoly_other, 20);
-}
-
-static void expert_new_statistics(gint player_num, StatisticType type,
-				  gint num)
-{
-	if (num != 1)
-		return;
-	if (type == STAT_LONGEST_ROAD) {
-		if (player_num == my_player_num())
-			randchat(chat_longestroad_self, 10);
-		else
-			randchat(chat_longestroad_other, 10);
-	} else if (type == STAT_LARGEST_ARMY) {
-		if (player_num == my_player_num())
-			randchat(chat_largestarmy_self, 10);
-		else
-			randchat(chat_largestarmy_other, 10);
-	}
-}
-#endif
 
 // aoeu
 void expert_init(G_GNUC_UNUSED int argc, G_GNUC_UNUSED char **argv)
@@ -1994,4 +1669,13 @@ static void maritime_trade(char * args) {
   }
 
   cb_maritime(num, ntrade, nget);
+}
+
+static void do_quote(char * args) {
+  gint give_res[NO_RESOURCE];
+  gint take_res[NO_RESOURCE];
+
+  sscanf(args, "Supply brick %d grain %d ore %d wool %d lumber %d Receive brick %d grain %d ore %d wool %d lumber %d", &give_res[0], &give_res[1], &give_res[2], &give_res[3], &give_res[4], &take_res[0], &take_res[1], &take_res[2], &take_res[3], &take_res[4]);
+
+  cb_quote(quote_next_num(), give_res, take_res);
 }
