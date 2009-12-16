@@ -50,12 +50,6 @@
             ;(hex-addend (id ?h3) (nid ?nid) (val 2))
     ;)
 ;)
-(defrule aouaoeuaoeu
-    (declare (salience 4))
-    (hex-total (val ?val))
-    =>
-    (printout t "val " ?val crlf))
-
 (defrule sum-hex-dot-total
     ?a <- (hex-addend (id ?hid) (val ?val))
     ?h <- (hex-total (id ?hid) (val ?total))
@@ -70,7 +64,6 @@
     (hex-total (id ?hid) (val ?dot-total))
     (hex-rarity (id ?hid) (rarity ?rarity))
     =>
-    (printout t "Hex " ?hid " score " ?dot-total crlf)
     (assert (hex-score (id ?hid) (score (* ?dot-total ?prob))))
 )
 
