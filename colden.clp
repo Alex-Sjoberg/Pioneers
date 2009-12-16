@@ -28,7 +28,7 @@
 (deftemplate trade-commodity
     (slot direction)
     (slot kind)
-    (slot is-offered)
+    (slot amnt)
 )
 
 (deftemplate node
@@ -98,18 +98,18 @@
 )
 
 (deftemplate resource-cards
-    (slot kind (allowed-values lumber brick wool grain ore))
-    (slot amnt (type INTEGER))
+    (slot kind)
+    (slot amnt)
 )
 
 (deftemplate bank-cards
-    (slot kind (allowed-values lumber brick wool grain ore))
-    (slot amnt (type INTEGER))
+    (slot kind)
+    (slot amnt)
 )
 
 (deftemplate devel-card
-    (slot kind (allowed-values road-building monopoly year-of-plenty victory soldier))
-    (slot amnt (type INTEGER))
+    (slot kind)
+    (slot amnt)
     (slot can-play)
 )
 
@@ -225,29 +225,13 @@
 
 
 
-;;;;;;;;
-...
-  (assert (dont-print))
-...
-
-(defrule find-action
-    (declare (salience 9000))
-    (game-phase consider-quote)
-    (action ?action $?arguments)
-    ?f <- (dont-do-action)
-    =>
-    ; do something here with ?
-    (retract ?f)
-    (assert (action "Domestic Trade " ?want ?give))
-)
-;;;;;;;
 
 (defrule do-action
-    (declare (salience 9000))
+    (declare (salience 9000)) ;ITS OVER 9000
     (action ?action $?arguments)
     (not (dont-do-action))
     =>
-    (printout t "ACTION: " ?action " " $?arguments)
+    (printout t crlf "ACTION: " ?action " " (implode$ $?arguments) crlf)
     (exit)
 )
 
@@ -272,8 +256,17 @@
 
 (defrule end-turn
     (declare (salience -1000))
+    (not (dont-do-action))
     =>
     (assert (action "End Turn (default)"))
-    ;(printout t crlf "ACTION: End Turn (default)" crlf)
-    ;(exit)
+)
+
+(defrule end-turn-reject-trade
+    (declare (salience -1000))
+    ?a <- (dont-do-action)
+    =>
+    (facts)
+    (matches consider-quote-for-building-road)
+    (retract ?a)
+    (assert (action "Reject Quote (default)"))
 )

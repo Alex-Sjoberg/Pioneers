@@ -52,6 +52,7 @@ static void choose_plenty(char*);
 static void play_road_building(char*);
 static void maritime_trade(char*);
 static void do_quote(char*);
+static void reject_quote(char*);
 
 struct action {
   char* action;
@@ -75,6 +76,7 @@ const struct action actions[] = {
                  /* 12 */  {"Play Road Building", &play_road_building},
                  /* 13 */  {"Do Maritime", &maritime_trade},
                  /* 14 */  {"Quote", &do_quote},
+                 /* 15 */  {"Reject Quote", &reject_quote},
                           };
 
 int fd0[2],fd1[2],cpid;

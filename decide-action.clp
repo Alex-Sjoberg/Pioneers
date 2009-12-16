@@ -44,6 +44,16 @@
   (assert (goal build-road))
 )
 
+(defrule discover-quoting
+  ?g <- (goal decide-action)
+  (game-phase consider-quote)
+  =>
+  (retract ?g)
+  (printout t "Switching GOAL to decide-strategy (via quoting)" crlf)
+  (assert (dont-do-action)
+          (goal decide-strategy))
+)
+
 (defrule discover-strategy
   (declare (salience -10))
   ?g <- (goal decide-action)

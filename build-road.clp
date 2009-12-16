@@ -134,7 +134,7 @@
         (resource-cards (kind ?trade&~?want&lumber|brick) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
     )
     =>
-    (assert (action "Do Maritime" ?price " " ?trade " " ?want))
+    (assert (action "Do Maritime" ?price ?trade ?want))
     ;(printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
     ;(exit)
 )

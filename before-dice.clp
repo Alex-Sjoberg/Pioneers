@@ -20,7 +20,7 @@
 
     (devel-card (kind year-of-plenty) (can-play 1))
     =>
-    (assert (action "Play Year Of Plenty");
+    (assert (action "Play Year Of Plenty"))
     ;(printout t crlf "ACTION: Play Year Of Plenty" crlf)
     ;(exit)
 )

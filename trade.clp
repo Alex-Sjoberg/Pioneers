@@ -1,5 +1,5 @@
 (defrule find-action-that-would-have-executed
-    (declare (salience 9000)) ;ITS OVER 9000
+    (declare (salience 3000))
     (game-phase consider-quote)
     (action ?action $?)
     ?a <- (dont-do-action)
@@ -45,16 +45,16 @@
     ?w <- (trade-commodity (direction they-want) (kind ?they-want))
     ?s <- (trade-commodity (direction they-supply) (kind ?they-supply))
     =>
-    (modify ?w (amnt 1)
-            ?s (amnt 1))
+    (modify ?w (amnt 1))
+    (modify ?s (amnt 1))
 )
 (defrule consider-quote-for-building-settlement
     (declare (salience 1000))
     (goal consider-quote)
     (trade-goal "Build Settlement")
 
-    (they-supply ?they-supply)
-    (resource-cards (kind ?they-supply&lumber|brick|wool|grain) (amnt ?wamnt&:(< ?wamnt 1)))
+    (they-supply ?they-supply&lumber|brick|wool|grain)
+    (resource-cards (kind ?they-supply) (amnt 0))
 
     (they-want ?they-want)
     (or
@@ -65,32 +65,32 @@
     ?w <- (trade-commodity (direction they-want) (kind ?they-want))
     ?s <- (trade-commodity (direction they-supply) (kind ?they-supply))
     =>
-    (modify ?w (amnt 1)
-            ?s (amnt 1))
+    (modify ?w (amnt 1))
+    (modify ?s (amnt 1))
 )
+
 (defrule consider-quote-for-building-road
     (declare (salience 1000))
     (goal consider-quote)
     (trade-goal "Build Road")
 
     (they-supply ?they-supply&lumber|brick)
-    (resource-cards (kind ?they-supply&lumber|brick) (amnt ?wamnt&:(< ?wamnt 1)))
+    (resource-cards (kind ?they-supply) (amnt 0))
 
     (they-want ?they-want&wool|grain|ore)
-    (or
-        (resource-cards (kind ?they-want&wool|grain|ore) (amnt ?hamnt&:(> ?hamnt 1)))
-        (resource-cards (kind ?they-want&lumber|brick) (amnt ?hamnt&:(> ?hamnt 1)))
-    )
+    (resource-cards (kind ?they-want) (amnt ?hamnt&:(> ?hamnt 1)))
 
     ?w <- (trade-commodity (direction they-want) (kind ?they-want))
     ?s <- (trade-commodity (direction they-supply) (kind ?they-supply))
     =>
-    (modify ?w (amnt 1)
-            ?s (amnt 1))
+    (modify ?w (amnt 1))
+    (modify ?s (amnt 1))
+    (assert (offer-quote))
 )
 
 (defrule respond-to-quote
-    (declare (salience 500))
+    (goal consider-quote)
+    (offer-quote)
     (trade-commodity (direction they-want) (kind brick) (amnt ?wbamnt))
     (trade-commodity (direction they-want) (kind grain) (amnt ?wgamnt))
     (trade-commodity (direction they-want) (kind ore) (amnt ?woamnt))
@@ -102,5 +102,14 @@
     (trade-commodity (direction they-supply) (kind wool) (amnt ?swamnt))
     (trade-commodity (direction they-supply) (kind lumber) (amnt ?slamnt))
     =>
-    (assert (action "Quote" " Supply brick " ?wbamnt " grain " ?wgamnt " ore " ?woamnt " wool " ?wwamnt " lumber " ?wlamnt " Receive brick " ?sbamnt " grain " ?sgamnt " ore " ?soamnt " wool " ?swamnt " lumber 0")
+    (assert (action "Quote" Supply brick ?wbamnt grain ?wgamnt ore ?woamnt wool ?wwamnt lumber ?wlamnt Receive brick ?sbamnt grain ?sgamnt ore ?soamnt wool ?swamnt lumber ?slamnt))
+)
+
+(defrule reject-trade
+    (goal consider-quote)
+    (not (offer-quote))
+    =>
+    (facts)
+    (matches consider-quote-for-building-road)
+    (assert (action "Reject Quote"))
 )

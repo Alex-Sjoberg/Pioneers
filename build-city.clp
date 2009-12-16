@@ -14,7 +14,7 @@
         (resource-cards (kind ?trade&ore) (amnt ?amnt2&:(> ?amnt2 (+ ?price 3))))
     )
     =>
-    (assert (action "Do Maritime" ?price " " ?trade " " ?want))
+    (assert (action "Do Maritime" ?price ?trade ?want))
     ;(printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
     ;(exit)
 )

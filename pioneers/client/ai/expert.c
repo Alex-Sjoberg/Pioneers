@@ -1679,3 +1679,7 @@ static void do_quote(char * args) {
 
   cb_quote(quote_next_num(), give_res, take_res);
 }
+
+static void reject_quote(char * args) {
+  cb_end_quote();
+}
