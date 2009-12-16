@@ -127,23 +127,20 @@
     =>
     (assert (node-attribute (id ?nid) (attr resource-rarity) (val (+ ?r1 ?r2 ?r3))))
 )
-(defrule find-hex-rarity
-    (hex (id ?hid) (resource ?res) (prob ?this))
-    (dot-total (kind ?res) (amnt ?total&~0))
-    =>
-    (assert (hex-rarity (id ?hid) (rarity (/ ?this ?total))))
-)
 
 (defrule score-nodes-by-dot-lopsidedness "one high number and two low numbers is a robber magnet"
+    (goal initial-setup)
     =>    
 )
 
 (defrule score-nodes-by-dot-differentness "one high number and two low numbers is a robber magnet"
+    (goal initial-setup)
     =>    
 )
 
 
 (defrule calculate-overall-goodness-of-nodes
+    (goal initial-setup)
     (possible-settlement-node (id ?nid) (hexes ?h1 ?h2 ?h3))
     (node-attribute (id ?nid) (attr total-dots) (val ?total-dots))
     (node-attribute (id ?nid) (attr min-brick-lumber) (val ?min-brick-lumber))
@@ -162,7 +159,9 @@
         ))))
 )
 
+
 (defrule place-starting-settlement
+    (declare (salience -10))
     (goal initial-setup)
     (settlements-to-place ?num&:(> ?num 0))
     (calculated-node (id ?nid) (score ?score))
@@ -177,6 +176,7 @@
 )
 
 (defrule place-starting-road
+    (declare (salience -10))
     (goal initial-setup)
     (my-id ?pid)
 
@@ -203,6 +203,7 @@
 )
 
 (defrule end-initial-setup
+    (declare (salience -10))
     (goal initial-setup)
     (settlements-to-place 0)
     (roads-to-place 0)

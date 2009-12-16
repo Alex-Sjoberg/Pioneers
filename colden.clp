@@ -47,6 +47,7 @@
 
 
 
+
 (deftemplate trade-commodity
     (slot direction)
     (slot kind)
@@ -66,7 +67,7 @@
 ; HEX SCORING
 (deftemplate hex-score (slot id) (slot score))
 (deftemplate hex-attribute (slot id) (slot attr) (slot val))
-(deftemplate hex-rarity (slot id) (slot rarity))
+(deftemplate hex-rarity (slot id) (slot nid) (slot rarity))
 (deftemplate dot-total (slot kind) (slot amnt))
 (deftemplate dot-addend (slot kind) (slot amnt))
 (deftemplate hex-addend (slot id) (slot nid) (slot val))

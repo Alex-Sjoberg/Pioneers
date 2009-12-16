@@ -27,6 +27,14 @@
     (modify ?n (can-build 1))
 )
 
+(defrule find-hex-rarity
+    (goal init-turn-2)
+    (hex (id ?hid) (resource ?res) (prob ?this))
+    (dot-total (kind ?res) (amnt ?total&~0))
+    =>
+    (assert (hex-rarity (id ?hid) (rarity (/ ?this ?total))))
+)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CALCULATE THE NEXT NODE TO BUILD A SETTLEMENT ON
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
