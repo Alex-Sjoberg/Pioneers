@@ -108,7 +108,7 @@
 )
 
 (deftemplate devel-card
-    (slot kind (allowed-values road_building monopoly year_of_plenty victory soldier))
+    (slot kind (allowed-values road-building monopoly year-of-plenty victory soldier))
     (slot amnt (type INTEGER))
     (slot can-play)
 )
@@ -206,7 +206,9 @@
     (load "../init-turn-2.clp")
     (load "../initial-setup.clp")
     (load "../place-robber.clp")
+    (load "../choose-plenty.clp")
     (load "../trade.clp")
+    (load "../buy-development-card.clp")
     (printout t "Switching GOAL to init-turn-1" crlf)
     (assert (goal init-turn-1))
 )

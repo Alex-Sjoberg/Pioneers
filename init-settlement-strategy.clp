@@ -20,7 +20,7 @@
   (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 1)))
   =>
   (retract ?g)
-  (printout t "Switched GOAL to build-settlement" crlf)
+  (printout t "Switching GOAL to build-settlement" crlf)
   (assert (goal build-settlement))
 )
 
@@ -34,7 +34,7 @@
   (player (id ?pid) (num-settlements 5))
   =>
   (retract ?g)
-  (printout t "Switched GOAL to build-city" crlf)
+  (printout t "Switching GOAL to build-city" crlf)
   (assert (goal build-city))
 )
 
@@ -50,7 +50,7 @@
 ;  )
   =>
   (retract ?g)
-  (printout t "Switched GOAL to buy-development-card" crlf)
+  (printout t "Switching GOAL to buy-development-card" crlf)
   (assert (goal buy-development-card))
 )
 
@@ -72,7 +72,7 @@
   (resource-cards (kind brick|wool|lumber) (amnt ~0))
   =>
   (retract ?g)
-  (printout t "Switched GOAL to build-city" crlf)
+  (printout t "Switching GOAL to build-city" crlf)
   (assert (goal build-city)
           (willing-to-trade))
 )
@@ -82,7 +82,7 @@
   ?g <- (goal init-settlement-strategy)
   =>
   (retract ?g)
-  (printout t "Switched GOAL to build-settlement" crlf)
+  (printout t "Switching GOAL to build-settlement" crlf)
   (assert (goal build-settlement)
           (willing-to-trade))
 )

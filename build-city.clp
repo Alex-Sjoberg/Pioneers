@@ -19,13 +19,13 @@
 )
 
 
-(defrule trade-for-city
-  (goal build-city)
-  (more stuff
-  =>
-
-  (printout t crlf "ACTION: Trade Domestic brick 0 lumber 0 grain 2 ore 1 sheep 0 brick 0 lumber 0 grain 2 ore 1 sheep 0" crlf)
-)
+;(defrule trade-for-city
+;  (goal build-city)
+;  (more stuff
+;  =>
+;
+;  (printout t crlf "ACTION: Trade Domestic brick 0 lumber 0 grain 2 ore 1 sheep 0 brick 0 lumber 0 grain 2 ore 1 sheep 0" crlf)
+;)
 
 (defrule determine-best-city-location "needs to be improved"
   (goal build-city)
@@ -62,7 +62,7 @@
   ?g <- (goal build-city)
   =>
   (retract ?g)
-  (printout t "Switched GOAL to build-settlement" crlf)
+  (printout t "Switching GOAL to build-settlement" crlf)
   (assert (goal build-settlement)
           (willing-to-trade))
 )

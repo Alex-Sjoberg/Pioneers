@@ -44,13 +44,13 @@
 ; INITIAL-SETUP
 
 
-(defglobal ?*total-dots* = 5
-           ?*min-brick-lumber* = 2
-           ?*total-brick* = 2
-           ?*min-ore-grain* = 2
-           ?*total-ore* = 2
-           ?*resource-rarity* = 3
-)
+;(defglobal ?*total-dots* = 5
+;           ?*min-brick-lumber* = 2
+;           ?*total-brick* = 2
+;           ?*min-ore-grain* = 2
+;           ?*total-ore* = 2
+;           ?*resource-rarity* = 3
+;)
 
 (defrule count-num-opponents-settlements-to-place
     (declare (salience 10))
@@ -177,15 +177,15 @@
 
 (defrule place-starting-road
     (goal initial-setup)
-    (my-id ?pnum)
+    (my-id ?pid)
 
     (roads-to-place ?num&:(> ?num 0))
 
-    (settlement (player ?pnum) (node ?nid))
+    (settlement (player ?pid) (node ?nid))
     (not
       (and
-        (road (edge ?eid))
-        (edge (id ?eid) (nodes $? ?nid $?))
+        (edge (id ?eid) (nodes ?nid ?))
+        (road (player ?pid) (edge ?eid))
       )
     )
 

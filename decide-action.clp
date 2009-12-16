@@ -26,6 +26,24 @@
   (assert (goal before-dice))
 )
 
+(defrule discover-choose-plenty
+  ?g <- (goal decide-action)
+  (game-phase choose-plenty)
+  =>
+  (retract ?g)
+  (printout t "Switching GOAL to choose-plenty" crlf)
+  (assert (goal choose-plenty))
+)
+
+(defrule discover-road-building
+  ?g <- (goal decide-action)
+  (game-phase road-building)
+  =>
+  (retract ?g)
+  (printout t "Switching GOAL to build-road" crlf)
+  (assert (goal build-road))
+)
+
 (defrule discover-strategy
   (declare (salience -10))
   ?g <- (goal decide-action)

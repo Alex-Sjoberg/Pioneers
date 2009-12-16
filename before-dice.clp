@@ -4,12 +4,22 @@
 
     (devel-card (kind soldier) (can-play 1))
     (my-id ?pid)
+
     (robber (hex ?hid))
     (node (id ?nid) (hexes $? ?hid $?))
     (or (settlement (player ?pid) (node ?nid))
         (city (player ?pid) (node ?nid)))
     =>
     (printout t crlf "ACTION: Play Soldier" crlf)
+    (exit)
+)
+
+(defrule play-plenty
+    (goal before-dice)
+
+    (devel-card (kind year-of-plenty) (can-play 1))
+    =>
+    (printout t crlf "ACTION: Play Year Of Plenty" crlf)
     (exit)
 )
 
