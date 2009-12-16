@@ -50,6 +50,12 @@
     (my-id ?pid)
     (edge-waypoint ?eid)
     (edge (id ?eid) (nodes ?nid ?))
+    (not
+        (or
+            (settlement (player ~?pid) (node ?nid))
+            (city (player ~?pid) (node ?nid))
+        )
+    )
     (or
         (settlement (player ?pid) (node ?nid))
         (city (player ?pid) (node ?nid))
