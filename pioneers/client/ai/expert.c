@@ -1241,7 +1241,7 @@ void setup_clips(void)
 
   /* Load any external files needed */
   write_clips("(load \"../colden.clp\")");
-  write_clips("(load \"../weights2.clp\")");
+  write_clips("(load \"../weights.clp\")");
 
   char fbuf[64];
   sprintf(fbuf, "../temp_facts%d.clp", my_player_num());
