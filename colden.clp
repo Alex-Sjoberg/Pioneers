@@ -201,8 +201,21 @@
     (declare (salience -1000))
     ?a <- (dont-do-action)
     =>
-    (facts)
-    (matches consider-quote-for-building-road)
     (retract ?a)
     (assert (action "Reject Quote (default)"))
+)
+
+(defrule print-cards
+    (resource-cards (kind lumber) (amnt ?lamnt))
+    (resource-cards (kind brick) (amnt ?bamnt))
+    (resource-cards (kind wool) (amnt ?wamnt))
+    (resource-cards (kind grain) (amnt ?gamnt))
+    (resource-cards (kind ore) (amnt ?oamnt))
+    =>
+    (printout t crlf crlf)
+    (printout t "Lumber: " ?lamnt crlf)
+    (printout t "Brick: " ?bamnt crlf)
+    (printout t "Wool: " ?wamnt crlf)
+    (printout t "Grain: " ?gamnt crlf)
+    (printout t "Ore: " ?oamnt crlf)
 )

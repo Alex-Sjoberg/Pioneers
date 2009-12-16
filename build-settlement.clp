@@ -54,6 +54,7 @@
     (assert (action "Build Settlement" ?node))
     ;(printout t crlf "ACTION: Build Settlement " ?node crlf)
     ;(exit)
+    (matches find-action-that-would-have-executed)
 )
 
 (defrule build-road-if-none

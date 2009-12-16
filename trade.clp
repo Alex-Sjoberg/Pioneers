@@ -3,8 +3,9 @@
     (game-phase consider-quote)
     (action ?action $?)
     ?a <- (dont-do-action)
+    ?g <- (goal ?goal)
     =>
-    (retract ?a)
+    (retract ?a ?g)
     (assert (goal consider-quote)
             (trade-goal ?action)
     )
@@ -30,6 +31,7 @@
     =>
     (modify ?w (amnt 1))
     (modify ?s (amnt 1))
+    (assert (offer-quote))
 )
 (defrule consider-quote-for-building-settlement
     (declare (salience 1000))
@@ -50,6 +52,7 @@
     =>
     (modify ?w (amnt 1))
     (modify ?s (amnt 1))
+    (assert (offer-quote))
 )
 
 (defrule consider-quote-for-building-road
@@ -89,10 +92,9 @@
 )
 
 (defrule reject-trade
+    (declare (salience -10))
     (goal consider-quote)
     (not (offer-quote))
     =>
-    (facts)
-    (matches consider-quote-for-building-road)
     (assert (action "Reject Quote"))
 )
