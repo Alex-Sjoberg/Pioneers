@@ -84,6 +84,7 @@
 
 (deftemplate hex-rarity
     (slot id)
+    (slot nid)
     (slot rarity)
 )
 
