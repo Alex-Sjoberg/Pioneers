@@ -4,8 +4,9 @@
   (goal trade)
   (resource-cards (kind grain) (amnt ?gamnt&:(< ?gamnt 2)))
   =>
-  (printout t "ACTION: Trade for " (- 2 ?gamnt) " grain." crlf)
-  (exit)
+  (passert (action "Trade for" (- 2 ?gamnt) " grain."))
+  ;(printout t "ACTION: Trade for " (- 2 ?gamnt) " grain." crlf)
+  ;(exit)
 )
 
 (defrule trade-for-ore
@@ -13,6 +14,7 @@
   (goal trade)
   (resource-cards (kind ore) (amnt ?oamnt&:(< ?oamnt 3)))
   =>
-  (printout t "ACTION: Trade for " (- 3 ?oamnt) " ore." crlf)
-  (exit)
+  (passert (action "Trade for" (- 3 ?oamnt) " ore."))
+  ;(printout t "ACTION: Trade for " (- 3 ?oamnt) " ore." crlf)
+  ;(exit)
 )

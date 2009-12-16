@@ -69,8 +69,9 @@
     (player (id ~?pid) (has-largest-army 1))
   )
   =>
-  (printout t crlf "ACTION: Play Soldier" crlf)
-  (exit)
+  (assert (action "Play Soldier"))
+  ;(printout t crlf "ACTION: Play Soldier" crlf)
+  ;(exit)
 
 )
 

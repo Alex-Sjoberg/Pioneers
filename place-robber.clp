@@ -130,6 +130,7 @@
     ;  )
     ;)
     =>
-    (printout t crlf "ACTION: Place Robber " ?hid crlf)
-    (exit)
+    (assert (action "Place Robber" ?hid))
+    ;(printout t crlf "ACTION: Place Robber " ?hid crlf)
+    ;(exit)
 )

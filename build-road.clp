@@ -60,8 +60,9 @@
     )
     (not (road (edge ?eid)))
     =>
-    (printout t crlf "ACTION: Build Road " ?eid crlf)
-    (exit)
+    (assert (action "Build Road" ?eid))
+    ;(printout t crlf "ACTION: Build Road " ?eid crlf)
+    ;(exit)
 )
 
 (defrule transition-to-look-for-nodes
@@ -131,6 +132,7 @@
         (resource-cards (kind ?trade&~?want&lumber|brick) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
     )
     =>
-    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
-    (exit)
+    (assert (action "Do Maritime" ?price " " ?trade " " ?want))
+    ;(printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
+    ;(exit)
 )

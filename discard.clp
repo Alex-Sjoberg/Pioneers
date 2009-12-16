@@ -3,6 +3,7 @@
   (declare (salience 10))
   (goal discard)
   =>
+  ;(assert (discard-str "Discard"))
   (printout t crlf "ACTION: Discard")
 )
 
@@ -20,7 +21,8 @@
 
 (defrule done-discarding
   (declare (salience -10))
-  (phase discard)
+  (goal discard)
+  ;(discard-str 
   =>
   (printout t crlf)
   (exit)

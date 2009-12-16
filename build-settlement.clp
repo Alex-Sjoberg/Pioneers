@@ -11,8 +11,27 @@
         (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
     )
     =>
-    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
-    (exit)
+    (assert (action "Do Maritime" ?price " " ?trade " " ?want))
+    ;(printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
+    ;(exit)
+)
+
+(defrule trade-for-settlement
+    ?g <- (goal build-settlement)
+    (my-id ?pid)
+    (node (id ?nid) (can-build 1))
+    (edge (id ?eid) (nodes ?nid ?) (player ?pid))
+    (not (road (edge ?eid)))
+    (or
+      (resource-cards (kind ?kind&lumber) (amnt 0))
+      (resource-cards (kind ?kind&brick) (amnt 0))
+      (resource-cards (kind ?kind&grain) (amnt 0))
+      (resource-cards (kind ?kind&wool) (amnt 0))
+    )
+  =>
+    (retract ?g)
+    (assert (needed-resource ?kind))
+    (assert (goal trade-for-settlement))
 )
 
 (defrule build-settlement
@@ -32,8 +51,9 @@
     (hex (id ?h2) (resource ?res2) (number ?p2))
     (hex (id ?h3) (resource ?res3) (number ?p3))
     =>
-    (printout t crlf "ACTION: Build Settlement " ?node crlf)
-    (exit)
+    (assert (action "Build Settlement" ?node))
+    ;(printout t crlf "ACTION: Build Settlement " ?node crlf)
+    ;(exit)
 )
 
 (defrule build-road-if-none

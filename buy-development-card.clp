@@ -7,8 +7,9 @@
     (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 1)))
     (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 1)))
     =>
-    (printout t crlf "ACTION: Buy Development Card" crlf)
-    (exit)
+    (assert (action "Buy Development Card"))
+    ;(printout t crlf "ACTION: Buy Development Card" crlf)
+    ;(exit)
 )
 
 
@@ -23,6 +24,7 @@
       (resource-cards (kind ?trade&~?want&wool|grain|ore) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
   )
   =>
-  (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
-  (exit)
+  (assert (action "Do Maritime" ?price " " ?trade " " ?want))
+  ;(printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
+  ;(exit)
 )

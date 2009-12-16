@@ -171,8 +171,9 @@
     ; which has a higher probability
     (not (calculated-node (score ?score2&:(> ?score2 ?score))))
     =>
-    (printout t crlf "ACTION: Build Settlement " ?nid crlf)
-    (exit)
+    (assert (action "Build Settlement" ?nid))
+    ;(printout t crlf "ACTION: Build Settlement " ?nid crlf)
+    ;(exit)
 )
 
 (defrule place-starting-road
@@ -196,8 +197,9 @@
 
     =>
 
-    (printout t crlf "ACTION: Build Road " ?eid crlf)
-    (exit)
+    (assert (action "Build Road" ?eid))
+    ;(printout t crlf "ACTION: Build Road " ?eid crlf)
+    ;(exit)
 )
 
 (defrule end-initial-setup
@@ -205,6 +207,7 @@
     (settlements-to-place 0)
     (roads-to-place 0)
     =>
-    (printout t crlf "ACTION: End Turn" crlf)
-    (exit)
+    (assert (action "End Turn"))
+    ;(printout t crlf "ACTION: End Turn" crlf)
+    ;(exit)
 )

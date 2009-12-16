@@ -10,8 +10,9 @@
     (or (settlement (player ?pid) (node ?nid))
         (city (player ?pid) (node ?nid)))
     =>
-    (printout t crlf "ACTION: Play Soldier" crlf)
-    (exit)
+    (assert (action "Play Soldier"))
+    ;(printout t crlf "ACTION: Play Soldier" crlf)
+    ;(exit)
 )
 
 (defrule play-plenty
@@ -19,14 +20,16 @@
 
     (devel-card (kind year-of-plenty) (can-play 1))
     =>
-    (printout t crlf "ACTION: Play Year Of Plenty" crlf)
-    (exit)
+    (assert (action "Play Year Of Plenty");
+    ;(printout t crlf "ACTION: Play Year Of Plenty" crlf)
+    ;(exit)
 )
 
 (defrule roll-dice
     (declare (salience -10))
     (goal before-dice)
     =>
-    (printout t crlf "ACTION: Roll Dice" crlf)
-    (exit)
+    (assert (action "Roll Dice"))
+    ;(printout t crlf "ACTION: Roll Dice" crlf)
+    ;(exit)
 )

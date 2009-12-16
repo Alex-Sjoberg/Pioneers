@@ -217,6 +217,34 @@
 ;mia considers this cute:
 ;Before tonight, I never believed in predestination...
 
+
+
+;;;;;;;;
+...
+  (assert (dont-print))
+...
+
+(defrule find-action
+    (declare (salience 9000))
+    (game-phase consider-quote)
+    (action ?action $?arguments)
+    ?f <- (dont-do-action)
+    =>
+    ; do something here with ?
+    (retract ?f)
+    (assert (action "Domestic Trade " ?want ?give))
+)
+;;;;;;;
+
+(defrule do-action
+    (declare (salience 9000))
+    (action ?action $?arguments)
+    (not (dont-do-action))
+    =>
+    (printout t "ACTION: " ?action " " $?arguments)
+    (exit)
+)
+
 (defrule play-victory
     (game-phase do-turn)
     (my-id ?pid)
@@ -224,8 +252,9 @@
     (devel-card (kind victory) (amnt ?amnt) (can-play 1))
     (test (>= (+ ?score ?amnt) 10))
     =>
-    (printout t crlf "ACTION: Play Victory" crlf)
-    (exit)
+    (assert (action "Play Victory"))
+    ;(printout t crlf "ACTION: Play Victory" crlf)
+    ;(exit)
 )
 
 
@@ -238,6 +267,7 @@
 (defrule end-turn
     (declare (salience -1000))
     =>
-    (printout t crlf "ACTION: End Turn (default)" crlf)
-    (exit)
+    (assert (action "End Turn (default)"))
+    ;(printout t crlf "ACTION: End Turn (default)" crlf)
+    ;(exit)
 )

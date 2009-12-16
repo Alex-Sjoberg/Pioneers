@@ -14,8 +14,9 @@
         (resource-cards (kind ?trade&ore) (amnt ?amnt2&:(> ?amnt2 (+ ?price 3))))
     )
     =>
-    (printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
-    (exit)
+    (assert (action "Do Maritime" ?price " " ?trade " " ?want))
+    ;(printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
+    ;(exit)
 )
 
 
@@ -53,8 +54,9 @@
     (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
     (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
     =>
-    (printout t crlf "ACTION: Build City " ?node crlf)
-    (exit)
+    (assert (action "Build City" ?node))
+    ;(printout t crlf "ACTION: Build City " ?node crlf)
+    ;(exit)
 )
 
 (defrule city-else-build-settlement
