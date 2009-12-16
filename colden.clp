@@ -25,6 +25,12 @@
     (slot hex)
 )
 
+(deftemplate trade-commodity
+    (slot direction)
+    (slot kind)
+    (slot is-offered)
+)
+
 (deftemplate node
     (slot id (type INTEGER))
     (multislot hexes (type INTEGER) (cardinality 3 3))

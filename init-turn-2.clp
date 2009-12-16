@@ -111,6 +111,16 @@
   (assert (goal initial-setup))
 )
 
+(defrule discover-consider-quote
+  (declare (salience -100))
+  ?g <- (goal init-turn-2)
+  (game-phase consider-quote)
+  =>
+  (retract ?g)
+  (printout t "Switching GOAL to consider-quote" crlf)
+  (assert (goal consider-quote))
+)
+
 (defrule move-to-turn
   (declare (salience -100))
   ?g <- (goal init-turn-2)

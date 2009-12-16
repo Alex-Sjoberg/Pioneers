@@ -69,6 +69,7 @@
 (defrule transition-to-look-for-nodes
     (declare (salience -10))
     (goal build-road)
+    (can-build-road)
     ?l <- (looking-for-edges)
     =>
     (retract ?l)
@@ -77,6 +78,7 @@
 (defrule transition-to-look-for-edges
     (declare (salience -10))
     (goal build-road)
+    (can-build-road)
     ?l <- (looking-for-nodes)
     =>
     (retract ?l)
