@@ -102,7 +102,7 @@
 )
 
 (deftemplate devel-card
-    (slot kind (allowed-values road_building monopoly year_of_plenty victory soldier))
+    (slot kind (allowed-values road-building monopoly year-of-plenty victory soldier))
     (slot amnt (type INTEGER))
     (slot can-play)
 )

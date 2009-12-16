@@ -1708,7 +1708,7 @@ void setup_clips(void)
   fclose(fp);
   write_clips("(reset)");
 
-  sprintf(buf, "(load-fats \"%s\")", fbuf);
+  sprintf(buf, "(load-facts \"%s\")", fbuf);
   write_clips(buf);
 }
 
