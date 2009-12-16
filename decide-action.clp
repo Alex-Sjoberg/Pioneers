@@ -40,8 +40,8 @@
   (game-phase road-building)
   =>
   (retract ?g)
-  (printout t "Switching GOAL to build-road" crlf)
-  (assert (goal build-road))
+  (printout t "Switching GOAL to road-building" crlf)
+  (assert (goal road-building))
 )
 
 (defrule discover-steal-building

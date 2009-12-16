@@ -388,7 +388,7 @@ void setup_clips(void)
   for (i = 0; i < num_players(); i++) {
     gint * stats = player_get(i)->statistics;
 
-    fprintf(fp, "(player (id %d) (name %s) (score %d) (num-resource-cards %d) (num-devel-cards %d) (has-largest-army %d) (has-longest-road %d) (num-soldiers %d) (num-settlements %d) (num-cities %d))\n",
+    fprintf(fp, "(player (id %d) (name %s) (score %d) (num-resource-cards %d) (num-devel-cards %d) (has-largest-army %d) (has-longest-road %d) (num-soldiers %d) (num-cities %d) (num-settlements %d) (num-roads %d))\n",
         i,
         player_name(i,0),
         player_get_score(i),
@@ -397,8 +397,9 @@ void setup_clips(void)
         stats[STAT_LARGEST_ARMY],
         stats[STAT_LONGEST_ROAD],
         stats[STAT_SOLDIERS],
+        stats[STAT_CITIES],
         stats[STAT_SETTLEMENTS],
-        stats[STAT_CITIES]
+        stock_num_roads()
         );
   }
 

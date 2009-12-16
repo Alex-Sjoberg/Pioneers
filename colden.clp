@@ -8,8 +8,9 @@
   (slot has-largest-army)
   (slot has-longest-road)
   (slot num-soldiers)
-  (slot num-settlements)
   (slot num-cities)
+  (slot num-settlements)
+  (slot num-roads)
 )
 
 ; HEX
@@ -78,11 +79,7 @@
 ; CARDS
 (deftemplate resource-cards (slot kind) (slot amnt))
 (deftemplate bank-cards (slot kind) (slot amnt))
-(deftemplate devel-card
-    (slot kind)
-    (slot amnt)
-    (slot can-play)
-)
+(deftemplate devel-card (slot kind) (slot amnt) (slot can-play))
 
 (deftemplate port (multislot port-hex) (multislot conn-hex))
 (deftemplate total-resource-prob (slot kind) (slot prob))
@@ -206,16 +203,11 @@
 )
 
 (defrule print-cards
-    (resource-cards (kind lumber) (amnt ?lamnt))
-    (resource-cards (kind brick) (amnt ?bamnt))
-    (resource-cards (kind wool) (amnt ?wamnt))
-    (resource-cards (kind grain) (amnt ?gamnt))
-    (resource-cards (kind ore) (amnt ?oamnt))
+    (declare (salience 10))
+    (or
+      (resource-cards (kind ?kind) (amnt ?amnt))
+      (devel-card (kind ?kind) (amnt ?amnt))
+    )
     =>
-    (printout t crlf crlf)
-    (printout t "Lumber: " ?lamnt crlf)
-    (printout t "Brick: " ?bamnt crlf)
-    (printout t "Wool: " ?wamnt crlf)
-    (printout t "Grain: " ?gamnt crlf)
-    (printout t "Ore: " ?oamnt crlf)
+    (printout t (upcase ?kind) ": " ?amnt crlf)
 )

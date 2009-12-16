@@ -1,22 +1,17 @@
 ;BUILD-ROAD section
 ;build roads in the direction of the settlement goal
 
-(defrule determine-if-can-build-road
+(defrule determine-if-have-resources-for-road
     (goal build-road)
-    (or
-        (free-roads ?)
-        (and
-            (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
-            (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
-        )
-    )
+    (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
+    (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
     =>
-    (assert (can-build-road))
+    (assert (have-road-resources))
 )
 
 (defrule start-road-discovery
     (goal build-road)
-    (can-build-road)
+    (have-road-resources)
     (settlement-target ?nid)
     =>
     (assert (looking-for-edges)
@@ -25,7 +20,7 @@
 
 (defrule look-for-edges
     (goal build-road)
-    (can-build-road)
+    (have-road-resources)
     (looking-for-edges)
     (node-waypoint ?nid)
     (edge (id ?eid) (nodes ?nid ?))
@@ -34,7 +29,7 @@
 )
 (defrule look-for-nodes
     (goal build-road)
-    (can-build-road)
+    (have-road-resources)
     (looking-for-nodes)
     (edge-waypoint ?eid)
     (edge (id ?eid) (nodes ?nid ?))
@@ -43,9 +38,18 @@
     (assert (node-waypoint ?nid))
 )
 
+(defrule play-road-building-if-have-resources
+  (declare (salience 10))
+  (goal build-road)
+  (have-road-resources)
+  (next-road-placement ?)
+  =>
+  (assert (action "Play Road Building"))
+)
+
 (defrule build-road
     (goal build-road)
-    (can-build-road)
+    (have-road-resources)
     (looking-for-edges)
     (my-id ?pid)
     (edge-waypoint ?eid)
@@ -73,7 +77,7 @@
 (defrule transition-to-look-for-nodes
     (declare (salience -10))
     (goal build-road)
-    (can-build-road)
+    (have-road-resources)
     ?l <- (looking-for-edges)
     =>
     (retract ?l)
@@ -82,7 +86,7 @@
 (defrule transition-to-look-for-edges
     (declare (salience -10))
     (goal build-road)
-    (can-build-road)
+    (have-road-resources)
     ?l <- (looking-for-nodes)
     =>
     (retract ?l)
