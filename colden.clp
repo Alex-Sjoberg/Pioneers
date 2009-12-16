@@ -29,8 +29,13 @@
     (slot id (type INTEGER))
     (multislot hexes (type INTEGER) (cardinality 3 3))
     (slot can-build (default 0))
-    ;(slot distance (default -1)) ;the distance from my own roads or settlements
+    (slot distance (default -1)) ;the distance from my own roads or settlements
     (slot port)
+)
+
+(deftemplate waypoint
+    (slot id)
+    (multislot links)
 )
 
 (deftemplate node-distance

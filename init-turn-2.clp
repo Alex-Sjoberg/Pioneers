@@ -48,85 +48,61 @@
 ; CALCULATE THE NEXT NODE TO BUILD A SETTLEMENT ON
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defrule calculate-node-score
-    (my-id ?pid)
-    (node (id ?nid) (can-build 1) (hexes ?hid1 ?hid2 ?hid3))
-    (hex (id ?hid1) (resource ?res) (port ?port1) (prob ?prob1))
-    (hex (id ?hid2) (resource ?res) (port ?port2) (prob ?prob2))
-    (hex (id ?hid3) (resource ?res) (port ?port3) (prob ?prob3))
-    (not (settlement (player ~?pid) (node ?nid)))
+
+(defrule start-find-settlement-target
+    (goal init-turn-2)
+    (node (distance ~-1))
     =>
-    (assert (calculated-node (id ?nid) (score (+ ?prob1 ?prob2 ?prob3))))
+    (assert (cur-distance 1))
 )
 
-(defrule assert-node-distances
-    (declare (salience 10))
-    (node (id ?nid))
+(defrule find-nodes-of-this-distance
+    (goal init-turn-2)
+    (cur-distance ?dist)
+    (node (id ?old-id) (distance =(- ?dist 1)))
+    (edge (id ?eid) (nodes ?old-id ?this-id))
+    ?n <- (node (id ?this-id) (distance -1))
     =>
-    (assert (node-distance (id ?nid) (distance -1)))
+    (modify ?n (distance ?dist))
 )
 
-(defrule my-nodes-are-zero "any node that has my settlement or city on it, or has my road going to it is distance 0"
-    (declare (salience 10))
-    (my-id ?pid)
-    ?d <- (node-distance (id ?nid) (distance -1))
-    (or
-        (and ;there is an empty node that I have a road going to
-            (node (id ?nid) (can-build 1))
-            (edge (id ?eid) (nodes ?nid ?))
-            (road (player ?pid) (edge ?eid))
-        )
-        (and ;or I have a settlement or city on that node
-            (node (id ?nid))
-            (or
-                (settlement (player ?pid) (node ?nid))
-                (city (player ?pid) (node ?nid))
-            )
-        )
-    )
-    =>
-    (modify ?d (distance 0))
-)
-(defrule nodes-by-my-nodes-are-one "any node that is touching a node with distance 0 is length 1"
-    (my-id ?pid)
-    (node (id ?nid) (can-build 1))
-    ?d <- (node-distance (id ?nid) (distance -1))
-    ?o <- (node-distance (id ?nid2) (distance 0))
-    (edge (id ?eid) (nodes ?nid ?nid2))
-    (not (road (player ~?pid) (edge ?eid)))
-    =>
-    (modify ?d (distance 1))
-)
-(defrule nodes-by-those-nodes-are-two "any node that is touching a node with distance 1 is length 2"
+(defrule find-further-nodes
     (declare (salience -10))
-    (my-id ?pid)
-    (node (id ?nid) (can-build 1))
-    ?d <- (node-distance (id ?nid) (distance -1))
-    ?o <- (node-distance (id ?nid2) (distance 1))
-    (edge (id ?eid) (nodes ?nid ?nid2))
-    (not (road (player ~?pid) (edge ?eid)))
-    =>
-    (modify ?d (distance 2))
-)
-(defrule nodes-by-those-nodes-are-three "any node that is touching a node with distance 2 is length 3"
-    (declare (salience -20))
-    (my-id ?pid)
-    (node (id ?nid) (can-build 1))
-    ?d <- (node-distance (id ?nid) (distance -1))
-    ?o <- (node-distance (id ?nid2) (distance 2))
-    (edge (id ?eid) (nodes ?nid ?nid2))
-    (not (road (player ~?pid) (edge ?eid)))
-    =>
-    (modify ?d (distance 3))
-)
-(defrule clean-neg1-distance-nodes
-    (declare (salience -30))
-    ?d <- (node-distance (distance -1))
+    (goal init-turn-2)
+    (node (distance -1))
+    ?d <- (cur-distance ?dist)
     =>
     (retract ?d)
+    (assert (cur-distance (+ ?dist 1)))
+)
+
+(defrule calculate-node-score
+    (declare (salience -10))
+    (goal init-turn-2)
+    (my-id ?pid)
+    (cur-distance ?)
+    (node (id ?nid) (can-build 1) (hexes ?hid1 ?hid2 ?hid3) (distance ?dist))
+    (hex (id ?hid1) (resource ?res1) (port ?port1) (prob ?prob1))
+    (hex (id ?hid2) (resource ?res2) (port ?port2) (prob ?prob2))
+    (hex (id ?hid3) (resource ?res3) (port ?port3) (prob ?prob3))
+    (not (settlement (player ~?pid) (node ?nid)))
+    (not (city (player ~?pid) (node ?nid)))
+    =>
+    (assert (calculated-node (id ?nid) (score (- (+ ?prob1 ?prob2 ?prob3) (* ?dist 2)))))
+)
+
+(defrule calculate-best-placement
+    (declare (salience -20))
+    (goal init-turn-2)
+    (cur-distance ?)
+    (calculated-node (id ?nid) (score ?score)) 
+    (not (calculated-node (id ?nid2) (score ?score2&:(> ?score2 ?score))))
+    =>
+    (assert (settlement-target ?nid))
 )
 
 (defrule discover-initial-setup
+  (declare (salience -100))
   ?g <- (goal init-turn-2)
   (game-phase initial-setup)
   =>
@@ -136,10 +112,9 @@
 )
 
 (defrule move-to-turn
-  (declare (salience -10))
+  (declare (salience -100))
   ?g <- (goal init-turn-2)
   =>
-  (facts)
   (retract ?g)
   (printout t "Switching GOAL to decide-action" crlf)
   (assert (goal decide-action))

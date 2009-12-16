@@ -1,5 +1,27 @@
 ;BUILD-SETTLEMENT section
 
+(defrule aoeu
+    (declare (salience 100))
+    (goal build-settlement)
+    (settlement-target ?t)
+    (node (id ?t) (hexes ?h1 ?h2 ?h3))
+    (hex (id ?h1) (prob ?prob1) (resource ?res1))
+    (hex (id ?h2) (prob ?prob2) (resource ?res2))
+    (hex (id ?h3) (prob ?prob3) (resource ?res3))
+    =>
+    (printout t "target1 " ?t " res1: " ?res1 " prob1: " ?prob1 crlf)
+    (printout t "target2 " ?t " res2: " ?res2 " prob2: " ?prob2 crlf)
+    (printout t "target3 " ?t " res3: " ?res3 " prob3: " ?prob3 crlf)
+)
+
+(defrule print-resource-cards
+    (declare (salience 100))
+    (goal build-settlement)
+    (resource-cards (kind ?kind) (amnt ?amnt))
+    =>
+    (printout t "card " ?kind ": " ?amnt crlf)
+)
+
 (defrule maritime-trade-for-settlement
     (goal build-settlement)
     (willing-to-trade)

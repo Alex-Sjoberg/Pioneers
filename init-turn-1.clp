@@ -116,17 +116,35 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defrule start-sum-resource-rarity
+    (goal init-turn-1)
     (hex (id ?hid) (resource ?res) (prob ?prob))
     =>
     (assert (dot-addend (kind ?res) (amnt ?prob)))
 )
 
 (defrule finish-sum-resource-rarity
+    (goal init-turn-1)
     ?a <- (dot-addend (kind ?res) (amnt ?amnt))
     ?t <- (dot-total (kind ?res) (amnt ?total))
     =>
     (retract ?a)
     (modify ?t (amnt (+ ?amnt ?total)))
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; TARGET SETTLEMENT LOCATION PART 1
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defrule find-my-settlement-nodes
+    (goal init-turn-1)
+    (my-id ?pid)
+    (or
+        (settlement (player ?pid) (node ?nid))
+        (city (player ?pid) (node ?nid))
+    )
+    ?n <- (node (id ?nid) (distance -1))
+    =>
+    (modify ?n (distance 0))
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
