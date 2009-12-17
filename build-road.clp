@@ -1,17 +1,20 @@
 ;BUILD-ROAD section
 ;build roads in the direction of the settlement goal
 
-(defrule determine-if-have-resources-for-road
-    (goal build-road)
-    (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
-    (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
+(defrule domestic-trade-for-road
+    (game-phase consider-quote)
+    ?g <- (goal build-road)
+    (next-road-placement ?)
     =>
-    (assert (have-road-resources))
+    (retract ?g)
+    (assert (goal consider-quote)
+            (trade-goal build-road))
 )
 
 (defrule build-road
+    (not (game-phase consider-quote))
     (goal build-road)
-    (have-road-resources)
+    (have-resources-for-road)
     (next-road-placement ?eid)
     =>
     (assert (action "Build Road" ?eid))

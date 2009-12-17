@@ -26,6 +26,42 @@
 
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; FIND-RESOURCE-TOTAL-PROBS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defrule find-can-build-settlement
+    (resource-cards (kind lumber) (amnt ~0))
+    (resource-cards (kind brick) (amnt ~0))
+    (resource-cards (kind grain) (amnt ~0))
+    (resource-cards (kind wool) (amnt ~0))
+    =>
+    (assert (have-resources-for-settlement))
+)
+
+(defrule find-can-build-city
+    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
+    (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
+    =>
+    (assert (have-resources-for-city))
+)
+
+(defrule find-can-build-road
+    (resource-cards (kind brick) (amnt ~0))
+    (resource-cards (kind lumber) (amnt ~0))
+    =>
+    (assert (have-resources-for-road))
+)
+
+(defrule find-can-build-development-card
+    (resource-cards (kind grain) (amnt ~0))
+    (resource-cards (kind wool) (amnt ~0))
+    (resource-cards (kind ore) (amnt ~0))
+    =>
+    (assert (have-resources-for-development-card))
+)
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; FIND-RESOURCE-TOTAL-PROBS
@@ -152,5 +188,4 @@
   (retract ?f)
   (printout t "Switching GOAL to init-turn-2" crlf)
   (assert (goal init-turn-2))
-  (watch all)
 )

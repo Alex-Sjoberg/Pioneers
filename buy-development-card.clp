@@ -1,17 +1,15 @@
 ;BUY-DEVELOPMENT-CARD section
 
-(defrule buy-development-card
-    (goal buy-development-card)
-    (num-develop-in-deck ?num&:(> ?num 0))
-    (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 1)))
-    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 1)))
-    (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 1)))
-    =>
-    (assert (action "Buy Development Card"))
-    ;(printout t crlf "ACTION: Buy Development Card" crlf)
-    ;(exit)
-)
 
+(defrule domestic-trade-for-development-card
+    (game-phase consider-quote)
+    ?g <- (goal buy-development-card)
+    (can-buy-development-card)
+    =>
+    (retract ?g)
+    (assert (goal consider-quote)
+            (trade-goal buy-development-card))
+)
 
 
 (defrule maritime-trade-for-development-card
@@ -25,6 +23,14 @@
   )
   =>
   (assert (action "Do Maritime" ?price ?trade ?want))
-  ;(printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
-  ;(exit)
+)
+
+
+(defrule buy-development-card
+    (not (game-phase consider-quote))
+    (goal buy-development-card)
+    (can-buy-development-card)
+    (have-resources-for-development-card)
+    =>
+    (assert (action "Buy Development Card"))
 )

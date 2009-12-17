@@ -1,5 +1,16 @@
 ;BUILD-CITY section
 
+
+(defrule domestic-trade-for-city
+    (game-phase consider-quote)
+    ?g <- (goal build-city)
+    (can-build-city)
+    =>
+    (retract ?g)
+    (assert (goal consider-quote)
+            (trade-goal build-city))
+)
+
 (defrule maritime-trade-for-city
     (goal build-city)
     (willing-to-trade)
@@ -15,18 +26,8 @@
     )
     =>
     (assert (action "Do Maritime" ?price ?trade ?want))
-    ;(printout t crlf "ACTION: Do Maritime " ?price " " ?trade " " ?want crlf)
-    ;(exit)
 )
 
-
-;(defrule trade-for-city
-;  (goal build-city)
-;  (more stuff
-;  =>
-;
-;  (printout t crlf "ACTION: Trade Domestic brick 0 lumber 0 grain 2 ore 1 sheep 0 brick 0 lumber 0 grain 2 ore 1 sheep 0" crlf)
-;)
 
 (defrule determine-best-city-location "needs to be improved"
   (goal build-city)
@@ -59,12 +60,10 @@
 )
 
 (defrule build-city
+    (not (game-phase consider-quote))
     (goal build-city)
     (best-city-location ?node)
-    (my-id ?pid)
-    (player (id ?pid) (num-cities ?num&:(< ?num 4)))
-    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
-    (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
+    (have-resources-for-city)
     =>
     (assert (action "Build City" ?node))
 )

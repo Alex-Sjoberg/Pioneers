@@ -68,8 +68,7 @@
   =>
   (retract ?g)
   (printout t "Switching GOAL to decide-strategy (via quoting)" crlf)
-  (assert (dont-do-action)
-          (goal decide-strategy))
+  (assert (goal decide-strategy))
 )
 
 (defrule discover-strategy

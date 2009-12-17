@@ -163,7 +163,6 @@
 (defrule do-action
     (declare (salience 9000)) ;ITS OVER 9000
     (action ?action $?arguments)
-    (not (dont-do-action))
     =>
     (printout t crlf "ACTION: " ?action " " (implode$ $?arguments) crlf)
     (exit)
@@ -188,17 +187,8 @@
 
 (defrule end-turn
     (declare (salience -1000))
-    (not (dont-do-action))
     =>
     (assert (action "End Turn (default)"))
-)
-
-(defrule end-turn-reject-trade
-    (declare (salience -1000))
-    ?a <- (dont-do-action)
-    =>
-    (retract ?a)
-    (assert (action "Reject Quote (default)"))
 )
 
 (defrule print-cards

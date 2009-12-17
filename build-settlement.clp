@@ -1,5 +1,15 @@
 ;BUILD-SETTLEMENT section
 
+(defrule domestic-trade-for-settlement
+    (game-phase consider-quote)
+    ?g <- (goal build-settlement)
+    (can-build-settlement)
+    =>
+    (retract ?g)
+    (assert (goal consider-quote)
+            (trade-goal build-settlement))
+)
+
 (defrule maritime-trade-for-settlement
     (goal build-settlement)
     (willing-to-trade)
@@ -15,24 +25,13 @@
 )
 
 (defrule build-settlement
+    (not (game-phase consider-quote))
     (goal build-settlement)
-    (my-id ?pid)
-    (player (id ?pid) (num-settlements ?num&:(< ?num 5)))
-    (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
-    (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
-    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 1)))
-    (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 1)))
-    (road (player ?pid) (edge ?edge))
-    (edge (id ?edge) (nodes $? ?node $?))
-    (node (id ?node) (can-build 1))
-
-    (node (id ?node) (hexes ?h1 ?h2 ?h3))
-    (hex (id ?h1) (resource ?res1) (number ?p1))
-    (hex (id ?h2) (resource ?res2) (number ?p2))
-    (hex (id ?h3) (resource ?res3) (number ?p3))
+    (have-resources-for-settlement)
+    (can-build-settlement)
+    (settlement-target ?node)
     =>
     (assert (action "Build Settlement" ?node))
-    (matches find-action-that-would-have-executed)
 )
 
 (defrule build-road-if-none

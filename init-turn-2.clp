@@ -2,6 +2,77 @@
 ;                     INIT-TURN-2
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; FIND-RESOURCE-TOTAL-PROBS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defrule find-have-resources-settlement
+    (resource-cards (kind lumber) (amnt ~0))
+    (resource-cards (kind brick) (amnt ~0))
+    (resource-cards (kind grain) (amnt ~0))
+    (resource-cards (kind wool) (amnt ~0))
+    =>
+    (assert (have-resources-for-settlement))
+)
+
+(defrule find-have-resources-city
+    (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
+    (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
+    =>
+    (assert (have-resources-for-city))
+)
+
+(defrule find-have-resources-road
+    (resource-cards (kind brick) (amnt ~0))
+    (resource-cards (kind lumber) (amnt ~0))
+    =>
+    (assert (have-resources-for-road))
+)
+
+(defrule find-have-resources-development-card
+    (resource-cards (kind grain) (amnt ~0))
+    (resource-cards (kind wool) (amnt ~0))
+    (resource-cards (kind ore) (amnt ~0))
+    =>
+    (assert (have-resources-for-development-card))
+)
+
+(defrule find-can-build-settlement
+    (my-id ?pid)
+    (player (id ?pid) (num-settlements ?num&:(< ?num 5)))
+    (road (player ?pid) (edge ?edge))
+    (edge (id ?edge) (nodes $? ?node $?))
+    (node (id ?node) (can-build 1))
+    =>
+    (assert (can-build-settlement))
+)
+
+(defrule find-can-build-city
+    (my-id ?pid)
+    (settlement (player ?pid))
+    (player (id ?pid) (num-cities ?num&:(< ?num 4)))
+    =>
+    (assert (can-build-city))
+)
+
+(defrule find-can-buy-development-card
+    (num-develop-in-deck ~0)
+    =>
+    (assert (can-buy-development-card))
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
 ; calculate which nodes can be built upon and which cannot
 (defrule can-build-on-nodes
     (declare (salience 10))
@@ -43,7 +114,6 @@
     (goal init-turn-2)
     (settlement-target ?nid)
     =>
-    (watch all)
     (assert (looking-for-edges)
             (node-waypoint ?nid))
 )

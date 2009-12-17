@@ -1,15 +1,15 @@
-(defrule find-action-that-would-have-executed
-    (declare (salience 2000))
-    (game-phase consider-quote)
-    (action ?action $?)
-    ?a <- (dont-do-action)
-    ?g <- (goal ?goal)
-    =>
-    (retract ?a ?g)
-    (assert (goal consider-quote)
-            (trade-goal ?action)
-    )
-)
+;(defrule find-action-that-would-have-executed
+;    (declare (salience 2000))
+;    (game-phase consider-quote)
+;    (action ?action $?)
+;    (dont-do-action)
+;    ?g <- (goal ?goal)
+;    =>
+;    (retract ?g)
+;    (assert (goal consider-quote)
+;            (trade-goal ?action)
+;    )
+;)
 
 (defrule find-free-offers
     (declare (salience 1000))
@@ -42,7 +42,7 @@
 (defrule consider-quote-for-building-city
     (declare (salience 1000))
     (goal consider-quote)
-    (trade-goal "Build City")
+    (trade-goal build-city)
     (they-supply ?they-supply)
     (or
         (resource-cards (kind ?they-supply&ore) (amnt ?wamnt&:(< ?wamnt 3)))
@@ -64,15 +64,15 @@
 (defrule consider-quote-for-building-settlement
     (declare (salience 1000))
     (goal consider-quote)
-    (trade-goal "Build Settlement")
+    (trade-goal build-settlement)
 
     (they-supply ?they-supply&lumber|brick|wool|grain)
     (resource-cards (kind ?they-supply) (amnt 0))
 
     (they-want ?they-want)
     (or
-        (resource-cards (kind ?they-want&ore) (amnt ?hamnt&:(> ?hamnt 1)))
-        (resource-cards (kind ?they-want&~ore) (amnt ?hamnt&:(> ?hamnt 2)))
+        (resource-cards (kind ?they-want&ore) (amnt ?hamnt&:(>= ?hamnt 1)))
+        (resource-cards (kind ?they-want&~ore) (amnt ?hamnt&:(>= ?hamnt 2)))
     )
 
     ?w <- (trade-commodity (direction they-want) (kind ?they-want))
@@ -86,13 +86,38 @@
 (defrule consider-quote-for-building-road
     (declare (salience 1000))
     (goal consider-quote)
-    (trade-goal "Build Road")
+    (trade-goal build-road)
 
     (they-supply ?they-supply&lumber|brick)
     (resource-cards (kind ?they-supply) (amnt 0))
 
-    (they-want ?they-want&wool|grain|ore)
-    (resource-cards (kind ?they-want) (amnt ?hamnt&:(> ?hamnt 1)))
+    (they-want ?they-want)
+    (or
+        (resource-cards (kind ?they-want&~brick&~lumber) (amnt ?hamnt&:(>= ?hamnt 1)))
+        (resource-cards (kind ?they-want&brick|lumber) (amnt ?hamnt&:(>= ?hamnt 2)))
+    )
+
+    ?w <- (trade-commodity (direction they-want) (kind ?they-want))
+    ?s <- (trade-commodity (direction they-supply) (kind ?they-supply))
+    =>
+    (modify ?w (amnt 1))
+    (modify ?s (amnt 1))
+    (assert (offer-quote))
+)
+
+(defrule consider-quote-for-buying-development-card
+    (declare (salience 1000))
+    (goal consider-quote)
+    (trade-goal buy-development-card)
+
+    (they-supply ?they-supply&ore|grain|wool)
+    (resource-cards (kind ?they-supply) (amnt 0))
+
+    (they-want ?they-want)
+    (or
+        (resource-cards (kind ?they-want&~ore&~grain&~wool) (amnt ?hamnt&:(>= ?hamnt 1)))
+        (resource-cards (kind ?they-want&ore|grain|wool) (amnt ?hamnt&:(>= ?hamnt 2)))
+    )
 
     ?w <- (trade-commodity (direction they-want) (kind ?they-want))
     ?s <- (trade-commodity (direction they-supply) (kind ?they-supply))

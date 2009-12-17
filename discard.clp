@@ -4,7 +4,6 @@
   (goal discard)
   =>
   (assert (discard-str "Discard"))
-  ;(printout t crlf "ACTION: Discard")
 )
 
 (defrule find-least-valuable-card
@@ -18,7 +17,6 @@
   (assert (num-to-discard (- ?num 1)))
   (modify ?c (amnt (- ?amnt 1)))
   (assert (discard-str $?str ?kind))
-  ;(printout t " " ?kind)
 )
 
 (defrule done-discarding
@@ -27,6 +25,4 @@
   (discard-str $?str)
   =>
   (assert (action $?str))
-  ;(printout t crlf)
-  ;(exit)
 )
