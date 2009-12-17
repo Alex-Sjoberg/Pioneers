@@ -59,6 +59,7 @@
 
 (defrule play-soldier-on-city-strategy
   (declare (salience 10))
+  (not (game-phase consider-quote))
   (goal init-city-strategy)
   (my-id ?pid)
   (devel-card (kind soldier) (amnt ?nvic) (can-play 1))
@@ -86,11 +87,11 @@
 )
 
 ;Low priority catch-all rules
-(defrule else-buy-development-card
+(defrule else-buy-city
   (declare (salience -10))
   ?g <- (goal init-city-strategy)
   =>
   (retract ?g)
-  (printout t "Switching GOAL to buy-development-card-else" crlf)
-  (assert (goal buy-development-card))
+  (printout t "Switching GOAL to build-city" crlf)
+  (assert (goal build-city))
 )

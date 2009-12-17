@@ -113,7 +113,15 @@
 (defrule start-road-discovery
     (goal init-turn-2)
     (settlement-target ?nid)
+    (or
+      (not (game-phase initial-setup))
+      (and
+        (settlements-to-place ?stp)
+        (roads-to-place ?rtp&:(= ?rtp (+ ?stp 1)))
+      )
+    )
     =>
+    (printout t "SETHBURGER" crlf)
     (assert (looking-for-edges)
             (node-waypoint ?nid))
 )

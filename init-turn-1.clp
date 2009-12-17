@@ -152,5 +152,4 @@
   (retract ?f)
   (printout t "Switching GOAL to init-turn-2" crlf)
   (assert (goal init-turn-2))
-  (watch all)
 )

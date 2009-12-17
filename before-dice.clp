@@ -13,6 +13,14 @@
     (assert (action "Play Soldier"))
 )
 
+(defrule play-mono
+    (goal before-dice)
+
+    (devel-card (kind monopoly) (can-play 1))
+    =>
+    (assert (action "Play Monopoly"))
+)
+
 (defrule play-plenty
     (goal before-dice)
 

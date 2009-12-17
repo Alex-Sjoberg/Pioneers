@@ -40,7 +40,6 @@
 )
 
 (defrule consider-quote-for-building-city
-    (declare (salience 1000))
     (goal consider-quote)
     (trade-goal build-city)
     (they-supply ?they-supply)
@@ -61,8 +60,9 @@
     (modify ?s (amnt 1))
     (assert (offer-quote))
 )
+
+
 (defrule consider-quote-for-building-settlement
-    (declare (salience 1000))
     (goal consider-quote)
     (trade-goal build-settlement)
 
@@ -81,10 +81,11 @@
     (modify ?w (amnt 1))
     (modify ?s (amnt 1))
     (assert (offer-quote))
+    (agenda)
 )
 
+
 (defrule consider-quote-for-building-road
-    (declare (salience 1000))
     (goal consider-quote)
     (trade-goal build-road)
 
@@ -106,7 +107,6 @@
 )
 
 (defrule consider-quote-for-buying-development-card
-    (declare (salience 1000))
     (goal consider-quote)
     (trade-goal buy-development-card)
 
@@ -128,6 +128,7 @@
 )
 
 (defrule respond-to-quote
+    (declare (salience 1000))
     (goal consider-quote)
     (offer-quote)
     (trade-commodity (direction they-want) (kind brick) (amnt ?wbamnt))

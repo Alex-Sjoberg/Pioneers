@@ -7,6 +7,7 @@
     (can-buy-development-card)
     =>
     (retract ?g)
+    (printout t "Switching GOAL to consider-quote" crlf)
     (assert (goal consider-quote)
             (trade-goal buy-development-card))
 )
