@@ -217,6 +217,8 @@
 
 (defrule find-nodes-of-this-distance
     (goal init-turn-2)
+    (my-id ?pid)
+    (settlement (player ?pid))
     (cur-distance ?dist)
     (node (id ?old-id) (distance =(- ?dist 1)))
     (edge (id ?eid) (nodes ?old-id ?this-id))
@@ -228,6 +230,8 @@
 (defrule find-further-nodes
     (declare (salience -10))
     (goal init-turn-2)
+    (my-id ?pid)
+    (settlement (player ?pid))
     (node (distance -1))
     ?d <- (cur-distance ?dist)
     =>
@@ -238,6 +242,8 @@
 (defrule calculate-node-score
     (declare (salience -10))
     (goal init-turn-2)
+    (my-id ?pid)
+    (settlement (player ?pid))
     (my-id ?pid)
     (cur-distance ?)
     (node (id ?nid) (can-build 1) (hexes ?hid1 ?hid2 ?hid3) (distance ?dist))
@@ -280,6 +286,8 @@
 (defrule calculate-best-placement
     (declare (salience -20))
     (goal init-turn-2)
+    (my-id ?pid)
+    (settlement (player ?pid))
     (not (settlement-target ?))
     (cur-distance ?)
     (calculated-node (id ?nid) (score ?score)) 
