@@ -31,9 +31,21 @@
 (defrule determine-best-city-location "needs to be improved"
   (goal build-city)
   (my-id ?pid)
-  (settlement (player ?pid) (node ?node))
+  (settlement (player ?pid) (node ?nid))
+  (node (id ?nid) (hexes ?h1 ?h2 ?h3))
+  (hex (id ?h1) (prob ?prob1))
+  (hex (id ?h2) (prob ?prob2))
+  (hex (id ?h3) (prob ?prob3))
+  (not (and
+      (settlement (player ?pid) (node ?nid2))
+      (node (id ?nid2) (hexes ?h4 ?h5 ?h6))
+      (hex (id ?h4) (prob ?prob4))
+      (hex (id ?h5) (prob ?prob5))
+      (hex (id ?h6) (prob ?prob6))
+      (test (> (+ ?prob4 ?prob5 ?prob6) (+ ?prob1 ?prob2 ?prob3)))
+  ))
   =>
-  (assert (best-city-location ?node))
+  (assert (best-city-location ?nid))
 )
 
 (defrule build-city-if-no-settlement
