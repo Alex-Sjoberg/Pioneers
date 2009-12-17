@@ -100,6 +100,7 @@
 
 (deffacts initial-state
   (victory-sum 0)
+  (cur-distance 1)
   (dot-total (kind lumber) (amnt 0))
   (dot-total (kind brick) (amnt 0))
   (dot-total (kind wool) (amnt 0))

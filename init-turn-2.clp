@@ -43,6 +43,7 @@
     (goal init-turn-2)
     (settlement-target ?nid)
     =>
+    (watch all)
     (assert (looking-for-edges)
             (node-waypoint ?nid))
 )
@@ -100,26 +101,21 @@
     (not (next-road-placement ?))
     (looking-for-edges)
     (my-id ?pid)
-    (edge-waypoint ?eid)
-    (edge (id ?eid) (nodes ?nid ?))
 
-    (not
-        (or
-            (settlement (player ~?pid) (node ?nid))
-            (city (player ~?pid) (node ?nid))
-        )
-    )
-    (or
-        (settlement (player ?pid) (node ?nid))
-        (city (player ?pid) (node ?nid))
-        (and
-            (not (edge (id ?eid2) (nodes ?nid ?)))
-            (not (road (player ?pid) (edge ?eid2)))
-        )
-    )
-    (not (road (edge ?eid)))
+    ;find a waypoint next to a settlement
+    (edge-waypoint ?etarget)
+    (edge (id ?etarget) (nodes ?nid ?))
+    (node (id ?nid))
+    (settlement (player ?pid) (node ?nid))
+    (not (road (edge ?etarget)))
+
+    ;the other two edges coming off the node can not have roads on them
+    (edge (id ?eid2&~?etarget) (nodes ?nid ?))
+    (edge (id ?eid3&~?eid2&~?etarget) (nodes ?nid ?))
+    (not (road (edge ?eid2)))
+    (not (road (edge ?eid3)))
     =>
-    (assert (next-road-placement ?eid))
+    (assert (next-road-placement ?etarget))
 )
 
 
@@ -127,6 +123,7 @@
     (declare (salience -10))
     (goal init-turn-2)
     (not (next-road-placement ?))
+    (roads-to-place ~0)
     ?l <- (looking-for-edges)
     =>
     (retract ?l)
@@ -135,6 +132,7 @@
 (defrule transition-to-look-for-edges
     (declare (salience -10))
     (goal init-turn-2)
+    (roads-to-place ~0)
     (not (next-road-placement ?))
     ?l <- (looking-for-nodes)
     =>
@@ -146,14 +144,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CALCULATE THE NEXT NODE TO BUILD A SETTLEMENT ON
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(defrule start-find-settlement-target
-    (goal init-turn-2)
-    (node (distance ~-1))
-    =>
-    (assert (cur-distance 1))
-)
 
 (defrule find-nodes-of-this-distance
     (goal init-turn-2)
