@@ -171,8 +171,6 @@
     (not (calculated-node (score ?score2&:(> ?score2 ?score))))
     =>
     (assert (action "Build Settlement" ?nid))
-    ;(printout t crlf "ACTION: Build Settlement " ?nid crlf)
-    ;(exit)
 )
 
 (defrule place-starting-road
@@ -182,8 +180,6 @@
     (next-road-placement ?eid)
     =>
     (assert (action "Build Road" ?eid))
-    ;(printout t crlf "ACTION: Build Road " ?eid crlf)
-    ;(exit)
 )
 
 (defrule end-initial-setup
@@ -193,6 +189,4 @@
     (roads-to-place 0)
     =>
     (assert (action "End Turn"))
-    ;(printout t crlf "ACTION: End Turn" crlf)
-    ;(exit)
 )

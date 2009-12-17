@@ -1,17 +1,12 @@
 ;BUILD-ROAD section
 ;build roads in the direction of the settlement goal
 
-(defrule determine-if-can-build-road
+(defrule determine-if-have-resources-for-road
     (goal build-road)
-    (or
-        (free-roads ?)
-        (and
-            (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
-            (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
-        )
-    )
+    (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
+    (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
     =>
-    (assert (can-build-road))
+    (assert (have-road-resources))
 )
 
 (defrule build-road
@@ -19,9 +14,8 @@
     (can-build-road)
     (next-road-placement ?eid)
     =>
+    (facts)
     (assert (action "Build Road" ?eid))
-    ;(printout t crlf "ACTION: Build Road " ?eid crlf)
-    ;(exit)
 )
 
 (defrule trade-for-road

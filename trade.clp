@@ -1,5 +1,5 @@
 (defrule find-action-that-would-have-executed
-    (declare (salience 3000))
+    (declare (salience 2000))
     (game-phase consider-quote)
     (action ?action $?)
     ?a <- (dont-do-action)
@@ -8,23 +8,6 @@
     (retract ?a ?g)
     (assert (goal consider-quote)
             (trade-goal ?action)
-    )
-)
-
-(defrule init-trade
-    (declare (salience 2000))
-    (goal consider-quote)
-    =>
-    (assert (trade-commodity (direction they-want) (kind lumber) (amnt 0))
-            (trade-commodity (direction they-want) (kind brick) (amnt 0))
-            (trade-commodity (direction they-want) (kind grain) (amnt 0))
-            (trade-commodity (direction they-want) (kind ore) (amnt 0))
-            (trade-commodity (direction they-want) (kind wool) (amnt 0))
-            (trade-commodity (direction they-supply) (kind lumber) (amnt 0))
-            (trade-commodity (direction they-supply) (kind brick) (amnt 0))
-            (trade-commodity (direction they-supply) (kind grain) (amnt 0))
-            (trade-commodity (direction they-supply) (kind ore) (amnt 0))
-            (trade-commodity (direction they-supply) (kind wool) (amnt 0))
     )
 )
 

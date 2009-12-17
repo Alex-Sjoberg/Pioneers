@@ -60,6 +60,8 @@
 (defrule build-road-if-none
   (declare (salience -10))
   ?g <- (goal build-settlement)
+  (my-id ?pid)
+  (player (id ?pid) (num-roads ~0))
   (not
     (and
       (my-id ?pid)
