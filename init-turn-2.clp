@@ -35,6 +35,114 @@
     (assert (hex-rarity (id ?hid) (rarity (/ ?this ?total))))
 )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; FIND NEXT ROAD PLACEMENT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defrule start-road-discovery
+    (goal init-turn-2)
+    (settlement-target ?nid)
+    =>
+    (assert (looking-for-edges)
+            (node-waypoint ?nid))
+)
+
+(defrule look-for-edges
+    (goal init-turn-2)
+    (not (next-road-placement ?))
+    (looking-for-edges)
+    (node-waypoint ?nid)
+    (edge (id ?eid) (nodes ?nid ?))
+    =>
+    (assert (edge-waypoint ?eid))
+)
+(defrule look-for-nodes
+    (goal init-turn-2)
+    (not (next-road-placement ?))
+    (looking-for-nodes)
+    (edge-waypoint ?eid)
+    (edge (id ?eid) (nodes ?nid ?))
+    (node (id ?nid))
+    =>
+    (assert (node-waypoint ?nid))
+)
+
+(defrule determine-next-road-placement
+    (goal init-turn-2)
+    (not (next-road-placement ?))
+    (not (game-phase initial-setup))
+    (looking-for-edges)
+    (my-id ?pid)
+    (edge-waypoint ?eid)
+    (edge (id ?eid) (nodes ?nid ?))
+
+    (not
+        (or
+            (settlement (player ~?pid) (node ?nid))
+            (city (player ~?pid) (node ?nid))
+        )
+    )
+    (or
+        (settlement (player ?pid) (node ?nid))
+        (city (player ?pid) (node ?nid))
+        (and
+            (edge (id ?eid2) (nodes ?nid ?))
+            (road (player ?pid) (edge ?eid2))
+        )
+    )
+    (not (road (edge ?eid)))
+    =>
+    (assert (next-road-placement ?eid))
+)
+(defrule determine-next-road-placement-in-initial-setup
+    (game-phase initial-setup)
+    (goal init-turn-2)
+    (not (next-road-placement ?))
+    (looking-for-edges)
+    (my-id ?pid)
+    (edge-waypoint ?eid)
+    (edge (id ?eid) (nodes ?nid ?))
+
+    (not
+        (or
+            (settlement (player ~?pid) (node ?nid))
+            (city (player ~?pid) (node ?nid))
+        )
+    )
+    (or
+        (settlement (player ?pid) (node ?nid))
+        (city (player ?pid) (node ?nid))
+        (and
+            (not (edge (id ?eid2) (nodes ?nid ?)))
+            (not (road (player ?pid) (edge ?eid2)))
+        )
+    )
+    (not (road (edge ?eid)))
+    =>
+    (assert (next-road-placement ?eid))
+)
+
+
+(defrule transition-to-look-for-nodes
+    (declare (salience -10))
+    (goal init-turn-2)
+    (not (next-road-placement ?))
+    ?l <- (looking-for-edges)
+    =>
+    (retract ?l)
+    (assert (looking-for-nodes))
+)
+(defrule transition-to-look-for-edges
+    (declare (salience -10))
+    (goal init-turn-2)
+    (not (next-road-placement ?))
+    ?l <- (looking-for-nodes)
+    =>
+    (retract ?l)
+    (assert (looking-for-edges))
+)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CALCULATE THE NEXT NODE TO BUILD A SETTLEMENT ON
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -85,6 +193,7 @@
 (defrule calculate-best-placement
     (declare (salience -20))
     (goal init-turn-2)
+    (not (settlement-target ?))
     (cur-distance ?)
     (calculated-node (id ?nid) (score ?score)) 
     (not (calculated-node (id ?nid2) (score ?score2&:(> ?score2 ?score))))

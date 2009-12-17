@@ -14,80 +14,14 @@
     (assert (can-build-road))
 )
 
-(defrule start-road-discovery
-    (goal build-road)
-    (can-build-road)
-    (settlement-target ?nid)
-    =>
-    (assert (looking-for-edges)
-            (node-waypoint ?nid))
-)
-
-(defrule look-for-edges
-    (goal build-road)
-    (can-build-road)
-    (looking-for-edges)
-    (node-waypoint ?nid)
-    (edge (id ?eid) (nodes ?nid ?))
-    =>
-    (assert (edge-waypoint ?eid))
-)
-(defrule look-for-nodes
-    (goal build-road)
-    (can-build-road)
-    (looking-for-nodes)
-    (edge-waypoint ?eid)
-    (edge (id ?eid) (nodes ?nid ?))
-    (node (id ?nid))
-    =>
-    (assert (node-waypoint ?nid))
-)
-
 (defrule build-road
     (goal build-road)
     (can-build-road)
-    (looking-for-edges)
-    (my-id ?pid)
-    (edge-waypoint ?eid)
-    (edge (id ?eid) (nodes ?nid ?))
-    (not
-        (or
-            (settlement (player ~?pid) (node ?nid))
-            (city (player ~?pid) (node ?nid))
-        )
-    )
-    (or
-        (settlement (player ?pid) (node ?nid))
-        (city (player ?pid) (node ?nid))
-        (and
-            (edge (id ?eid2) (nodes ?nid ?))
-            (road (player ?pid) (edge ?eid2))
-        )
-    )
-    (not (road (edge ?eid)))
+    (next-road-placement ?eid)
     =>
     (assert (action "Build Road" ?eid))
     ;(printout t crlf "ACTION: Build Road " ?eid crlf)
     ;(exit)
-)
-
-(defrule transition-to-look-for-nodes
-    (declare (salience -10))
-    (goal build-road)
-    (can-build-road)
-    ?l <- (looking-for-edges)
-    =>
-    (retract ?l)
-    (assert (looking-for-nodes))
-)
-(defrule transition-to-look-for-edges
-    (declare (salience -10))
-    (goal build-road)
-    (can-build-road)
-    ?l <- (looking-for-nodes)
-    =>
-    (retract ?l)
-    (assert (looking-for-edges))
 )
 
 (defrule trade-for-road
