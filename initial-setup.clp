@@ -176,25 +176,9 @@
 (defrule place-starting-road
     (declare (salience -10))
     (goal initial-setup)
-    (my-id ?pid)
-
     (roads-to-place ?num&:(> ?num 0))
-
-    (settlement (player ?pid) (node ?nid))
-    (not
-      (and
-        (edge (id ?eid) (nodes ?nid ?))
-        (road (player ?pid) (edge ?eid))
-      )
-    )
-
-    (edge (id ?eid) (nodes ?nid ?cnode))
-    (not (road (edge ?eid)))
-    (node (id ?cnode) (hexes $? ?chex $?))
-    (hex (id ?chex) (resource ?res&~sea&~desert))
-
+    (next-road-placement ?eid)
     =>
-
     (assert (action "Build Road" ?eid))
 )
 
