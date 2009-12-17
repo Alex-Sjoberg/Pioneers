@@ -11,7 +11,7 @@
 
 (defrule build-road
     (goal build-road)
-    (can-build-road)
+    (have-road-resources)
     (next-road-placement ?eid)
     =>
     (facts)
