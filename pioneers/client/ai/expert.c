@@ -92,11 +92,11 @@ static void expert_consider_quote(G_GNUC_UNUSED gint partner,
 
   for (i = 0; i < NO_RESOURCE; i++) {
     if (we_supply[i]) {
-      sprintf(buf, "(assert (they-supply %s))", resource_mapping[i]);
+      sprintf(buf, "(assert (they-want %s))", resource_mapping[i]);
       write_clips(buf);
     }
     if (we_receive[i]) {
-      sprintf(buf, "(assert (they-want %s))", resource_mapping[i]);
+      sprintf(buf, "(assert (they-supply %s))", resource_mapping[i]);
       write_clips(buf);
     }
   }

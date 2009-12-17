@@ -53,6 +53,15 @@
   (assert (goal steal-building))
 )
 
+(defrule discover-choose-monopoly
+  ?g <- (goal decide-action)
+  (game-phase choose-monopoly)
+  =>
+  (retract ?g)
+  (printout t "Switching GOAL to choose-monopoly" crlf)
+  (assert (goal choose-monopoly))
+)
+
 (defrule discover-quoting
   ?g <- (goal decide-action)
   (game-phase consider-quote)

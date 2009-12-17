@@ -70,7 +70,6 @@
     )
     (not (road (edge ?eid)))
     =>
-    (facts)
     (assert (action "Build Road" ?eid))
 )
 

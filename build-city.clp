@@ -55,13 +55,13 @@
     (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
     =>
     (assert (action "Build City" ?node))
-    ;(printout t crlf "ACTION: Build City " ?node crlf)
-    ;(exit)
 )
 
 (defrule city-else-build-settlement
   (declare (salience -10))
   ?g <- (goal build-city)
+  (my-id ?pid)
+  (player (id ?pid) (num-settlements ~5))
   =>
   (retract ?g)
   (printout t "Switching GOAL to build-settlement" crlf)

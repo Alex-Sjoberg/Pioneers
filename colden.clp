@@ -176,8 +176,6 @@
     (test (>= (+ ?score ?amnt) 10))
     =>
     (assert (action "Play Victory"))
-    ;(printout t crlf "ACTION: Play Victory" crlf)
-    ;(exit)
 )
 
 
@@ -203,7 +201,7 @@
 )
 
 (defrule print-cards
-    (declare (salience 10))
+    (declare (salience 1000))
     (or
       (resource-cards (kind ?kind) (amnt ?amnt))
       (devel-card (kind ?kind) (amnt ?amnt))

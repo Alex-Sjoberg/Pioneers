@@ -10,10 +10,8 @@
     ?g <- (goal init-settlement-strategy)
     ?g <- (goal init-city-strategy)
   )
-;  (my-id ?pid)
-;  (road (player ?pid) (edge ?eid))
-;  (edge (id ?eid) (nodes $? ?nid $?))
-;  (node (id ?nid) (can-build 1))
+  (my-id ?pid)
+  (player (id ?pid) (num-settlements ~5))
   (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
   (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
   (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 1)))
@@ -31,7 +29,7 @@
   (declare (salience 10))
   ?g <- (goal init-settlement-strategy)
   (my-id ?pid)
-  (player (id ?pid) (num-settlements 5))
+  (player (id ?pid) (num-settlements 5) (num-cities ~4))
   =>
   (retract ?g)
   (printout t "Switching GOAL to build-city" crlf)
@@ -40,14 +38,9 @@
 
 (defrule buy-devel-if-lots-of-resources
   ?g <- (goal init-settlement-strategy)
-;  (or
-;    (player (id ?pid) (num-resource-cards ?num&:(> ?num 7)))
-;    (and
-      (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 2)))
-      (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 1)))
-      (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
-;    )
-;  )
+  (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 2)))
+  (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 1)))
+  (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
   =>
   (retract ?g)
   (printout t "Switching GOAL to buy-development-card" crlf)

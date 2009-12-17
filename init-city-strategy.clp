@@ -19,6 +19,7 @@
     ?g <- (goal init-settlement-strategy)
   )
   (my-id ?pid)
+  (player (id ?pid) (num-cities ~4))
   (settlement (player ?pid))
   (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 2)))
   (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
@@ -70,8 +71,6 @@
   )
   =>
   (assert (action "Play Soldier"))
-  ;(printout t crlf "ACTION: Play Soldier" crlf)
-  ;(exit)
 
 )
 

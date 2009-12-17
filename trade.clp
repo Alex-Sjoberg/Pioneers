@@ -11,6 +11,34 @@
     )
 )
 
+(defrule find-free-offers
+    (declare (salience 1000))
+    (game-phase consider-quote)
+    (they-supply ?they-supply)
+    (not (they-want ?want))
+    =>
+    (assert (add-to-supply ?they-supply))
+)
+
+(defrule add-to-free-supply
+    (declare (salience 1000))
+    (game-phase consider-quote)
+    ?a <- (add-to-supply ?they-supply)
+    ?s <- (trade-commodity (direction they-supply) (kind ?they-supply))
+    =>
+    (retract ?a)
+    (modify ?s (amnt 1))
+)
+
+(defrule accept-free-quotes
+    (declare (salience 500))
+    (game-phase consider-quote)
+    (not (they-want ?))
+    =>
+    (assert (goal consider-quote)
+            (offer-quote))
+)
+
 (defrule consider-quote-for-building-city
     (declare (salience 1000))
     (goal consider-quote)
