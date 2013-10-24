@@ -509,12 +509,12 @@ int close_clips(void) {
 
     buf[nread-1] = 0; // chomp the newline
 
-    if (strncmp(buf, "Defining ", 9) != 0
-        && strncmp(buf, "=j", 2) != 0
-        && strncmp(buf, "+j", 2) != 0
-        && strncmp(buf, "CLIPS> ", 7) != 0
-        && strncmp(buf, "TRUE", 4) != 0
-       )
+//    if (strncmp(buf, "Defining ", 9) != 0
+//        && strncmp(buf, "=j", 2) != 0
+ //       && strncmp(buf, "+j", 2) != 0
+  //      && strncmp(buf, "CLIPS> ", 7) != 0
+   //     && strncmp(buf, "TRUE", 4) != 0
+    //   )
       fprintf(stderr," < %s\n",buf);
 
     /* if the line starts with the special code */

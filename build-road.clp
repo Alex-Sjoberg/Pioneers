@@ -1,6 +1,16 @@
 ;BUILD-ROAD section
 ;build roads in the direction of the settlement goal
 
+;(defrule aoeu
+;  (declare (salience 1))
+;  (game-phase consider-quote)
+;  (goal build-road)
+;  =>
+;  (facts)
+;  (matches domestic-trade-for-road)
+;)
+
+
 (defrule domestic-trade-for-road
     (game-phase consider-quote)
     ?g <- (goal build-road)
@@ -21,7 +31,7 @@
     (assert (action "Build Road" ?eid))
 )
 
-(defrule trade-for-road
+(defrule maritime-trade-for-road
     (goal build-road)
     (my-maritime-trade ?price)
     (resource-cards (kind ?want&lumber|brick) (amnt 0))

@@ -164,6 +164,7 @@
     (declare (salience -10))
     (goal initial-setup)
     (settlements-to-place ?num&:(> ?num 0))
+    (roads-to-place ?num)
     (calculated-node (id ?nid) (score ?score))
 
     ; ...and for which there is no other possible settlement spot

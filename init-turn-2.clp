@@ -39,20 +39,20 @@
 
 (defrule find-can-build-settlement
     (my-id ?pid)
-    (player (id ?pid) (num-settlements ?num&:(< ?num 5)))
+    (player (id ?pid) (num-settlements ~5))
     (road (player ?pid) (edge ?edge))
-    (edge (id ?edge) (nodes $? ?node $?))
-    (node (id ?node) (can-build 1))
+    (edge (id ?edge) (nodes ?nid ?))
+    (node (id ?nid) (can-build 1))
     =>
-    (assert (can-build-settlement))
+    (assert (can-build-settlement ?nid))
 )
 
 (defrule find-can-build-city
     (my-id ?pid)
-    (settlement (player ?pid))
-    (player (id ?pid) (num-cities ?num&:(< ?num 4)))
+    (settlement (player ?pid) (node ?nid))
+    (player (id ?pid) (num-cities ~4))
     =>
-    (assert (can-build-city))
+    (assert (can-build-city ?nid))
 )
 
 (defrule find-can-buy-development-card
@@ -121,7 +121,6 @@
       )
     )
     =>
-    (printout t "SETHBURGER" crlf)
     (assert (looking-for-edges)
             (node-waypoint ?nid))
 )
@@ -141,7 +140,6 @@
     (looking-for-nodes)
     (edge-waypoint ?eid)
     (edge (id ?eid) (nodes ?nid ?))
-    (node (id ?nid))
     =>
     (assert (node-waypoint ?nid))
 )
@@ -165,7 +163,7 @@
         (settlement (player ?pid) (node ?nid))
         (city (player ?pid) (node ?nid))
         (and
-            (edge (id ?eid2) (nodes ?nid ?))
+            (edge (id ?eid2&~?eid) (nodes ?nid ?))
             (road (player ?pid) (edge ?eid2))
         )
     )
@@ -184,7 +182,10 @@
     (edge-waypoint ?etarget)
     (edge (id ?etarget) (nodes ?nid ?))
     (node (id ?nid))
-    (settlement (player ?pid) (node ?nid))
+    (or
+      (settlement (player ?pid) (node ?nid))
+      (city (player ?pid) (node ?nid))
+    )
     (not (road (edge ?etarget)))
 
     ;the other two edges coming off the node can not have roads on them
@@ -201,7 +202,10 @@
     (declare (salience -10))
     (goal init-turn-2)
     (not (next-road-placement ?))
-    (roads-to-place ~0)
+    (or
+      (not (game-phase initial-placement))
+      (roads-to-place ~0)
+    )
     ?l <- (looking-for-edges)
     =>
     (retract ?l)
@@ -210,8 +214,11 @@
 (defrule transition-to-look-for-edges
     (declare (salience -10))
     (goal init-turn-2)
-    (roads-to-place ~0)
     (not (next-road-placement ?))
+    (or
+      (not (game-phase initial-placement))
+      (roads-to-place ~0)
+    )
     ?l <- (looking-for-nodes)
     =>
     (retract ?l)
@@ -226,7 +233,10 @@
 (defrule find-nodes-of-this-distance
     (goal init-turn-2)
     (my-id ?pid)
-    (settlement (player ?pid))
+    (or
+      (settlement (player ?pid))
+      (city (player ?pid))
+    )
     (cur-distance ?dist)
     (node (id ?old-id) (distance =(- ?dist 1)))
     (edge (id ?eid) (nodes ?old-id ?this-id))
@@ -239,7 +249,10 @@
     (declare (salience -10))
     (goal init-turn-2)
     (my-id ?pid)
-    (settlement (player ?pid))
+    (or
+      (settlement (player ?pid))
+      (city (player ?pid))
+    )
     (node (distance -1))
     ?d <- (cur-distance ?dist)
     =>
@@ -251,7 +264,10 @@
     (declare (salience -10))
     (goal init-turn-2)
     (my-id ?pid)
-    (settlement (player ?pid))
+    (or
+      (settlement (player ?pid))
+      (city (player ?pid))
+    )
     (my-id ?pid)
     (cur-distance ?)
     (node (id ?nid) (can-build 1) (hexes ?hid1 ?hid2 ?hid3) (distance ?dist))
@@ -284,10 +300,10 @@
                          (if (eq ?port3 wool) then ?wprob else 0)
                          (if (eq ?port3 grain) then ?gprob else 0)
                          (if (eq ?port3 ore) then ?oprob else 0)
-                         (if (eq ?port1 3to1) then 3 else 0)
-                         (if (eq ?port2 3to1) then 3 else 0)
-                         (if (eq ?port3 3to1) then 3 else 0)
-                      ) 2
+                         (if (eq ?port1 3to1) then 6 else 0)
+                         (if (eq ?port2 3to1) then 6 else 0)
+                         (if (eq ?port3 3to1) then 6 else 0)
+                      ) 3
                    )))))
 )
 
@@ -295,10 +311,13 @@
     (declare (salience -20))
     (goal init-turn-2)
     (my-id ?pid)
-    (settlement (player ?pid))
+    (or
+      (settlement (player ?pid))
+      (city (player ?pid))
+    )
     (not (settlement-target ?))
     (cur-distance ?)
-    (calculated-node (id ?nid) (score ?score)) 
+    (calculated-node (id ?nid) (score ?score))
     (not (calculated-node (id ?nid2) (score ?score2&:(> ?score2 ?score))))
     =>
     (assert (settlement-target ?nid))

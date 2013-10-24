@@ -188,7 +188,6 @@
 (defrule end-turn
     (declare (salience -1000))
     =>
-    (matches domestic-trade-for-road)
     (assert (action "End Turn (default)"))
 )
 

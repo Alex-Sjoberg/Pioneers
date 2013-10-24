@@ -54,7 +54,8 @@
   =>
   (retract ?g)
   (printout t "Switching GOAL to build-city" crlf)
-  (assert (goal build-city))
+  (assert (goal build-city)
+          (willing-to-trade))
 )
 
 (defrule play-soldier-on-city-strategy
@@ -83,7 +84,8 @@
   =>
   (retract ?g)
   (printout t "Switching GOAL to buy-development-card" crlf)
-  (assert (goal buy-development-card))
+  (assert (goal buy-development-card)
+          (willing-to-trade))
 )
 
 ;Low priority catch-all rules
@@ -93,5 +95,6 @@
   =>
   (retract ?g)
   (printout t "Switching GOAL to build-city" crlf)
-  (assert (goal build-city))
+  (assert (goal build-city)
+          (willing-to-trade))
 )

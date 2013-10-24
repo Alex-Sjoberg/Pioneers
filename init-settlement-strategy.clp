@@ -10,12 +10,10 @@
     ?g <- (goal init-settlement-strategy)
     ?g <- (goal init-city-strategy)
   )
-  (my-id ?pid)
-  (player (id ?pid) (num-settlements ~5))
-  (resource-cards (kind lumber) (amnt ?lamnt&:(>= ?lamnt 1)))
-  (resource-cards (kind brick) (amnt ?bamnt&:(>= ?bamnt 1)))
-  (resource-cards (kind grain) (amnt ?gamnt&:(>= ?gamnt 1)))
-  (resource-cards (kind wool) (amnt ?wamnt&:(>= ?wamnt 1)))
+  ;(my-id ?pid)
+  ;(player (id ?pid) (num-settlements ~5))
+  (have-resources-for-settlement)
+  (can-build-settlement ?)
   =>
   (retract ?g)
   (printout t "Switching GOAL to build-settlement" crlf)
@@ -33,7 +31,8 @@
   =>
   (retract ?g)
   (printout t "Switching GOAL to build-city" crlf)
-  (assert (goal build-city))
+  (assert (goal build-city)
+          (willing-to-trade))
 )
 
 (defrule buy-devel-if-lots-of-resources
@@ -75,7 +74,7 @@
   ?g <- (goal init-settlement-strategy)
   =>
   (retract ?g)
-  (printout t "Switching GOAL to build-settlement" crlf)
+  (printout t "Switching GOAL to build-settlement-else" crlf)
   (assert (goal build-settlement)
           (willing-to-trade))
 )

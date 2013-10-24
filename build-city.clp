@@ -4,7 +4,7 @@
 (defrule domestic-trade-for-city
     (game-phase consider-quote)
     ?g <- (goal build-city)
-    (can-build-city)
+    (can-build-city ?)
     =>
     (retract ?g)
     (printout t "Switching GOAL to consider-quote" crlf)
@@ -33,7 +33,7 @@
 (defrule determine-best-city-location "needs to be improved"
   (goal build-city)
   (my-id ?pid)
-  (settlement (player ?pid) (node ?nid))
+  (can-build-city ?nid)
   (node (id ?nid) (hexes ?h1 ?h2 ?h3))
   (hex (id ?h1) (prob ?prob1))
   (hex (id ?h2) (prob ?prob2))

@@ -3,7 +3,7 @@
 (defrule domestic-trade-for-settlement
     (game-phase consider-quote)
     ?g <- (goal build-settlement)
-    (can-build-settlement)
+    (can-build-settlement ?)
     =>
     (retract ?g)
     (printout t "Switching GOAL to consider-quote" crlf)
@@ -13,13 +13,13 @@
 
 (defrule maritime-trade-for-settlement
     (goal build-settlement)
-    (willing-to-trade)
+    ;(willing-to-trade)
     (my-maritime-trade ?price)
     (resource-cards (kind ?want&lumber|brick|wool|grain) (amnt 0))
     (bank-cards (kind ?want) (amnt ~0))
     (or
-        (resource-cards (kind ?trade&~lumber&~brick&~wool&~grain) (amnt ?amnt&:(>= ?amnt ?price)))
-        (resource-cards (kind ?trade&~?want&lumber|brick|wool|grain) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
+        (resource-cards (kind ?trade&ore) (amnt ?amnt&:(>= ?amnt ?price)))
+        (resource-cards (kind ?trade&~ore) (amnt ?amnt&:(>= ?amnt (+ ?price 1))))
     )
     =>
     (assert (action "Do Maritime" ?price ?trade ?want))
@@ -29,10 +29,13 @@
     (not (game-phase consider-quote))
     (goal build-settlement)
     (have-resources-for-settlement)
-    (can-build-settlement)
-    (settlement-target ?node)
+    (can-build-settlement ?nid)
+    (or
+      (settlement-target ?nid)
+      (node (id ?nid))
+    )
     =>
-    (assert (action "Build Settlement" ?node))
+    (assert (action "Build Settlement" ?nid))
 )
 
 (defrule build-road-if-none
