@@ -25,6 +25,7 @@
     (assert (action "Do Maritime" ?price ?trade ?want))
 )
 
+;; This seems important, what doe the (or) do??
 (defrule build-settlement
     (not (game-phase consider-quote))
     (goal build-settlement)
@@ -38,6 +39,7 @@
     (assert (action "Build Settlement" ?nid))
 )
 
+;; What does this do...?
 (defrule build-road-if-none
   (declare (salience -10))
   ?g <- (goal build-settlement)

@@ -1,5 +1,4 @@
 ;BUILD-ROAD section
-;build roads in the direction of the settlement goal
 
 ;(defrule aoeu
 ;  (declare (salience 1))
@@ -22,6 +21,7 @@
             (trade-goal build-road))
 )
 
+;; If we have the resources, build a road on the edge we've decided to put a road on
 (defrule build-road
     (not (game-phase consider-quote))
     (goal build-road)

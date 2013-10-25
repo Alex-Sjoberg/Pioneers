@@ -1,4 +1,6 @@
 ; BEFORE-DICE Section
+
+;; If the robber is on a hex adjacent to one of our cities or settlements, play a soldier
 (defrule play-soldier
     (goal before-dice)
 
@@ -13,6 +15,7 @@
     (assert (action "Play Soldier"))
 )
 
+;; If we have a monopoly card we can play, do it.
 (defrule play-mono
     (goal before-dice)
 
@@ -21,6 +24,7 @@
     (assert (action "Play Monopoly"))
 )
 
+;; If we have a year of plenty card, play it.
 (defrule play-plenty
     (goal before-dice)
 
@@ -29,6 +33,7 @@
     (assert (action "Play Year Of Plenty"))
 )
 
+;; Roll the dice if none of the other rule spaply
 (defrule roll-dice
     (declare (salience -10))
     (goal before-dice)

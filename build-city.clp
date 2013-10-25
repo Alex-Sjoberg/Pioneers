@@ -1,6 +1,7 @@
 ;BUILD-CITY section
 
 
+;; If our goal is to build a city and we can build a city, change our goal to consider-quote and our trade goal to build city
 (defrule domestic-trade-for-city
     (game-phase consider-quote)
     ?g <- (goal build-city)
@@ -11,6 +12,7 @@
     (assert (goal consider-quote)
             (trade-goal build-city))
 )
+
 
 (defrule maritime-trade-for-city
     (goal build-city)
