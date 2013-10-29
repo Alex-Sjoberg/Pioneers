@@ -368,7 +368,7 @@ void setup_clips(void)
       case DEVEL_GOVERNORS_HOUSE:
       case DEVEL_LIBRARY:
       case DEVEL_MARKET:
-        j = 3;
+        j = 4;
         break;
       case DEVEL_SOLDIER:
         j = 4;
