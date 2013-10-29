@@ -1,14 +1,14 @@
-gnome-terminal -x sh -c "pioneers-server-console -c 3" #& #> /dev/null
-serverid = $!
+#!/bin/sh
 
-#i = 0
+I=0
 
-#while i < 30
-#do
+while [ $I -le 30 ]
+do
+    gnome-terminal -x sh -c "pioneers-server-console -c 3" #& #> /dev/null
     sleep 1
-    ./run.sh #>> dump.dat
-#    i = $i + 1;
-#done
+    ./run.sh > dump.dat
+    killall pioneers-server-console
+    I = $I + 1;
+done
 
 
-killall pioneers-server-console

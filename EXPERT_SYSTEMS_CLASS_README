@@ -1,0 +1,46 @@
+Note:  If this project is being run a lab machine, it should be pretty simple. Everything is already compiled and all the dependencies are set.
+Note:  First, if you are not running directly on a lab machine, you need to have X11 forwarding set up when you log in remotely. For this reason, it is recommended that you run it on a lab machine, to avoid this hassle.
+
+First unzip settlers:
+
+$ unzip settlers.zip
+
+This will automatically create a directory called "settlers" in the directory where you unzip it.  Run compile.sh on the machine from the settlers directory.  
+
+$ ./compile.sh
+
+There may be compile errors due to a missing dependency (Intltool in my case. Simply solved by running apt-get install intltool.) talk to Nate or Nathan if this issue crops up. This will compile the code.  
+
+-(We will be working on getting this package installed on all the machines in euler 218:  Nate on 10-23-13)
+
+Once this is done add settler’s bin to the path.
+
+$ export PATH=${HOME}/settlers/bin:${PATH}   #will add it temporarily
+
+Or to .bashrc.local (in your home dir) add the line
+
+$ export PATH=${HOME}/settlers/bin:${PATH}   #makes the changes to path persist
+
+To run the game server, cd to the directory where you unzipped the game (preferably use your home dir for this):
+
+$ cd [somedir]/settlers/bin
+
+$ ./pioneers
+
+Or if you have done the path stuff already just run
+
+$ pioneers
+
+This will launch the game server.  Clicking on create game will launch the game.  No need to register the server. Server port should be 5556.  Determine any game parameters that you want, then start server.
+
+Once this is complete, open a new terminal window, cd into settlers and:
+
+$ ./run.sh
+
+This will launch the ai  called colden written by David Colgan and Jessi Denardo. 
+Note that you can call the player whatever you want by specifying parameters to run.sh in this manner:
+$./run.sh someplayername expert
+
+Where someplayername will be the name of the player and expert is the level of the ai.  Please use expert always if you intend to run David and Jessi's ai.
+
+

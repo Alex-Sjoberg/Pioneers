@@ -1,0 +1,29 @@
+If this project is being run on matthew or on a lab machine, it should be pretty simple. Everything is already compiled and all the dependencies are set.
+
+
+1. First, if you are not running directly on a lab machine, you need to have X11 forwarding set up when you log in remotely. For this reason, it is recommended that you run it on a lab machine, to avoid this hassle.
+
+
+
+2. Next, you should ensure that your path is set correctly. Simply run:
+
+$ export PATH=[path/to/settlers/bin]:$PATH
+
+For example, if the "settlers" directory is in ~/settlers, you would presumably run:
+
+$ export PATH=/home/users11/arwhite/settlers/bin:$PATH
+
+
+
+3. To run the pioneers program, run:
+
+$ [settlers directory]/bin/pioneers &
+
+This should bring up the pioneers game. Click "Create Game", then set up a game, specifying the number of players (2 to 4) on the default board. Make sure that "Strict Trade" is off and make note of the port (probably 5556). To launch a human player, click the button that says "launch client". To start a "Greedy" computer player (the AI that was included in the game), click the appropriate button on the server console for creating an AI. To launch our expert system AI, run this command from the terminal:
+
+$ [settlers directory]/bin/pioneersai -s [hostname of the server] -p [server port] -n Colden -c -a expert
+
+For example, if I were running this on group4b on port 5556, I would run:
+
+$ ~/settlers/bin/pioneersai -s group4b.cse.taylor.edu -p 5556 -n Colden -c -a expert
+
