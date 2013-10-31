@@ -12,4 +12,4 @@ fi
 
 cd pioneers
 #make && make install && 
-../bin/pioneersai -s $HOSTNAME.cse.taylor.edu -p 5556 -n $var1 -c -a $var2
+../bin/pioneersai -s $HOSTNAME.cse.taylor.edu -p 5556 -n $var1 -c -a $var2 
