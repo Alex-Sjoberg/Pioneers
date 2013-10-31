@@ -1,0 +1,12 @@
+Automated process description
+
+Brandon Reppert, Alex Sjoberg, Phil Brocker, Seungyoung Ji
+------------------------------------------------------------
+we loop through pioneers games, starting up the server in a different terminal window, and then we start the client for that server.
+We can run however many games we want
+
+After all of the simulations are complete, we have a simple python parser to gather and then print out the results
+
+In our results, we will calculate the number of wins for all players
+
+We will then calculate win % for us.
