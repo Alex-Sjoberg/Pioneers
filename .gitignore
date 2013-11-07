@@ -8,3 +8,6 @@ OLD_DONT_USE/*
 settlers.clp
 temp_facts.clp
 temp_*
+dump.dat
+server_dump.txt
+client_dump.txt
