@@ -1,3 +1,6 @@
+; If our current probability of grain and ore is greater than our probability of lumber and 
+;brick, do (strategy cities), otherwise do (strategy settlements)
+
 (defrule determine-strategy "If we must take our turn, decide whether to go for cities or settlements."
   (goal decide-strategy)
   (total-resource-prob (kind lumber) (prob ?lumber))

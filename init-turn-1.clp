@@ -30,6 +30,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; FIND-RESOURCE-TOTAL-PROBS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; If we have a settlement on a node, add the resource probability for the adjacent hexes to our 
+;'resource sum'. Also print out the facts   
 (defrule find-my-resource-settlement-probs
     (goal init-turn-1)
     (my-id ?pid)
@@ -41,9 +44,11 @@
     )
     (hex (id ?hid) (resource ?res&~desert&~sea) (prob ?prob))
     =>
+    (facts)
     (assert (add-to-resource-sum ?res ?prob))
 )
 
+;Same as above, except for cities
 (defrule find-my-resource-city-probs
     (goal init-turn-1)
     (my-id ?pid)
@@ -58,6 +63,8 @@
     (assert (add-to-resource-sum ?res (* 2 ?prob)))
 )
 
+; Adds the probability of getting a resources generated above to our total probability of getting 
+;that resource
 (defrule sum-resource-probs
     (goal init-turn-1)
     ?a <- (add-to-resource-sum ?res ?prob)
@@ -70,6 +77,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SUM-VICTORY-POINTS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;If we have victory point cards add those to our victory point total
 (defrule find-victory-points
     (goal init-turn-1)
     (devel-card (kind victory) (amnt ?num))
@@ -89,6 +98,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; TRADING PRICES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;If we have a settlement on a node with a 3to1 port, assert a my-maritime-trade fact with a value of three, otherwise 4
+
 (defrule get-trading-price-1
     (goal init-turn-1)
     (my-id ?pid)
@@ -109,6 +120,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; RESOURCE RARITY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Adds up the total probability of a certain resource on the board and stores it in a dot-total fact
 
 (defrule start-sum-resource-rarity
     (goal init-turn-1)
@@ -116,6 +128,7 @@
     =>
     (assert (dot-addend (kind ?res) (amnt ?prob)))
 )
+
 
 (defrule finish-sum-resource-rarity
     (goal init-turn-1)
@@ -129,6 +142,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; TARGET SETTLEMENT LOCATION PART 1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;If we have a settlement on a nvode, set its distance to zero
 
 (defrule find-my-settlement-nodes
     (goal init-turn-1)

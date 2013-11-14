@@ -61,18 +61,6 @@
     (assert (can-buy-development-card))
 )
 
-
-
-
-
-
-
-
-
-
-
-
-
 ; calculate which nodes can be built upon and which cannot
 (defrule can-build-on-nodes
     (declare (salience 10))
