@@ -53,7 +53,7 @@
   (settlement (player ?pid))
   (or
     (and
-      (resource-cards (kind grain) (amnt ?gamnt&:(<= (- 2 ?gamnt) 1)))
+      (resource-cards (kind grain) (amnt ?gamnt&:(<= (- 2 ?gamnt) 1))) ;What is this doing??
       (resource-cards (kind ore) (amnt ?oamnt&:(>= ?oamnt 3)))
     )
     (and

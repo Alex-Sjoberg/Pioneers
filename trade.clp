@@ -39,6 +39,9 @@
             (offer-quote))
 )
 
+
+;If we don't have the resources fr a city and theyre offering city resources and wanting either
+;or city resources we have more than enough of, offer them a 1-1 trade for those resources
 (defrule consider-quote-for-building-city
     (goal consider-quote)
     (trade-goal build-city)

@@ -4,7 +4,7 @@
 import re
 
 parse_regex = re.compile('player (.{1,20}?) won', re.DOTALL)
-infile = open('server_dump.txt', 'r') #open server dump file
+infile = open('server_dump30.txt', 'r') #open server dump file
 instring = infile.read()
 winlist = parse_regex.findall(instring) #get all the players
 

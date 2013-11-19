@@ -71,6 +71,7 @@
     (assert (action "Build City" ?node))
 )
 
+;What is this rule for...?
 (defrule city-else-build-settlement
   (declare (salience -10))
   ?g <- (goal build-city)

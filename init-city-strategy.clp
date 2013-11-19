@@ -46,18 +46,6 @@
   (assert (goal build-settlement))
 )
 
-;Medium priority rules
-(defrule build-city-if-have-none
-  ?g <- (goal init-city-strategy)
-  (my-id ?pid)
-  (player (id ?pid) (num-cities 0))
-  =>
-  (retract ?g)
-  (printout t "Switching GOAL to build-city" crlf)
-  (assert (goal build-city)
-          (willing-to-trade))
-)
-
 (defrule play-soldier-on-city-strategy
   (declare (salience 10))
   (not (game-phase consider-quote))
@@ -75,6 +63,20 @@
   (assert (action "Play Soldier"))
 
 )
+
+;Medium priority rules
+(defrule build-city-if-have-none
+  ?g <- (goal init-city-strategy)
+  (my-id ?pid)
+  (player (id ?pid) (num-cities 0))
+  =>
+  (retract ?g)
+  (printout t "Switching GOAL to build-city" crlf)
+  (assert (goal build-city)
+          (willing-to-trade))
+)
+
+
 
 (defrule buy-development-card-over-city
   ?g <- (goal init-city-strategy)

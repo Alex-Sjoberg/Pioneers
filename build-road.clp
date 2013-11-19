@@ -31,6 +31,7 @@
     (assert (action "Build Road" ?eid))
 )
 
+
 (defrule maritime-trade-for-road
     (goal build-road)
     (my-maritime-trade ?price)
